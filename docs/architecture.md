@@ -50,7 +50,6 @@ silk-swarakarna/
 ├── docs/
 │   ├── architecture.md          (this file)
 │   ├── business-logic.md
-│   ├── diagrams/                (flow + UML + component + package)
 │   ├── designs/
 │   └── agents/
 │

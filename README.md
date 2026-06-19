@@ -5,15 +5,13 @@ Sistem Informasi Layanan Klinik Swarakarna. Aplikasi web PHP OOP untuk klinik TH
 ## Daftar Isi
 
 1. [Ringkasan](#ringkasan)
-2. [Entity relationship diagram](#entity-relationship-diagram)
-3. [UML diagrams](#uml-diagrams)
-4. [Alur request](#alur-request)
-5. [Struktur proyek](#struktur-proyek)
-6. [Quick start](#quick-start)
-7. [Tech stack](#tech-stack)
-8. [Sprint roadmap](#sprint-roadmap)
-9. [Domain reference](#domain-reference)
-10. [Deployment](#deployment)
+2. [Alur request](#alur-request)
+3. [Struktur proyek](#struktur-proyek)
+4. [Quick start](#quick-start)
+5. [Tech stack](#tech-stack)
+6. [Sprint roadmap](#sprint-roadmap)
+7. [Domain reference](#domain-reference)
+8. [Deployment](#deployment)
 
 ## Ringkasan
 
@@ -25,56 +23,11 @@ Sistem Informasi Layanan Klinik Swarakarna. Aplikasi web PHP OOP untuk klinik TH
 | Master data | 3 (pasien, dokter, layanan) |
 | Transaksi | 1 (pemeriksaan, relasi ke 3 master) |
 | Tabel DB | 4 |
-| Class OOP | 5 (Database + 4 entity) |
-| Pattern | Front controller + PDO singleton + MVC ringan |
+| Class OOP | 17 (1 Database + 4 Entity + 4 Repository + 4 Query + 4 Presenter) |
+| Pattern | Front controller + PDO singleton + Repository/Query (CQRS) + Presenter |
 | Output | Web app native PHP, tanpa framework |
 
-## Entity relationship diagram
-
-![ERD SILK-Swarakarna](docs/diagrams/erd.png)
-
-Sumber: [docs/diagrams/erd.drawio](docs/diagrams/erd.drawio). Edit di [app.diagrams.net](https://app.diagrams.net) atau draw.io desktop.
-
-| Tabel | Tipe | Primary key | Foreign key | Catatan |
-|---|---|---|---|---|
-| `pasien` | Master | `id_pasien` VARCHAR, `RM-XXX` | | Kode otomatis |
-| `dokter` | Master | `id_dokter` INT auto | | `no_izin_praktik` UNIQUE |
-| `layanan` | Master | `id_layanan` INT auto | | `biaya` IDR integer |
-| `pemeriksaan` | Transaksi | `id_periksa` VARCHAR, `TRX-YYYYNNN` | `id_pasien`, `id_dokter`, `id_layanan` | `status_pemeriksaan` ENUM |
-
-FK constraint: `ON DELETE RESTRICT`. Master yang sudah punya riwayat pemeriksaan tidak bisa dihapus. Setelah `status_pemeriksaan = 'Selesai'`, baris `pemeriksaan` immutable untuk audit trail.
-
-## UML diagrams
-
-### Class diagram
-
-5 class OOP, atribut + method, relasi dependency ke Database singleton + association 1:N dari 3 master ke Pemeriksaan.
-
-![UML class diagram](docs/diagrams/uml-class.png)
-
-Sumber: [docs/diagrams/uml-class.drawio](docs/diagrams/uml-class.drawio).
-
-### Sequence diagram: create pemeriksaan
-
-Use case paling kompleks. 6 lifeline (Admin, index.php, bootstrap, Pemeriksaan, Database, MariaDB), 10 step dari GET form sampai INSERT.
-
-![UML sequence diagram](docs/diagrams/uml-sequence.png)
-
-Sumber: [docs/diagrams/uml-sequence.drawio](docs/diagrams/uml-sequence.drawio).
-
-### Use case diagram
-
-1 actor (Admin), 8 use case, 3 `<<include>>` dependency ke "Cari data (search)".
-
-![UML use case diagram](docs/diagrams/uml-usecase.png)
-
-Sumber: [docs/diagrams/uml-usecase.drawio](docs/diagrams/uml-usecase.drawio).
-
 ## Alur request
-
-![Request flow](docs/diagrams/flowchart.png)
-
-Sumber: [docs/diagrams/flowchart.drawio](docs/diagrams/flowchart.drawio).
 
 Singkatnya:
 
@@ -91,51 +44,73 @@ Detail per layer ada di [docs/architecture.md](docs/architecture.md).
 
 ## Struktur proyek
 
+Tree lengkap codebase. Deskripsi singkat per file/folder.
+
 ```
 silk-swarakarna-uas/
-├── .ddev/                              DDEV config (PHP 8.2, MariaDB 10.11)
+├── .ddev/                              | DDEV config (PHP 8.2, MariaDB 10.11, nginx-fpm)
 │
-├── public/                             Document root
-│   ├── index.php                       Front controller + router
-│   ├── .htaccess                       URL rewrite
-│   └── assets/css/
+├── public/                             | Document root (web entry)
+│   ├── index.php                       | Front controller: route table + POST dispatch + 404 fallback
+│   ├── .htaccess                       | Apache rewrite: semua URI → index.php?url=...
+│   └── assets/css/app.css              | Override --bs-primary ke navy #1e40af
 │
-├── src/                                Domain layer (5 class OOP)
-│   ├── Database.php                    PDO singleton
-│   ├── Pasien.php                      CRUD + generateKodeOtomatis
-│   ├── Dokter.php                      CRUD
-│   ├── Layanan.php                     CRUD
-│   └── Pemeriksaan.php                 Transaksi + JOIN + status
+├── src/                                | Domain layer — 17 class OOP, arsitektur CQRS
+│   ├── Database.php                    | PDO singleton: query, execute, transaction, lastInsertId
+│   ├── Entity/                         | Entity facade: validation + business rules, delegate ke Repo/Query
+│   │   ├── Pasien.php                  | Pasien CRUD + generate RM-XXX + FK-safe delete
+│   │   ├── Dokter.php                  | Dokter CRUD + search + FK-safe delete
+│   │   ├── Layanan.php                 | Layanan CRUD + FK-safe delete + biaya validation
+│   │   └── Pemeriksaan.php             | Pemeriksaan CRUD + state machine + FOR UPDATE (race-safe)
+│   ├── Repository/                     | Command side: CUD + simple reads per table
+│   │   ├── PasienRepository.php        | pasien table: insert, findAll, findById, update, delete, count
+│   │   ├── DokterRepository.php        | dokter table (same pattern)
+│   │   ├── LayananRepository.php       | layanan table (same pattern)
+│   │   └── PemeriksaanRepository.php   | pemeriksaan table + updateStatus + deleteIfNotSelesai
+│   ├── Query/                          | Query side: complex reads, JOINs, search, code generation
+│   │   ├── PasienQuery.php             | searchByName, findForOptions, generateKodeOtomatis (RM-NNN)
+│   │   ├── DokterQuery.php             | searchByName, findDokterForOptions
+│   │   ├── LayananQuery.php            | findLayananForOptions
+│   │   └── PemeriksaanQuery.php        | generateKodeOtomatis (TRX-YYYYNNN), findAllJoined, findByIdJoined, findStatusForUpdate
+│   └── Presenter/                      | View data formatters (view-ready arrays)
+│       ├── PasienPresenter.php         | getListData, getFormData, getOptions, getCount, formatRow
+│       ├── DokterPresenter.php         | getListData, getFormData, getOptions, getCount
+│       ├── LayananPresenter.php        | + format_rupiah untuk biaya
+│       └── PemeriksaanPresenter.php    | + status badge HTML + 3 FK dropdowns (pasien/dokter/layanan)
 │
-├── includes/                           Bootstrap layer
-│   ├── bootstrap.php                   session + autoload + error handler
-│   └── config.php                      Env loader (.env)
+├── includes/                           | Bootstrap + helpers
+│   ├── bootstrap.php                   | session_start, error-to-exception, autoload, base_path
+│   ├── config.php                      | .env parser: DB_HOST, DB_NAME, DB_USER, DB_PASS, APP_URL
+│   └── helpers.php                     | format_tanggal, format_rupiah, format_datetime, old_input, has_error, error_for, flash_message, query_param
 │
-├── views/                              Presentation layer
-│   ├── layout/{header,footer}.php      Shell HTML + Bootstrap 5
-│   ├── dashboard.php
-│   ├── pasien/  dokter/  layanan/  pemeriksaan/
+├── views/                              | Presentation templates (Bootstrap 5.3)
+│   ├── layout/
+│   │   ├── header.php                  | <head> + navbar + container main open
+│   │   └── footer.php                  | </main> + footer + Bootstrap JS CDN
+│   ├── dashboard.php                   | 4 widget summary + tabel 5 pemeriksaan terbaru
+│   ├── errors/404.php                  | 404 page dengan back-to-dashboard
+│   └── _placeholder.php                | Placeholder untuk view belum diimplementasi
 │
 ├── database/
-│   └── silk_swarakarna.sql             Schema + seed (3 pasien, 3 dokter, 4 layanan)
+│   └── silk_swarakarna.sql             | Schema + seed (3 pasien, 2 dokter, 3 layanan, 2 pemeriksaan)
 │
-├── docs/                               Dokumentasi
-│   ├── architecture.md                 Request lifecycle + class diagram
-│   ├── business-logic.md               Flowchart per fitur
-│   ├── diagrams/                       ERD + Flowchart (DrawIO source)
-│   └── agents/                         Skill config
+├── docs/                               | Dokumentasi
+│   ├── architecture.md                 | Request lifecycle + class diagram + CQRS rationale
+│   ├── business-logic.md               | Flowchart per fitur (Pasien/Dokter/Layanan/Pemeriksaan)
+│   ├── agents/                         | Skill config: domain, issue tracker, triage labels
+│   └── designs/                        | Open CoDesign prompts untuk UI/UX design
 │
-├── .scratch/silk-swarakarna-uas/       Issue tracker (local markdown)
-│   ├── PRD.md
-│   └── issues/01..20-*.md
-│
-├── CONTEXT.md                          Glossary domain
-├── AGENTS.md                           Agent runtime config
-├── composer.json                       PSR-4 autoload `Silk\` → `src/`
-├── .env.example
-├── .gitignore
-└── README.md
+├── DESIGN.md                           | Design system spec (Bootstrap 5.3, navy #1e40af, format Rupiah, status badge)
+├── AGENTS.md                           | Agent runtime config + DESIGN.md reference
+├── CONTEXT.md                          | Domain glossary (Pasien, Dokter, Layanan, Pemeriksaan, state machine)
+├── composer.json                       | PSR-4 autoload Silk\ → src/
+├── composer.lock                       | Lock file (zero external deps, hanya autoloader)
+├── .env.example                        | Template DB_HOST, DB_NAME, DB_USER, DB_PASS, APP_URL, APP_DEBUG
+├── .gitignore                          | Exclude: vendor, .env, .ddev, .scratch, node_modules, *.log, .DS_Store
+└── README.md                           | File ini
 ```
+
+Arsitektur CQRS: Entity (validation/business rules) → Repository (Command: CUD + simple reads) atau Query (Query: complex reads, JOINs, search, generate). Presenter membungkus Entity untuk format data siap-view (tanggal Indonesia, Rupiah, status badge HTML, FK dropdown options). View tidak pernah akses Entity/Repository/Query langsung — selalu lewat Presenter.
 
 ## Quick start
 
@@ -274,7 +249,7 @@ Checklist sebelum submit UAS:
 - [ ] `ddev start` + `ddev launch` jalan tanpa error
 - [ ] `ddev mysql -e "SELECT COUNT(*) FROM pemeriksaan;"` return > 0
 - [ ] `ddev import-db --file=database/silk_swarakarna.sql` bisa diulang dari nol
-- [ ] README + ERD + Flowchart terbaca
+- [ ] README terbaca
 - [ ] `public/` jadi document root (cek `.htaccess` rewrite)
 
 ## Kontributor
