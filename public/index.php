@@ -101,6 +101,9 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
                 'updateStatus' => [$id, $newStatus],
                 default        => [],
             };
+            if (in_array($action['method'], ['update', 'updateStatus', 'delete'], true) && empty($id)) {
+                redirectBackWithError('ID tidak valid');
+            }
             $result = $instance->{$action['method']}(...$args);
             // Success: redirect to the entity list page
             $entity = explode('.', $routeKey)[0];
