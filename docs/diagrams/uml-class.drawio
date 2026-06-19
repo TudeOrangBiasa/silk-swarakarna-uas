@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="UML Class" id="uml-class-silk-swarakarna">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="UML class diagram — SILK-Swarakarna&#xa;5 class OOP: Database (singleton) + 3 master + 1 transaksi" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#5c3a1e;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="20" width="1180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="db" value="&lt;&lt;singleton&gt;&gt;&#xa;&lt;b&gt;Database&lt;/b&gt;" style="swimlane;fontStyle=1;align=center;startSize=40;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="100" width="240" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="db-sep1" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=10;rotatable=0;labelPosition=left;points=[];portConstraint=eastwest;" vertex="1" parent="db">
+          <mxGeometry y="40" height="2" width="240" as="geometry" />
+        </mxCell>
+        <mxCell id="db-attrs" value="- $instance: PDO | static&#xa;- $pdo: PDO" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;sketch=0;fontFamily=Helvetica;" vertex="1" parent="db">
+          <mxGeometry y="42" width="240" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="db-sep2" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=10;rotatable=0;labelPosition=left;points=[];portConstraint=eastwest;" vertex="1" parent="db">
+          <mxGeometry y="90" height="2" width="240" as="geometry" />
+        </mxCell>
+        <mxCell id="db-methods" value="+ getInstance(): PDO | static&#xa;+ query($sql, $p): stmt&#xa;+ execute($sql, $p): int&#xa;+ lastInsertId(): string" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;sketch=0;fontFamily=Helvetica;" vertex="1" parent="db">
+          <mxGeometry y="92" width="240" height="108" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pasien" value="&lt;b&gt;Pasien&lt;/b&gt;" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;sketch=1;fontFamily=Helvetica;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="400" y="100" width="240" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="pasien-attrs" value="- $db: PDO" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;sketch=0;fontFamily=Helvetica;" vertex="1" parent="pasien">
+          <mxGeometry y="26" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pasien-sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=10;rotatable=0;labelPosition=left;points=[];portConstraint=eastwest;" vertex="1" parent="pasien">
+          <mxGeometry y="52" height="2" width="240" as="geometry" />
+        </mxCell>
+        <mxCell id="pasien-methods" value="+ __construct()&#xa;+ create($data): string&#xa;+ read($id=null): array&#xa;+ update($id, $data): int&#xa;+ delete($id): bool&#xa;+ search($kw): array&#xa;+ generateKodeOtomatis(): string" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;sketch=0;fontFamily=Helvetica;" vertex="1" parent="pasien">
+          <mxGeometry y="54" width="240" height="166" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dokter" value="&lt;b&gt;Dokter&lt;/b&gt;" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;sketch=1;fontFamily=Helvetica;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="700" y="100" width="240" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="dokter-attrs" value="- $db: PDO" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;sketch=0;fontFamily=Helvetica;" vertex="1" parent="dokter">
+          <mxGeometry y="26" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="dokter-sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=10;rotatable=0;labelPosition=left;points=[];portConstraint=eastwest;" vertex="1" parent="dokter">
+          <mxGeometry y="52" height="2" width="240" as="geometry" />
+        </mxCell>
+        <mxCell id="dokter-methods" value="+ __construct()&#xa;+ create($data): int&#xa;+ read($id=null): array&#xa;+ update($id, $data): int&#xa;+ delete($id): bool&#xa;+ search($kw): array" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;sketch=0;fontFamily=Helvetica;" vertex="1" parent="dokter">
+          <mxGeometry y="54" width="240" height="146" as="geometry" />
+        </mxCell>
+
+        <mxCell id="layanan" value="&lt;b&gt;Layanan&lt;/b&gt;" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;sketch=1;fontFamily=Helvetica;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="100" width="240" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="layanan-attrs" value="- $db: PDO" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;sketch=0;fontFamily=Helvetica;" vertex="1" parent="layanan">
+          <mxGeometry y="26" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="layanan-sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=10;rotatable=0;labelPosition=left;points=[];portConstraint=eastwest;" vertex="1" parent="layanan">
+          <mxGeometry y="52" height="2" width="240" as="geometry" />
+        </mxCell>
+        <mxCell id="layanan-methods" value="+ __construct()&#xa;+ create($data): int&#xa;+ read($id=null): array&#xa;+ update($id, $data): int&#xa;+ delete($id): bool" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;sketch=0;fontFamily=Helvetica;" vertex="1" parent="layanan">
+          <mxGeometry y="54" width="240" height="126" as="geometry" />
+        </mxCell>
+
+        <mxCell id="periksa" value="&lt;b&gt;Pemeriksaan&lt;/b&gt;&#xa;(transaksi)" style="swimlane;fontStyle=1;align=center;startSize=40;html=1;fillColor=#ffd9b3;strokeColor=#c25100;sketch=1;fontFamily=Helvetica;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="500" y="500" width="300" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="periksa-attrs" value="- $db: PDO&#xa;- $allowedStatus: array" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;sketch=0;fontFamily=Helvetica;" vertex="1" parent="periksa">
+          <mxGeometry y="40" width="300" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="periksa-sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=10;rotatable=0;labelPosition=left;points=[];portConstraint=eastwest;" vertex="1" parent="periksa">
+          <mxGeometry y="80" height="2" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="periksa-methods" value="+ __construct()&#xa;+ create($data): string&#xa;+ readWithJoin($kw=null): array&#xa;+ updateStatus($id, $status): bool&#xa;+ getById($id): array&#xa;+ delete($id): bool&#xa;+ generateKodeOtomatis(): string&#xa;- validateTransition($cur, $new): bool" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;sketch=0;fontFamily=Helvetica;" vertex="1" parent="periksa">
+          <mxGeometry y="82" width="300" height="198" as="geometry" />
+        </mxCell>
+
+        <mxCell id="db-rel-pasien" value="" style="endArrow=open;dashed=1;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.3;sketch=1;curved=1;strokeColor=#5c8a49;strokeWidth=2;" edge="1" parent="1" source="db" target="pasien">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="db-rel-dokter" value="" style="endArrow=open;dashed=1;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;sketch=1;curved=1;strokeColor=#5c8a49;strokeWidth=2;" edge="1" parent="1" source="db" target="dokter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="db-rel-layanan" value="" style="endArrow=open;dashed=1;html=1;exitX=1;exitY=0.7;entryX=0;entryY=0.7;sketch=1;curved=1;strokeColor=#5c8a49;strokeWidth=2;" edge="1" parent="1" source="db" target="layanan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="db-rel-periksa" value="" style="endArrow=open;dashed=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;sketch=1;curved=1;strokeColor=#5c8a49;strokeWidth=2;" edge="1" parent="1" source="db" target="periksa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-pasien-periksa" value="1—N&#xa;FK id_pasien" style="endArrow=open;html=1;exitX=0.5;exitY=1;entryX=0.25;entryY=0;sketch=1;curved=1;strokeColor=#b8651e;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#fff8e7;" edge="1" parent="1" source="pasien" target="periksa">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="450" y="430" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-dokter-periksa" value="1—N&#xa;FK id_dokter" style="endArrow=open;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;sketch=1;curved=1;strokeColor=#b8651e;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#fff8e7;" edge="1" parent="1" source="dokter" target="periksa">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="700" y="430" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-layanan-periksa" value="1—N&#xa;FK id_layanan" style="endArrow=open;html=1;exitX=0.5;exitY=1;entryX=0.75;entryY=0;sketch=1;curved=1;strokeColor=#b8651e;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#fff8e7;" edge="1" parent="1" source="layanan" target="periksa">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="950" y="430" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="legend-pub" value="+ public" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#5c8a49;strokeColor=#2f5a25;fontColor=#ffffff;fontStyle=1;fontSize=10;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="830" width="80" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-priv" value="- private" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#a53d3d;strokeColor=#6b1f1f;fontColor=#ffffff;fontStyle=1;fontSize=10;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="150" y="830" width="80" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-uses" value="" style="endArrow=open;dashed=1;html=1;exitX=0;exitY=0;entryX=1;entryY=0;sketch=1;strokeColor=#5c8a49;strokeWidth=2;" edge="1" parent="1" source="legend-priv" target="legend-pub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-uses-text" value="uses (dependency)" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="240" y="830" width="160" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-assoc" value="1—N FK" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#5c3a1e;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="860" width="200" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-assoc-desc" value="association (foreign key ke master)" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="140" y="860" width="280" height="22" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

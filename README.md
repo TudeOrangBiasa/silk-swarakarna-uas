@@ -6,13 +6,14 @@ Sistem Informasi Layanan Klinik Swarakarna. Aplikasi web PHP OOP untuk klinik TH
 
 1. [Ringkasan](#ringkasan)
 2. [Entity relationship diagram](#entity-relationship-diagram)
-3. [Alur request](#alur-request)
-4. [Struktur proyek](#struktur-proyek)
-5. [Quick start](#quick-start)
-6. [Tech stack](#tech-stack)
-7. [Sprint roadmap](#sprint-roadmap)
-8. [Domain reference](#domain-reference)
-9. [Deployment](#deployment)
+3. [UML diagrams](#uml-diagrams)
+4. [Alur request](#alur-request)
+5. [Struktur proyek](#struktur-proyek)
+6. [Quick start](#quick-start)
+7. [Tech stack](#tech-stack)
+8. [Sprint roadmap](#sprint-roadmap)
+9. [Domain reference](#domain-reference)
+10. [Deployment](#deployment)
 
 ## Ringkasan
 
@@ -42,6 +43,32 @@ Sumber: [docs/diagrams/erd.drawio](docs/diagrams/erd.drawio). Edit di [app.diagr
 | `pemeriksaan` | Transaksi | `id_periksa` VARCHAR, `TRX-YYYYNNN` | `id_pasien`, `id_dokter`, `id_layanan` | `status_pemeriksaan` ENUM |
 
 FK constraint: `ON DELETE RESTRICT`. Master yang sudah punya riwayat pemeriksaan tidak bisa dihapus. Setelah `status_pemeriksaan = 'Selesai'`, baris `pemeriksaan` immutable untuk audit trail.
+
+## UML diagrams
+
+### Class diagram
+
+5 class OOP, atribut + method, relasi dependency ke Database singleton + association 1:N dari 3 master ke Pemeriksaan.
+
+![UML class diagram](docs/diagrams/uml-class.png)
+
+Sumber: [docs/diagrams/uml-class.drawio](docs/diagrams/uml-class.drawio).
+
+### Sequence diagram: create pemeriksaan
+
+Use case paling kompleks. 6 lifeline (Admin, index.php, bootstrap, Pemeriksaan, Database, MariaDB), 10 step dari GET form sampai INSERT.
+
+![UML sequence diagram](docs/diagrams/uml-sequence.png)
+
+Sumber: [docs/diagrams/uml-sequence.drawio](docs/diagrams/uml-sequence.drawio).
+
+### Use case diagram
+
+1 actor (Admin), 8 use case, 3 `<<include>>` dependency ke "Cari data (search)".
+
+![UML use case diagram](docs/diagrams/uml-usecase.png)
+
+Sumber: [docs/diagrams/uml-usecase.drawio](docs/diagrams/uml-usecase.drawio).
 
 ## Alur request
 
