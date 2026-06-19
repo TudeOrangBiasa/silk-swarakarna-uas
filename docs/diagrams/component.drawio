@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Component Diagram" id="component-diagram-silk-swarakarna">
+    <mxGraphModel dx="1700" dy="1250" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1250" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ====== TITLE ====== -->
+        <mxCell id="title" value="Component diagram — SILK-Swarakarna&#xa;5 lapisan: Presentasi → Presentasi Logic → Bisnis → Data Access → Infrastruktur" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#5c3a1e;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="1300" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LAYER 1: PRESENTATION (Lapisan Presentasi)                       -->
+        <!-- ================================================================ -->
+        <mxCell id="l1" value="Lapisan 1: Presentasi (Presentation)" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#f0f4ff;strokeColor=#8888cc;sketch=1;fontFamily=Helvetica;fontSize=12;fontColor=#5c3a1e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="90" width="1600" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Component: views/ -->
+        <mxCell id="c1" value="&lt;b&gt;views/&lt;/b&gt;&lt;br&gt;Templat Bootstrap 5&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;&amp;laquo;provided&amp;raquo; HTML rendering&lt;br&gt;&amp;laquo;required&amp;raquo; Presenter methods, helpers&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="550" y="115" width="500" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="c1_t1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="542" y="123" width="8" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="c1_t2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="542" y="139" width="8" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LAYER 2: PRESENTATION LOGIC (Logika Presentasi)                  -->
+        <!-- ================================================================ -->
+        <mxCell id="l2" value="Lapisan 2: Logika Presentasi (Presentation Logic)" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#fff0f0;strokeColor=#cc8888;sketch=1;fontFamily=Helvetica;fontSize=12;fontColor=#5c3a1e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="210" width="1600" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Component: Presenter -->
+        <mxCell id="c2" value="&lt;b&gt;Presenter&lt;/b&gt;&lt;br&gt;Silk\Presenter\*Presenter&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;getListData, getFormData, getCount&lt;br&gt;getOptions (spesifik per modul)&lt;br&gt;Pemeriksaan: + getCountByDate&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="200" y="240" width="500" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c2_t1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="192" y="248" width="8" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="c2_t2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="192" y="264" width="8" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- Component: helpers.php -->
+        <mxCell id="c3" value="&lt;b&gt;helpers.php&lt;/b&gt;&lt;br&gt;includes/helpers.php&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;&amp;laquo;provided&amp;raquo; format_tanggal, format_rupiah, format_datetime,&lt;br&gt;old_input, has_error, error_for, flash_message, query_param&lt;br&gt;&amp;laquo;required&amp;raquo; $_SESSION, $_GET, $_POST&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="950" y="240" width="450" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c3_t1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="942" y="248" width="8" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="c3_t2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="942" y="264" width="8" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LAYER 3: BUSINESS LOGIC (Logika Bisnis)                           -->
+        <!-- ================================================================ -->
+        <mxCell id="l3" value="Lapisan 3: Logika Bisnis (Business Logic)" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#f0fff0;strokeColor=#88cc88;sketch=1;fontFamily=Helvetica;fontSize=12;fontColor=#5c3a1e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="370" width="1600" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Component: Entity -->
+        <mxCell id="c4" value="&lt;b&gt;Entity&lt;/b&gt;&lt;br&gt;Silk\Entity\*&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;&amp;laquo;provided&amp;raquo; CRUD: create, read, update, delete, search, count&lt;br&gt;&amp;laquo;required&amp;raquo; Repository + Query methods&lt;br&gt;Pemeriksaan: juga pakai Database langsung (transaksi)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="350" y="400" width="700" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c4_t1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="342" y="408" width="8" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="c4_t2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="342" y="424" width="8" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LAYER 4: DATA ACCESS (Akses Data)                                 -->
+        <!-- ================================================================ -->
+        <mxCell id="l4" value="Lapisan 4: Akses Data (Data Access)" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#fffff0;strokeColor=#cccc88;sketch=1;fontFamily=Helvetica;fontSize=12;fontColor=#5c3a1e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="530" width="1600" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Component: Repository -->
+        <mxCell id="c5" value="&lt;b&gt;Repository&lt;/b&gt;&lt;br&gt;Silk\Repository\*Repository&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;&amp;laquo;provided&amp;raquo; findAll, findById, save, delete (CRUD)&lt;br&gt;&amp;laquo;required&amp;raquo; Silk\Database&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff4cc;strokeColor=#b8901a;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="200" y="560" width="550" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c5_t1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff4cc;strokeColor=#b8901a;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="192" y="568" width="8" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="c5_t2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff4cc;strokeColor=#b8901a;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="192" y="584" width="8" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- Component: Query -->
+        <mxCell id="c6" value="&lt;b&gt;Query&lt;/b&gt;&lt;br&gt;Silk\Query\*Query&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;&amp;laquo;provided&amp;raquo; Complex reads: search, joins, generateKode&lt;br&gt;&amp;laquo;required&amp;raquo; Silk\Database&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff4cc;strokeColor=#b8901a;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="850" y="560" width="550" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c6_t1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff4cc;strokeColor=#b8901a;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="842" y="568" width="8" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="c6_t2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff4cc;strokeColor=#b8901a;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="842" y="584" width="8" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LAYER 5: INFRASTRUCTURE (Infrastruktur)                            -->
+        <!-- ================================================================ -->
+        <mxCell id="l5" value="Lapisan 5: Infrastruktur (Infrastructure)" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#f5f5f5;strokeColor=#999999;sketch=1;fontFamily=Helvetica;fontSize=12;fontColor=#5c3a1e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="690" width="1600" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Component: Database -->
+        <mxCell id="c7" value="&lt;b&gt;Database&lt;/b&gt;&lt;br&gt;Silk\Database&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;&amp;laquo;provided&amp;raquo; PDO singleton, query, execute, transaction&lt;br&gt;&amp;laquo;required&amp;raquo; PDO extension (PHP)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="150" y="730" width="380" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c7_t1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="142" y="738" width="8" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="c7_t2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="142" y="754" width="8" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- Component: bootstrap.php -->
+        <mxCell id="c8" value="&lt;b&gt;bootstrap.php&lt;/b&gt;&lt;br&gt;includes/bootstrap.php&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Load: config.php, helpers.php, autoloader&lt;br&gt;session_start(), error handler, timezone&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e8e8e8;strokeColor=#777777;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="610" y="730" width="380" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c8_t1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e8e8e8;strokeColor=#777777;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="602" y="738" width="8" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="c8_t2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e8e8e8;strokeColor=#777777;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="602" y="754" width="8" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- Component: Router -->
+        <mxCell id="c9" value="&lt;b&gt;Router&lt;/b&gt;&lt;br&gt;public/index.php&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;&amp;laquo;provided&amp;raquo; URL routing, POST → Entity handler&lt;br&gt;&amp;laquo;required&amp;raquo; bootstrap, helpers, views/layout&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="730" width="380" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c9_t1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="1062" y="738" width="8" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="c9_t2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="1062" y="754" width="8" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- EXTERNAL COMPONENTS                                                -->
+        <!-- ================================================================ -->
+
+        <!-- PDO (PHP extension) -->
+        <mxCell id="pdo" value="&lt;b&gt;PDO (PHP extension)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#999999;sketch=1;fontFamily=Helvetica;fontSize=11;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="960" width="380" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Loaded resources (config, helpers, autoloader) -->
+        <mxCell id="config_res" value="&lt;b&gt;config.php &amp;amp; autoloader&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Dibutuhkan oleh bootstrap&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#999999;sketch=1;fontFamily=Helvetica;fontSize=11;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="610" y="960" width="380" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- DEPENDENCY ARROWS                                                  -->
+        <!-- ================================================================ -->
+
+        <!-- e1: views → Presenter <<uses>> -->
+        <mxCell id="e1" value="&lt;&lt;uses&gt;&gt;" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.3;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c1" target="c2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e2: views → helpers <<uses>> -->
+        <mxCell id="e2" value="&lt;&lt;uses&gt;&gt;" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.8;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c1" target="c3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e3: Presenter → Entity <<uses>> -->
+        <mxCell id="e3" value="&lt;&lt;uses&gt;&gt;" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c2" target="c4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e4: Presenter → helpers <<uses>> format helpers -->
+        <mxCell id="e4" value="&lt;&lt;uses&gt;&gt;&lt;br&gt;format helpers" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c2" target="c3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e5: Entity → Repository <<uses>> -->
+        <mxCell id="e5" value="&lt;&lt;uses&gt;&gt;&lt;br&gt;composition" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.35;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c4" target="c5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e6: Entity → Query <<uses>> -->
+        <mxCell id="e6" value="&lt;&lt;uses&gt;&gt;&lt;br&gt;composition" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.7;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c4" target="c6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e7: Entity(Pemeriksaan) → Database <<uses>> transactions -->
+        <mxCell id="e7" value="&lt;&lt;uses&gt;&gt;&lt;br&gt;transactions" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#c25100;strokeWidth=2;fontSize=11;fontColor=#c25100;fontFamily=Helvetica;labelBackgroundColor=#fff8e7;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="c4" target="c7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1150" y="440" />
+              <mxPoint x="1150" y="600" />
+              <mxPoint x="340" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e8: Repository → Database <<uses>> -->
+        <mxCell id="e8" value="&lt;&lt;uses&gt;&gt;" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c5" target="c7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e9: Query → Database <<uses>> -->
+        <mxCell id="e9" value="&lt;&lt;uses&gt;&gt;" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c6" target="c7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1125" y="680" />
+              <mxPoint x="340" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e10: Router → Entity <<uses>> POST -->
+        <mxCell id="e10" value="&lt;&lt;uses&gt;&gt;&lt;br&gt;POST handler" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.1;exitY=0;entryX=1;entryY=0.5;" edge="1" parent="1" source="c9" target="c4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1110" y="430" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e11: Router → views <<uses>> renders -->
+        <mxCell id="e11" value="&lt;&lt;uses&gt;&gt;&lt;br&gt;merender view" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.1;exitY=0;entryX=1;entryY=1;" edge="1" parent="1" source="c9" target="c1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1110" y="430" />
+              <mxPoint x="1110" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e12: Router → bootstrap <<requires>> -->
+        <mxCell id="e12" value="&lt;&lt;requires&gt;&gt;" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="c9" target="c8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e13: Database → PDO <<uses>> -->
+        <mxCell id="e13" value="&lt;&lt;uses&gt;&gt; PHP PDO" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c7" target="pdo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e14: bootstrap → config/helpers/autoloader <<loads>> -->
+        <mxCell id="e14" value="&lt;&lt;loads&gt;&gt;" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c8" target="config_res">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LEGEND                                                             -->
+        <!-- ================================================================ -->
+        <mxCell id="legend-component-icon" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1040" width="18" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-component-t1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="52" y="1046" width="8" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-component-t2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="52" y="1056" width="8" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-component-text" value="Component (UML)" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="82" y="1040" width="140" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-arrow-sample" value="" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="1078" as="sourcePoint" />
+            <mxPoint x="170" y="1078" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend-arrow-text" value="&lt;&lt;uses&gt;&gt; / &lt;&lt;requires&gt;&gt; / &lt;&lt;loads&gt;&gt; (dependency)" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="175" y="1068" width="280" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-layer" value="" style="swimlane;fontStyle=1;align=center;startSize=12;html=1;fillColor=#f5f5f5;strokeColor=#999999;sketch=1;fontFamily=Helvetica;fontSize=7;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1100" width="40" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-layer-text" value="Layer container" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="105" y="1100" width="120" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

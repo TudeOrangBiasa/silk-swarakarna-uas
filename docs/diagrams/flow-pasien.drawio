@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Flow CRUD Pasien" id="flow-pasien-crud">
+    <mxGraphModel dx="900" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1350" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ====== TITLE ====== -->
+        <mxCell id="title" value="Flow CRUD Pasien — SILK-Swarakarna" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#5c3a1e;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="600" y="20" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ====== CENTER COLUMN ====== -->
+        <mxCell id="user" value="Admin" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="180" y="80" width="40" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="getPasien" value="GET /pasien" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="180" width="220" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="router" value="public/index.php&#xa;Router: parse URL" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="280" width="220" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="actionDecision" value="Action:&#xa;List / Search&#xa;Create / Edit / Delete" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff4cc;strokeColor=#b8901a;sketch=1;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="380" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ====== CENTER EDGES ====== -->
+        <mxCell id="e_u2g" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="user" target="getPasien">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_g2r" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="getPasien" target="router">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_r2d" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="router" target="actionDecision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- BRANCH 1: LIST (cx=490, x=385, w=210)                           -->
+        <!-- ================================================================ -->
+        <mxCell id="b1_label" value="List" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="390" y="465" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="b1_p1" value="PasienPresenter::getListData()" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="385" y="510" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b1_p2" value="Pasien::read()" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="385" y="575" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b1_p3" value="PasienRepository::findAll()" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="385" y="640" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b1_db" value="SELECT * FROM pasien&#xa;ORDER BY created_at DESC,&#xa;id_pasien DESC" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="385" y="705" width="210" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="b1_view" value="views/pasien/index.php&#xa;(Bootstrap table)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="385" y="780" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b1_end" value="200 OK" style="ellipse;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="385" y="845" width="210" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- B1 Edges -->
+        <mxCell id="e_d_b1" value="List" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=1;exitY=0.15;entryX=0;entryY=0.5;fontSize=11;fontStyle=1;fontColor=#5c8a49;fontFamily=Helvetica;" edge="1" parent="1" source="actionDecision" target="b1_p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b1_1" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b1_p1" target="b1_p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b1_2" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b1_p2" target="b1_p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b1_3" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b1_p3" target="b1_db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b1_4" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b1_db" target="b1_view">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b1_5" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b1_view" target="b1_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- BRANCH 2: SEARCH (cx=760, x=655, w=210)                         -->
+        <!-- ================================================================ -->
+        <mxCell id="b2_label" value="Search" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="660" y="465" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="b2_p1" value="User ketik keyword&#xa;GET /pasien?q=..." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="655" y="510" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b2_p2" value="PasienPresenter::getListData($keyword)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="655" y="575" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b2_p3" value="Pasien::search($keyword)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="655" y="640" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b2_p4" value="PasienQuery::searchByName($keyword)&#xa;(LIKE %keyword%)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="655" y="705" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b2_db" value="SELECT ...&#xa;WHERE nama_pasien LIKE ?" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="655" y="770" width="210" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="b2_view" value="views/pasien/index.php&#xa;(tabel terfilter)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="655" y="845" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b2_end" value="200 OK" style="ellipse;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="655" y="910" width="210" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- B2 Edges -->
+        <mxCell id="e_d_b2" value="Search" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=1;exitY=0.3;entryX=0;entryY=0.5;fontSize=11;fontStyle=1;fontColor=#5c8a49;fontFamily=Helvetica;" edge="1" parent="1" source="actionDecision" target="b2_p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b2_1" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b2_p1" target="b2_p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b2_2" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b2_p2" target="b2_p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b2_3" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b2_p3" target="b2_p4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b2_4" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b2_p4" target="b2_db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b2_5" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b2_db" target="b2_view">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b2_6" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b2_view" target="b2_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- BRANCH 3: CREATE (cx=1030, x=925, w=210)                        -->
+        <!-- ================================================================ -->
+        <mxCell id="b3_label" value="Create" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="930" y="465" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="b3_p1" value="Klik 'Tambah Pasien'&#xa;GET /pasien/create" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="925" y="510" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b3_view" value="Render form tambah" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="925" y="575" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b3_p2" value="Submit form&#xa;POST /pasien" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="925" y="640" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b3_p3" value="Router handler&#xa;→ Pasien::create($_POST)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="925" y="705" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b3_decision" value="Validasi required:&#xa;nama_pasien, tgl_lahir,&#xa;no_hp, alamat" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff4cc;strokeColor=#b8901a;sketch=1;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="970" y="770" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="b3_p4" value="generateKodeOtomatis()&#xa;→ RM-XXX" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="925" y="865" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b3_db" value="INSERT INTO pasien&#xa;(id_pasien, nama_pasien,&#xa;tanggal_lahir, no_hp, alamat)" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="925" y="930" width="210" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="b3_p5" value="set flash_success&#xa;Redirect: /pasien" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="925" y="1005" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b3_end" value="302 Redirect" style="ellipse;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="925" y="1070" width="210" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- B3 Edges -->
+        <mxCell id="e_d_b3" value="Create" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontSize=11;fontStyle=1;fontColor=#5c8a49;fontFamily=Helvetica;" edge="1" parent="1" source="actionDecision" target="b3_p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b3_1" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b3_p1" target="b3_view">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b3_2" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b3_view" target="b3_p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b3_3" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b3_p2" target="b3_p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b3_4" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b3_p3" target="b3_decision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b3_5" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b3_decision" target="b3_p4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b3_6" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b3_p4" target="b3_db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b3_7" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b3_db" target="b3_p5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b3_8" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b3_p5" target="b3_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- BRANCH 4: EDIT (cx=1300, x=1195, w=210)                         -->
+        <!-- ================================================================ -->
+        <mxCell id="b4_label" value="Edit" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="465" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="b4_p1" value="Klik 'Edit'&#xa;GET /pasien/edit?id=RM-001" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1195" y="510" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b4_view" value="Render form pre-filled" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1195" y="575" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b4_p2" value="Submit form&#xa;POST /pasien/update" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1195" y="640" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b4_p3" value="Router handler&#xa;→ Pasien::update($id, $_POST)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1195" y="705" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b4_db" value="UPDATE pasien SET ...&#xa;WHERE id_pasien = ?" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1195" y="770" width="210" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="b4_p4" value="set flash_success&#xa;Redirect: /pasien" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1195" y="845" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b4_end" value="302 Redirect" style="ellipse;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1195" y="910" width="210" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- B4 Edges -->
+        <mxCell id="e_d_b4" value="Edit" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=1;exitY=0.7;entryX=0;entryY=0.5;fontSize=11;fontStyle=1;fontColor=#5c8a49;fontFamily=Helvetica;" edge="1" parent="1" source="actionDecision" target="b4_p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b4_1" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b4_p1" target="b4_view">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b4_2" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b4_view" target="b4_p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b4_3" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b4_p2" target="b4_p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b4_4" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b4_p3" target="b4_db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b4_5" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b4_db" target="b4_p4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b4_6" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b4_p4" target="b4_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- BRANCH 5: DELETE (cx=1570, main x=1465, w=210)                  -->
+        <!-- ================================================================ -->
+        <mxCell id="b5_label" value="Delete" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1470" y="465" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="b5_p1" value="Klik 'Hapus' (JS confirm)&#xa;GET /pasien/delete?id=RM-001" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1465" y="510" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b5_p2" value="Router GET handler&#xa;→ Pasien::delete($id)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1465" y="575" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b5_db" value="DELETE FROM pasien&#xa;WHERE id_pasien = ?" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1465" y="640" width="210" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="b5_decision" value="FK check?&#xa;Ada pemeriksaan&#xa;terkait?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff4cc;strokeColor=#b8901a;sketch=1;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1510" y="715" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- B5 FK Error branch (left) -->
+        <mxCell id="b5_err1" value="PDOException 23000&#xa;→ return false" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1440" y="810" width="180" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b5_err2" value="flash_error:&#xa;'Tidak bisa hapus,&#xa;ada pemeriksaan terkait'" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1440" y="875" width="180" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- B5 FK Success branch (right) -->
+        <mxCell id="b5_ok1" value="DELETE berhasil" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="810" width="180" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="b5_ok2" value="flash_success:&#xa;'Pasien berhasil&#xa;dihapus'" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="875" width="180" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- B5 Redirect -->
+        <mxCell id="b5_redirect" value="Redirect: /pasien&#xa;(302)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1470" y="945" width="240" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- B5 Edges -->
+        <mxCell id="e_d_b5" value="Delete" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=1;exitY=0.85;entryX=0;entryY=0.5;fontSize=11;fontStyle=1;fontColor=#5c8a49;fontFamily=Helvetica;" edge="1" parent="1" source="actionDecision" target="b5_p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b5_1" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b5_p1" target="b5_p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b5_2" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b5_p2" target="b5_db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b5_3" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b5_db" target="b5_decision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- B5 FK decision → error / success -->
+        <mxCell id="e_b5_err" value="Ya (ada FK)" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#a53d3d;strokeWidth=2;exitX=0.25;exitY=1;entryX=0.5;entryY=0;fontSize=11;fontStyle=1;fontColor=#a53d3d;fontFamily=Helvetica;" edge="1" parent="1" source="b5_decision" target="b5_err1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b5_ok" value="Tidak" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c8a49;strokeWidth=2;exitX=0.75;exitY=1;entryX=0.5;entryY=0;fontSize=11;fontStyle=1;fontColor=#5c8a49;fontFamily=Helvetica;" edge="1" parent="1" source="b5_decision" target="b5_ok1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- B5 error chain -->
+        <mxCell id="e_b5_err1to2" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b5_err1" target="b5_err2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b5_err2to_r" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="b5_err2" target="b5_redirect">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- B5 success chain -->
+        <mxCell id="e_b5_ok1to2" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b5_ok1" target="b5_ok2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_b5_ok2to_r" value="" style="endArrow=classic;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.7;entryY=0;" edge="1" parent="1" source="b5_ok2" target="b5_redirect">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LEGEND                                                           -->
+        <!-- ================================================================ -->
+        <mxCell id="l_ellipse" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1140" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="l_ellipse_t" value="start / end" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="85" y="1140" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l_process" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1170" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="l_process_t" value="process (PHP code)" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="85" y="1170" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l_decision" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff4cc;strokeColor=#b8901a;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1200" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="l_decision_t" value="decision" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="85" y="1200" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l_view" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1230" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="l_view_t" value="view (HTML)" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="85" y="1230" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l_db" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1260" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="l_db_t" value="database" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="85" y="1260" width="120" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

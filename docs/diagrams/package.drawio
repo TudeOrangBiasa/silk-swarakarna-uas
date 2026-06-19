@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Package Diagram" id="package-diagram-silk-swarakarna">
+    <mxGraphModel dx="2000" dy="1700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== TITLE ===== -->
+        <mxCell id="title" value="Package diagram — SILK-Swarakarna&#xa;Struktur direktori dengan pemetaan namespace PSR-4" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#5c3a1e;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="1600" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ===== PSR-4 AUTOLOAD MAPPING ===== -->
+        <mxCell id="psr4-box" value="&lt;b&gt;Pemetaan Autoload PSR-4 (composer.json)&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;&amp;quot;Silk\\&amp;quot; =&amp;gt; &amp;quot;src/&amp;quot;&lt;br&gt;&amp;quot;Silk\\Entity\\&amp;quot; =&amp;gt; &amp;quot;src/Entity/&amp;quot;&lt;br&gt;&amp;quot;Silk\\Repository\\&amp;quot; =&amp;gt; &amp;quot;src/Repository/&amp;quot;&lt;br&gt;&amp;quot;Silk\\Query\\&amp;quot; =&amp;gt; &amp;quot;src/Query/&amp;quot;&lt;br&gt;&amp;quot;Silk\\Presenter\\&amp;quot; =&amp;gt; &amp;quot;src/Presenter/&amp;quot;&lt;br&gt;&amp;quot;Silk\\Includes\\&amp;quot; =&amp;gt; &amp;quot;includes/&amp;quot;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#999999;sketch=1;fontFamily=Helvetica;fontSize=12;fontColor=#5c3a1e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="70" width="1900" height="155" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LAYER 1: PRESENTATION (Lapisan Presentasi)                        -->
+        <!-- ================================================================ -->
+        <mxCell id="l1" value="Lapisan 1: Presentasi (Presentation) — public/" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#f0f4ff;strokeColor=#8888cc;sketch=1;fontFamily=Helvetica;fontSize=12;fontColor=#5c3a1e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="245" width="1900" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Package: public/ -->
+        <mxCell id="pkg-public_tab" value="public/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="62" y="270" width="120" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-public_body" value="&lt;b&gt;public/&lt;/b&gt;&lt;br&gt;(tanpa namespace, front controller)&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;- index.php (front controller)&lt;br&gt;- .htaccess&lt;br&gt;- assets/css/app.css (CSS override)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="70" y="285" width="920" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LAYER 2: VIEWS (Lapisan Tampilan)                                 -->
+        <!-- ================================================================ -->
+        <mxCell id="l2" value="Lapisan 2: Tampilan (Views) — views/" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#fff0f0;strokeColor=#cc8888;sketch=1;fontFamily=Helvetica;fontSize=12;fontColor=#5c3a1e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="375" width="1900" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Package: views/ -->
+        <mxCell id="pkg-views_tab" value="views/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#888888;sketch=1;fontFamily=Helvetica;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="62" y="400" width="100" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-views_body" value="&lt;b&gt;views/&lt;/b&gt;&lt;br&gt;(tanpa namespace, templat Bootstrap 5)&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;- layout/header.php&lt;br&gt;- layout/footer.php&lt;br&gt;- errors/404.php&lt;br&gt;- _placeholder.php, dashboard.php&lt;br&gt;- (Future) pasien/, dokter/, layanan/, pemeriksaan/&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#888888;sketch=1;fontFamily=Helvetica;fontSize=12;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="70" y="415" width="920" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LAYER 3: PRESENTATION LOGIC (Logika Presentasi)                    -->
+        <!-- ================================================================ -->
+        <mxCell id="l3" value="Lapisan 3: Logika Presentasi (Presentation Logic) — includes/ + src/Presenter/" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#faf5ff;strokeColor=#b088cc;sketch=1;fontFamily=Helvetica;fontSize=12;fontColor=#5c3a1e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="505" width="1900" height="155" as="geometry" />
+        </mxCell>
+
+        <!-- Package: includes/ -->
+        <mxCell id="pkg-includes_tab" value="includes/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e8e8e8;strokeColor=#777777;sketch=1;fontFamily=Helvetica;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="62" y="530" width="110" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-includes_body" value="&lt;b&gt;includes/&lt;/b&gt;&lt;br&gt;(tanpa namespace, global)&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;- bootstrap.php (session, error, autoload)&lt;br&gt;- config.php (konfigurasi)&lt;br&gt;- helpers.php (fungsi global: format_*, query_param)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e8e8e8;strokeColor=#777777;sketch=1;fontFamily=Helvetica;fontSize=12;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="70" y="545" width="450" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Package: src/Presenter/ -->
+        <mxCell id="pkg-presenter_tab" value="src/Presenter/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="532" y="530" width="135" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-presenter_body" value="&lt;b&gt;src/Presenter/&lt;/b&gt;&lt;br&gt;Silk\Presenter\*Presenter&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;- PasienPresenter.php → Silk\Presenter\PasienPresenter&lt;br&gt;- DokterPresenter.php → Silk\Presenter\DokterPresenter&lt;br&gt;- LayananPresenter.php → Silk\Presenter\LayananPresenter&lt;br&gt;- PemeriksaanPresenter.php → Silk\Presenter\PemeriksaanPresenter&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="540" y="545" width="450" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LAYER 4: BUSINESS LOGIC (Logika Bisnis / Domain)                   -->
+        <!-- ================================================================ -->
+        <mxCell id="l4" value="Lapisan 4: Bisnis (Business Logic / Domain) — src/Entity/" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#fff8f0;strokeColor=#ccaa88;sketch=1;fontFamily=Helvetica;fontSize=12;fontColor=#5c3a1e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="680" width="1900" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- Package: src/Entity/ -->
+        <mxCell id="pkg-entity_tab" value="src/Entity/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;sketch=1;fontFamily=Helvetica;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="62" y="705" width="135" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-entity_body" value="&lt;b&gt;src/Entity/&lt;/b&gt;&lt;br&gt;Silk\Entity\*&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;- Pasien.php → Silk\Entity\Pasien&lt;br&gt;- Dokter.php → Silk\Entity\Dokter&lt;br&gt;- Layanan.php → Silk\Entity\Layanan&lt;br&gt;- Pemeriksaan.php → Silk\Entity\Pemeriksaan&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;sketch=1;fontFamily=Helvetica;fontSize=12;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="70" y="720" width="940" height="105" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LAYER 5: DATA ACCESS (Akses Data)                                  -->
+        <!-- ================================================================ -->
+        <mxCell id="l5" value="Lapisan 5: Akses Data (Data Access) — src/Repository/ + src/Query/" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#fffff0;strokeColor=#cccc88;sketch=1;fontFamily=Helvetica;fontSize=12;fontColor=#5c3a1e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="860" width="1900" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- Package: src/Repository/ -->
+        <mxCell id="pkg-repo_tab" value="src/Repository/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff4cc;strokeColor=#b8901a;sketch=1;fontFamily=Helvetica;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="62" y="885" width="155" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-repo_body" value="&lt;b&gt;src/Repository/&lt;/b&gt;&lt;br&gt;Silk\Repository\*Repository&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;- PasienRepository.php → Silk\Repository\PasienRepository&lt;br&gt;- DokterRepository.php → Silk\Repository\DokterRepository&lt;br&gt;- LayananRepository.php → Silk\Repository\LayananRepository&lt;br&gt;- PemeriksaanRepository.php → Silk\Repository\PemeriksaanRepository&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff4cc;strokeColor=#b8901a;sketch=1;fontFamily=Helvetica;fontSize=12;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="70" y="900" width="450" height="105" as="geometry" />
+        </mxCell>
+
+        <!-- Package: src/Query/ -->
+        <mxCell id="pkg-query_tab" value="src/Query/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="532" y="885" width="130" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-query_body" value="&lt;b&gt;src/Query/&lt;/b&gt;&lt;br&gt;Silk\Query\*Query&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;- PasienQuery.php → Silk\Query\PasienQuery&lt;br&gt;- DokterQuery.php → Silk\Query\DokterQuery&lt;br&gt;- LayananQuery.php → Silk\Query\LayananQuery&lt;br&gt;- PemeriksaanQuery.php → Silk\Query\PemeriksaanQuery&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=12;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="540" y="900" width="450" height="105" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LAYER 6: INFRASTRUCTURE (Infrastruktur)                            -->
+        <!-- ================================================================ -->
+        <mxCell id="l6" value="Lapisan 6: Infrastruktur (Infrastructure) — src/Database.php + database/" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#f5fff5;strokeColor=#88cc88;sketch=1;fontFamily=Helvetica;fontSize=12;fontColor=#5c3a1e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1040" width="1900" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Package: src/Database.php -->
+        <mxCell id="pkg-db_tab" value="src/Database.php" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="62" y="1065" width="145" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-db_body" value="&lt;b&gt;src/Database.php&lt;/b&gt;&lt;br&gt;Silk\Database&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;- Database.php → Silk\Database (Singleton, PDO wrapper)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#def0dc;strokeColor=#5c8a49;sketch=1;fontFamily=Helvetica;fontSize=12;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="70" y="1080" width="450" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Package: database/ -->
+        <mxCell id="pkg-db-folder_tab" value="database/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#999999;sketch=1;fontFamily=Helvetica;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="532" y="1065" width="120" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-db-folder_body" value="&lt;b&gt;database/&lt;/b&gt;&lt;br&gt;(tanpa namespace, SQL mentah)&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;- silk_swarakarna.sql&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#999999;sketch=1;fontFamily=Helvetica;fontSize=12;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1080" width="450" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LAYER 7: DOCUMENTATION (Dokumentasi)                               -->
+        <!-- ================================================================ -->
+        <mxCell id="l7" value="Lapisan 7: Dokumentasi (Documentation) — docs/" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#fafafa;strokeColor=#aaaaaa;sketch=1;fontFamily=Helvetica;fontSize=12;fontColor=#5c3a1e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1210" width="1900" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Package: docs/ -->
+        <mxCell id="pkg-docs_tab" value="docs/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#999999;sketch=1;fontFamily=Helvetica;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="62" y="1235" width="100" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-docs_body" value="&lt;b&gt;docs/&lt;/b&gt;&lt;br&gt;(dokumentasi proyek)&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;- architecture.md&lt;br&gt;- business-logic.md&lt;br&gt;- designs/&lt;br&gt;- agents/ (skill docs)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#999999;sketch=1;fontFamily=Helvetica;fontSize=12;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="70" y="1250" width="450" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Package: docs/diagrams/ -->
+        <mxCell id="pkg-diagrams_tab" value="docs/diagrams/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#999999;sketch=1;fontFamily=Helvetica;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="532" y="1235" width="140" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-diagrams_body" value="&lt;b&gt;docs/diagrams/&lt;/b&gt;&lt;br&gt;(diagram UML dan flowchart)&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;- Flow chart: 5 buah (overall, pasien, dokter, layanan, pemeriksaan)&lt;br&gt;- Sequence: 2 buah (create, status)&lt;br&gt;- Activity: 1 buah (status)&lt;br&gt;- Class: 1 buah (diperbarui) + Component: 1 buah&lt;br&gt;- Use case: 1 buah + ERD: 1 buah + Package: 1 buah (ini)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#999999;sketch=1;fontFamily=Helvetica;fontSize=12;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1250" width="450" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- DEPENDENCY ARROWS                                                  -->
+        <!-- ================================================================ -->
+
+        <!-- e1: public/ → views/ (renders) -->
+        <mxCell id="e1" value="&lt;&lt;merender&gt;&gt; view" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.4;exitY=1;entryX=0.4;entryY=0;" edge="1" parent="1" source="pkg-public_body" target="pkg-views_body">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e2: public/ → includes/bootstrap (requires) -->
+        <mxCell id="e2" value="&lt;&lt;memuat&gt;&gt; bootstrap" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.15;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="pkg-public_body" target="pkg-includes_body">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="210" y="370" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e3: views/ → Presenter (uses) -->
+        <mxCell id="e3" value="&lt;&lt;menggunakan&gt;&gt; presenter" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.7;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="pkg-views_body" target="pkg-presenter_body">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e4: views/ → includes/ (uses helpers & layout) -->
+        <mxCell id="e4" value="&lt;&lt;menggunakan&gt;&gt; helpers &amp;amp; layout" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.2;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="pkg-views_body" target="pkg-includes_body">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="255" y="475" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e5: Presenter → Entity (uses) -->
+        <mxCell id="e5" value="&lt;&lt;menggunakan&gt;&gt; entity" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.7;entryY=0;" edge="1" parent="1" source="pkg-presenter_body" target="pkg-entity_body">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e6: Presenter → includes/ (uses format helpers) -->
+        <mxCell id="e6" value="&lt;&lt;menggunakan&gt;&gt; format helpers" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="pkg-presenter_body" target="pkg-includes_body">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e7: Entity → Repository (uses) -->
+        <mxCell id="e7" value="&lt;&lt;menggunakan&gt;&gt; repository" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.3;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="pkg-entity_body" target="pkg-repo_body">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e8: Entity → Query (uses) -->
+        <mxCell id="e8" value="&lt;&lt;menggunakan&gt;&gt; query" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.7;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="pkg-entity_body" target="pkg-query_body">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e9: Entity → src/Database.php (uses for transactions) -->
+        <mxCell id="e9" value="&lt;&lt;menggunakan&gt;&gt; transaksi (Pemeriksaan)" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#c25100;strokeWidth=2;fontSize=11;fontColor=#c25100;fontFamily=Helvetica;labelBackgroundColor=#fff8e7;exitX=0.95;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="pkg-entity_body" target="pkg-db_body">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1060" y="770" />
+              <mxPoint x="1060" y="1000" />
+              <mxPoint x="295" y="1000" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e10: Repository → src/Database.php (uses) -->
+        <mxCell id="e10" value="&lt;&lt;menggunakan&gt;&gt;" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="pkg-repo_body" target="pkg-db_body">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- e11: Query → src/Database.php (uses) -->
+        <mxCell id="e11" value="&lt;&lt;menggunakan&gt;&gt;" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;fontSize=11;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="pkg-query_body" target="pkg-db_body">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="765" y="1010" />
+              <mxPoint x="295" y="1010" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LEGEND                                                             -->
+        <!-- ================================================================ -->
+
+        <!-- Package folder icon -->
+        <mxCell id="legend-pkg-tab" value="pkg/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;fontSize=7;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="58" y="1405" width="55" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-pkg-body" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="63" y="1418" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-pkg-text" value="Package folder (UML)" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="190" y="1418" width="140" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow sample -->
+        <mxCell id="legend-arrow" value="" style="endArrow=open;dashed=1;html=1;sketch=1;curved=1;strokeColor=#5c3a1e;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="1465" as="sourcePoint" />
+            <mxPoint x="170" y="1465" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend-arrow-text" value="&lt;&lt;menggunakan&gt;&gt; / &lt;&lt;memuat&gt;&gt; / &lt;&lt;merender&gt;&gt; (dependency)" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="175" y="1455" width="300" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Layer sample -->
+        <mxCell id="legend-layer" value="" style="swimlane;fontStyle=1;align=center;startSize=12;html=1;fillColor=#f5f5f5;strokeColor=#999999;sketch=1;fontFamily=Helvetica;fontSize=7;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1490" width="45" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-layer-text" value="Layer container (swimlane)" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#5c3a1e;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="112" y="1492" width="160" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Namespace badge -->
+        <mxCell id="legend-ns-text" value="Silk\* → namespace mapping" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#b8651e;fontFamily=Helvetica;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="1418" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-ns-text2" value="(tanpa namespace) → no namespace" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#777777;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="460" y="1455" width="200" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
