@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Silk\Entity;
 
 use PDOException;
-use RuntimeException;
+use Silk\Exception\ValidationException;
 use Silk\Query\DokterQuery;
 use Silk\Repository\DokterRepository;
 
@@ -15,6 +15,9 @@ use Silk\Repository\DokterRepository;
 final class Dokter
 {
     private const REQUIRED = ['nama_dokter', 'no_izin_praktik'];
+    private const MAX_NAMA  = 100;
+    private const MAX_IZIN  = 50;
+    private const MAX_SPESIALISASI = 100;
 
     private DokterRepository $repo;
     private DokterQuery $query;
@@ -27,7 +30,23 @@ final class Dokter
 
     public function create(array $data): int
     {
-        $this->validateRequired($data, self::REQUIRED);
+        $errors = [];
+
+        $errors += $this->validateRequired($data, self::REQUIRED);
+        $errors += $this->validateMaxLength($data['nama_dokter'] ?? '', 'nama_dokter', self::MAX_NAMA);
+        $errors += $this->validateMaxLength($data['no_izin_praktik'] ?? '', 'no_izin_praktik', self::MAX_IZIN);
+        $errors += $this->validateNoHp($data['no_hp'] ?? '');
+        $errors += $this->validateMaxLength($data['spesialisasi'] ?? '', 'spesialisasi', self::MAX_SPESIALISASI);
+
+        if ($errors !== []) {
+            throw new ValidationException($errors);
+        }
+
+        // Default spesialisasi jika tidak ada
+        if (!isset($data['spesialisasi']) || $data['spesialisasi'] === '') {
+            $data['spesialisasi'] = 'THT';
+        }
+
         return $this->repo->insert($data);
     }
 
@@ -38,6 +57,34 @@ final class Dokter
 
     public function update(int $id, array $data): int
     {
+        $errors = [];
+
+        if (array_key_exists('nama_dokter', $data)) {
+            if (empty($data['nama_dokter'])) {
+                $errors['nama_dokter'] = 'Nama dokter wajib diisi';
+            } else {
+                $errors += $this->validateMaxLength($data['nama_dokter'], 'nama_dokter', self::MAX_NAMA);
+            }
+        }
+
+        if (array_key_exists('no_izin_praktik', $data)) {
+            if (empty($data['no_izin_praktik'])) {
+                $errors['no_izin_praktik'] = 'No izin praktik wajib diisi';
+            } else {
+                $errors += $this->validateMaxLength($data['no_izin_praktik'], 'no_izin_praktik', self::MAX_IZIN);
+            }
+        }
+
+        if (array_key_exists('no_hp', $data)) {
+            if (!empty($data['no_hp'])) {
+                $errors += $this->validateNoHp($data['no_hp']);
+            }
+        }
+
+        if ($errors !== []) {
+            throw new ValidationException($errors);
+        }
+
         return $this->repo->update($id, $data);
     }
 
@@ -69,12 +116,42 @@ final class Dokter
         return $this->repo->count();
     }
 
-    private function validateRequired(array $data, array $fields): void
+    private function validateRequired(array $data, array $fields): array
     {
+        $errors = [];
         foreach ($fields as $f) {
             if (empty($data[$f])) {
-                throw new RuntimeException("Field '{$f}' is required");
+                $errors[$f] = $this->fieldLabel($f) . ' wajib diisi';
             }
         }
+        return $errors;
+    }
+
+    private function validateNoHp(string $phone): array
+    {
+        if ($phone === '') {
+            return [];
+        }
+        if (!preg_match('/^[0-9]{10,15}$/', $phone)) {
+            return ['no_hp' => 'No HP harus 10-15 digit angka'];
+        }
+        return [];
+    }
+
+    private function validateMaxLength(string $value, string $field, int $max): array
+    {
+        if (mb_strlen($value) > $max) {
+            return [$field => $this->fieldLabel($field) . " maksimal {$max} karakter"];
+        }
+        return [];
+    }
+
+    private function fieldLabel(string $field): string
+    {
+        return match ($field) {
+            'no_hp' => 'No HP',
+            'no_izin_praktik' => 'No izin praktik',
+            default => ucfirst(str_replace('_', ' ', $field)),
+        };
     }
 }

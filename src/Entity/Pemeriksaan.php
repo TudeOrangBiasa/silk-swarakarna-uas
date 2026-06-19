@@ -7,6 +7,7 @@ namespace Silk\Entity;
 use PDOException;
 use RuntimeException;
 use Silk\Database;
+use Silk\Exception\ValidationException;
 use Silk\Query\PemeriksaanQuery;
 use Silk\Repository\PemeriksaanRepository;
 
@@ -28,6 +29,7 @@ final class Pemeriksaan
     ];
 
     private const REQUIRED = ['id_pasien', 'id_dokter', 'id_layanan', 'tanggal_periksa', 'keluhan'];
+    private const MAX_KELUHAN = 1000;
 
     private PemeriksaanRepository $repo;
     private PemeriksaanQuery $query;
@@ -50,7 +52,16 @@ final class Pemeriksaan
      */
     public function create(array $data): string
     {
-        $this->validateRequired($data, self::REQUIRED);
+        $errors = [];
+
+        $errors += $this->validateRequired($data, self::REQUIRED);
+        $errors += $this->validateTanggalPeriksa($data['tanggal_periksa'] ?? '');
+        $errors += $this->validateMaxLength($data['keluhan'] ?? '', 'keluhan', self::MAX_KELUHAN);
+
+        if ($errors !== []) {
+            throw new ValidationException($errors);
+        }
+
         $id = $this->query->generateKodeOtomatis();
         $data['id_periksa'] = $id;
         $this->repo->insert($data);
@@ -88,7 +99,10 @@ final class Pemeriksaan
             if ($current === null) {
                 throw new RuntimeException("Pemeriksaan {$id} not found");
             }
-            $this->validateTransition($current, $newStatus);
+            $statusErrors = $this->validateStatusTransition($current, $newStatus);
+            if ($statusErrors !== []) {
+                throw new ValidationException($statusErrors);
+            }
             $n = $this->repo->updateStatus($id, $newStatus);
             $this->db->commit();
             return $n;
@@ -123,20 +137,52 @@ final class Pemeriksaan
         return self::TRANSITIONS[$currentStatus] ?? [];
     }
 
-    private function validateRequired(array $data, array $fields): void
+    private function validateRequired(array $data, array $fields): array
     {
+        $errors = [];
         foreach ($fields as $f) {
             if (empty($data[$f])) {
-                throw new RuntimeException("Field '{$f}' is required");
+                $errors[$f] = $this->fieldLabel($f) . ' wajib diisi';
             }
         }
+        return $errors;
     }
 
-    private function validateTransition(string $current, string $new): void
+    private function validateTanggalPeriksa(string $date): array
+    {
+        if ($date === '') {
+            return [];
+        }
+        if ($date > date('Y-m-d')) {
+            return ['tanggal_periksa' => 'Tanggal periksa tidak boleh di masa depan'];
+        }
+        return [];
+    }
+
+    private function validateMaxLength(string $value, string $field, int $max): array
+    {
+        if (mb_strlen($value) > $max) {
+            return [$field => $this->fieldLabel($field) . " maksimal {$max} karakter"];
+        }
+        return [];
+    }
+
+    private function validateStatusTransition(string $current, string $new): array
     {
         $allowed = self::TRANSITIONS[$current] ?? [];
         if (!in_array($new, $allowed, true)) {
-            throw new RuntimeException("Invalid status transition: {$current} -> {$new}");
+            return ['status_pemeriksaan' => "Transisi status tidak valid: {$current} -> {$new}"];
         }
+        return [];
+    }
+
+    private function fieldLabel(string $field): string
+    {
+        return match ($field) {
+            'id_pasien' => 'Pasien',
+            'id_dokter' => 'Dokter',
+            'id_layanan' => 'Layanan',
+            default => ucfirst(str_replace('_', ' ', $field)),
+        };
     }
 }
