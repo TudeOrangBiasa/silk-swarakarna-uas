@@ -1,98 +1,165 @@
 # SILK-Swarakarna
 
-**Sistem Informasi Layanan Klinik Swarakarna** — Aplikasi web berbasis PHP OOP untuk mendigitalisasi pencatatan rekam medis dan pendaftaran tes pendengaran di klinik THT (Telinga Hidung Tenggorokan) spesialis pendengaran dan keseimbangan.
+**Sistem Informasi Layanan Klinik Swarakarna** — Aplikasi web PHP OOP untuk mendigitalisasi pencatatan rekam medis dan pendaftaran tes pendengaran di klinik THT (Telinga Hidung Tenggorokan) spesialis pendengaran dan keseimbangan.
+
+UAS Pemrograman Web — Pagi 01 — Primakara University.
 
 ## Tech Stack
 
-| Layer        | Teknologi                            |
-|-------------|---------------------------------------|
-| Backend     | PHP 8.0+ (OOP, PDO, MySQLi)          |
-| Database    | MySQL 5.7+ / MariaDB 10.3+           |
-| Frontend    | Tailwind CSS (via CDN)                |
-| Autoload    | Composer PSR-4 (`Silk\` → `src/`)    |
+| Layer | Teknologi |
+|---|---|
+| Backend | PHP 8.2 (OOP, PDO, MySQL) |
+| Database | MariaDB 10.11 (via DDEV) |
+| Frontend | Tailwind CSS (via CDN) |
+| Autoload | Composer PSR-4 (`Silk\` → `src/`) |
+| Dev env | DDEV (Docker-based, no local PHP needed) |
 
-## Prerequisites
+## Quick Start (DDEV)
 
-- PHP >= 8.0 (CLI + PDO MySQL extension)
-- MySQL 5.7+ or MariaDB 10.3+
-- Composer (latest)
-- A web browser
-
-## Setup
+Prasyarat: [Docker](https://docs.docker.com/get-docker/) + [DDEV](https://ddev.readthedocs.io/en/latest/) terinstall.
 
 ```bash
-# 1. Clone project
-git clone <repo-url> silk-swarakarna
-cd silk-swarakarna
+# 1. Clone
+git clone git@github.com:TudeOrangBiasa/silk-swarakarna-uas.git
+cd silk-swarakarna-uas
 
-# 2. Install dependencies (generates vendor/ + autoloader)
-composer install
+# 2. Start DDEV (otomatis provisioning PHP 8.2 + MariaDB 10.11 + nginx)
+ddev start
 
-# 3. Copy environment config and edit database credentials
-cp .env.example .env
-nano .env
+# 3. Install Composer dependencies (di dalam container)
+ddev composer install
 
-# 4. Import database schema + seed data
-mysql -u root -p < database/silk_swarakarna.sql
+# 4. Import schema + seed data
+ddev setup-db
 
-# 5. Start development server
-composer serve
+# 5. Open browser
+ddev launch
 ```
 
-Buka `http://localhost:8000` di browser.
+URL default: `https://silk-swarakarna-uas.ddev.site/`
+
+### Perintah DDEV yang sering dipakai
+
+```bash
+ddev start            # nyalakan container
+ddev stop             # matikan container
+ddev restart          # restart
+ddev launch           # buka di browser
+ddev describe         # tampilkan URL + kredensial
+
+ddev setup-db         # import database/silk_swarakarna.sql
+ddev reset-db         # drop + re-import (ulang dari nol)
+
+ddev composer install # install/update composer deps
+ddev composer <args>  # run composer command di dalam container
+
+ddev exec php <file>  # run PHP script di dalam container
+ddev exec php -r "..."# run PHP one-liner
+
+ddev mysql            # masuk MariaDB shell
+ddev mysql -e "SHOW TABLES;"  # query cepat
+ddev logs             # tail logs container
+```
+
+### Kredensial DDEV default
+
+- **DB host**: `db` (di dalam container) / `localhost:3306` (dari host)
+- **DB user**: `db`
+- **DB pass**: `db`
+- **DB name**: `silk_swarakarna`
+
+Tidak perlu edit `.env` secara manual — DDEV inject env vars lewat `web_environment` di `.ddev/config.yaml`.
 
 ## Folder Structure
 
 ```
-silk-swarakarna/
-├── public/                          ← Document root
-│   ├── index.php                    ← Front controller + router
-│   ├── .htaccess                    ← URL rewrite
-│   └── assets/
-│       ├── css/
-│       └── js/
-├── src/                             ← OOP domain classes
-│   ├── Database.php                 ← PDO singleton
-│   ├── Pasien.php                   ← CRUD pasien
-│   ├── Dokter.php                   ← CRUD dokter
-│   ├── Layanan.php                  ← CRUD layanan
-│   └── Pemeriksaan.php              ← Transaksi + JOIN + status
+silk-swarakarna-uas/
+├── .ddev/                              ← DDEV config (tracked)
+│   ├── config.yaml                     ← PHP 8.2, MariaDB 10.11
+│   └── commands/host/
+│       ├── setup-db                    ← ddev setup-db
+│       └── reset-db                    ← ddev reset-db
+│
+├── public/                             ← Document root
+│   ├── index.php                       ← Front controller + router
+│   ├── .htaccess                       ← URL rewrite
+│   └── assets/css/
+│
+├── src/                                ← OOP domain classes (issues 02, 06-09)
+│   ├── Database.php                    ← PDO singleton (issue 02)
+│   ├── Pasien.php                      ← (issue 06)
+│   ├── Dokter.php                      ← (issue 07)
+│   ├── Layanan.php                     ← (issue 08)
+│   └── Pemeriksaan.php                 ← (issue 09)
+│
 ├── includes/
-│   ├── bootstrap.php                ← Autoload + session + errors
-│   └── config.php                   ← DB constants
-├── views/
-│   ├── layout/
-│   │   ├── header.php               ← HTML boilerplate + navbar
-│   │   └── footer.php               ← Footer
-│   ├── dashboard.php
-│   ├── pasien/
-│   ├── dokter/
-│   ├── layanan/
-│   └── pemeriksaan/
+│   ├── bootstrap.php                   ← Autoload + session + errors (issue 01)
+│   └── config.php                      ← Env loader (issue 01)
+│
+├── views/                              ← Presentation layer
+│   ├── layout/{header,footer}.php      ← (issue 05)
+│   ├── dashboard.php                   ← (issue 18)
+│   ├── pasien/                         ← (issues 10, 11)
+│   ├── dokter/                         ← (issues 12, 13)
+│   ├── layanan/                        ← (issues 14, 15)
+│   └── pemeriksaan/                    ← (issues 16, 17)
+│
 ├── database/
-│   └── silk_swarakarna.sql          ← Schema + seed
-├── .env                             ← GITIGNORED
-├── .env.example
-├── .gitignore
-├── README.md
-└── composer.json
+│   └── silk_swarakarna.sql             ← Schema + seed (issue 03)
+│
+├── docs/                               ← Architecture + business logic
+│   ├── architecture.md
+│   ├── business-logic.md
+│   └── agents/                         ← Skill config
+│
+├── .scratch/silk-swarakarna-uas/       ← Issue tracker (local markdown)
+│   ├── PRD.md
+│   └── issues/                         ← 20 tracked issues
+│
+├── CONTEXT.md                          ← Domain glossary
+├── AGENTS.md                           ← Agent skill config
+├── composer.json
+├── .env.example                        ← Template (DDEV inject env otomatis)
+└── README.md
 ```
 
-## Roadmap
+## Sprint Roadmap
 
-Fitur dikerjakan dalam issue tracker:
-`.scratch/silk-swarakarna-uas/issues/`
+20 issues, dependency-aware:
 
-1. **Issue #01-03** — Foundation scaffold (selesai)
-2. **Issue #04** — Router + request dispatch
-3. **Issue #05** — Class Database (PDO singleton)
-4. **Issue #06-09** — CRUD Pasien (class + views)
-5. **Issue #10-13** — CRUD Dokter (class + views)
-6. **Issue #14-16** — CRUD Layanan (class + views)
-7. **Issue #17-19** — Transaksi Pemeriksaan (class + views)
-8. **Issue #20** — Dashboard widget
-9. **Issue #21** — Final integration + testing
+| Wave | Issues | Bisa paralel | Description |
+|---|---|---|---|
+| 1 | 01–05 | 5 orang | Foundation: bootstrap, DB, schema, router, layout |
+| 2 | 06–09 | 4 orang | Domain classes: Pasien, Dokter, Layanan, Pemeriksaan |
+| 3 | 10–17 | 8 orang | Views: list+form per master + create+list for transaksi |
+| 4 | 18–19 | 2 orang | Dashboard widget + delete handlers |
+| 5 | 20 | 1 orang | Final integration + README polish |
 
-## Team
+Detail per issue: `.scratch/silk-swarakarna-uas/issues/<NN>-<slug>.md`
+
+## Workflow Kontribusi
+
+1. Pick issue yang belum diklaim (set `Status:` ke `ready-for-human` atau `wontfix` di file issue)
+2. Buat branch: `git checkout -b feature/<NN>-<slug>`
+3. Implement sesuai acceptance criteria di file issue
+4. Test via `ddev exec php -r "..."` atau buka di browser
+5. Commit + push
+6. PR ke `main`
+
+## Domain Reference
+
+- **Pasien** (Pasien) — pendaftar klinik. Identifier: **No Rekam Medis** format `RM-XXX` (auto-generated, stored in `id_pasien` column).
+- **Dokter** (Dokter) — spesialis THT. PK: `id_dokter` (auto-increment).
+- **Layanan** (Layanan) — jenis tes (Audiometri, OAE, BERA, Timpanometri). PK: `id_layanan` (auto-increment). Punya `biaya` (IDR integer).
+- **Pemeriksaan** (Pemeriksaan) — transaksi: 1 Pasien + 1 Dokter + 1 Layanan pada tanggal tertentu. Identifier: **No Transaksi** format `TRX-YYYYNNN` (auto-generated, stored in `id_periksa` column).
+- **Status Pemeriksaan**: `Menunggu` → `Sedang Diperiksa` → `Selesai`. Sekali `Selesai`, immutable (tidak bisa dihapus — audit trail).
+
+Lihat `CONTEXT.md` untuk glossary lengkap.
+
+## License
+
+MIT — UAS project, Primakara University Teknik Informatika Pagi 01.
+
+## Tim
 
 _— Tim SILK-Swarakarna —_

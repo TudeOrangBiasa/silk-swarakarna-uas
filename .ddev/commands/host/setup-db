@@ -1,0 +1,17 @@
+#!/bin/bash
+#ddev-generated
+## Description: Import silk_swarakarna.sql schema + seed into the project database
+## Usage: ddev setup-db
+
+set -e
+
+if [ ! -f database/silk_swarakarna.sql ]; then
+  echo "ERROR: database/silk_swarakarna.sql not found"
+  exit 1
+fi
+
+echo "Importing database/silk_swarakarna.sql into '${DB_NAME:-silk_swarakarna}'..."
+ddev mysql < database/silk_swarakarna.sql
+echo "✓ Database imported successfully."
+echo ""
+echo "Verify with: ddev mysql -e 'SHOW TABLES;'"

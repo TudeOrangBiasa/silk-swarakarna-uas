@@ -1,0 +1,14 @@
+#
+# DDEV-generated artifacts — keep config.yaml + commands tracked, ignore runtime state.
+#
+# These directories are created by `ddev start` and should not be committed.
+.mutagen/
+.commands-host/
+
+# Allowlist patterns
+!config.yaml
+!config.*.yaml
+!commands/
+!commands/host/
+!commands/web/
+!commands/db/
