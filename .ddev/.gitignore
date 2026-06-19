@@ -1,6 +1,46 @@
-# DDEV-generated runtime state (gitignored, not config)
+# Standard DDEV-managed .gitignore
+# Tracks: config*.yaml, commands/ (except snapshots)
+# Ignores: DDEV runtime state, addon caches, build contexts
+
+# Provider caches and addon metadata
+providers/
+share-providers/
+addon-metadata/
+xhprof/
+
+# Traefik and mutagen state
+traefik/
 .mutagen/
-.traefik/
+
+# Build contexts (regenerated on ddev start)
+.dbimageBuild/
+.webimageBuild/
+db-build/
+web-build/
+
+# Global commands snapshots (not user commands)
 commands/.commands-host/
 commands/db/
-*.import-db
+
+# Custom global artifacts
+.homeadditions/
+homeadditions/
+web-entrypoint.d/
+
+# Webserver configs (DDEV-managed)
+apache/
+nginx_full/
+php/
+mysql/
+
+# Docker compose overrides (DDEV-managed)
+.ddev-docker-compose-base.yaml
+.ddev-docker-compose-full.yaml
+
+# Allow user-controlled files
+!config*.yaml
+!config/
+!commands/
+!commands/host/
+!commands/web/
+!commands/db/

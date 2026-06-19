@@ -25,4 +25,3 @@ additional_hostnames: []
 additional_fqdns: []
 use_dns_when_possible: true
 mute_web_container: false
-project_tld: ""

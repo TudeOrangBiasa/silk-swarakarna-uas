@@ -30,7 +30,7 @@ ddev start
 ddev composer install
 
 # 4. Import schema + seed data
-ddev import-db --src=database/silk_swarakarna.sql
+ddev import-db --file=database/silk_swarakarna.sql
 
 # 5. Open browser
 ddev launch
@@ -47,7 +47,7 @@ ddev restart                  # restart
 ddev launch                   # buka di browser
 ddev describe                 # tampilkan URL + kredensial
 
-ddev import-db --src=<file>   # import SQL dump
+ddev import-db --file=<file>  # import SQL dump
 ddev export-db --file=<file>  # export DB ke file
 
 ddev composer install         # install/update composer deps
@@ -65,7 +65,7 @@ ddev logs                     # tail logs container
 
 ```bash
 ddev mysql -e "DROP DATABASE IF EXISTS silk_swarakarna; CREATE DATABASE silk_swarakarna;"
-ddev import-db --src=database/silk_swarakarna.sql
+ddev import-db --file=database/silk_swarakarna.sql
 ```
 
 ### Kredensial DDEV default
