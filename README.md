@@ -120,16 +120,21 @@ Pilih salah satu. DDEV paling cepat karena tidak perlu install PHP lokal.
 
 Prasyarat: [Docker](https://docs.docker.com/get-docker/) + [DDEV](https://ddev.readthedocs.io/en/latest/).
 
+`.ddev/config.yaml` tidak di-commit (setiap dev setup lokal). Jalankan `ddev config` dulu setelah clone.
+
 ```bash
 git clone git@github.com:TudeOrangBiasa/silk-swarakarna-uas.git
 cd silk-swarakarna-uas
+ddev config --project-name=silk-swarakarna --docroot=public --php-version=8.2 --mariadb-version=10.11
 ddev start
 ddev composer install
 ddev import-db --file=database/silk_swarakarna.sql
 ddev launch
 ```
 
-URL: `https://silk-swarakarna-uas.ddev.site/`
+Atau `ddev config` interaktif, isi prompt: project name, docroot=`public`, php version, mariadb version.
+
+URL: `https://<project-name>.ddev.site/` (default `https://silk-swarakarna.ddev.site/`).
 
 Kredensial DB otomatis: `db`/`db` di host `db` dalam container, database `silk_swarakarna`. Env di-inject oleh DDEV lewat `web_environment`, jadi tidak perlu edit `.env`.
 
