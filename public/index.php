@@ -104,7 +104,9 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
             $result = $instance->{$action['method']}(...$args);
             // Success: redirect to the entity list page
             $entity = explode('.', $routeKey)[0];
-            $_SESSION['flash_success'] = ucfirst($entity) . ' berhasil disimpan.';
+            $_SESSION['flash_success'] = $action['class'] === 'Pemeriksaan'
+                ? "Pemeriksaan {$result} berhasil disimpan."
+                : ucfirst($entity) . ' berhasil disimpan.';
             header('Location: /' . ($entity ?: ''));
             exit;
         } catch (ValidationException $e) {
