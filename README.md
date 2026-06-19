@@ -30,7 +30,7 @@ ddev start
 ddev composer install
 
 # 4. Import schema + seed data
-ddev setup-db
+ddev import-db --src=database/silk_swarakarna.sql
 
 # 5. Open browser
 ddev launch
@@ -41,24 +41,31 @@ URL default: `https://silk-swarakarna-uas.ddev.site/`
 ### Perintah DDEV yang sering dipakai
 
 ```bash
-ddev start            # nyalakan container
-ddev stop             # matikan container
-ddev restart          # restart
-ddev launch           # buka di browser
-ddev describe         # tampilkan URL + kredensial
+ddev start                    # nyalakan container
+ddev stop                     # matikan container
+ddev restart                  # restart
+ddev launch                   # buka di browser
+ddev describe                 # tampilkan URL + kredensial
 
-ddev setup-db         # import database/silk_swarakarna.sql
-ddev reset-db         # drop + re-import (ulang dari nol)
+ddev import-db --src=<file>   # import SQL dump
+ddev export-db --file=<file>  # export DB ke file
 
-ddev composer install # install/update composer deps
-ddev composer <args>  # run composer command di dalam container
+ddev composer install         # install/update composer deps
+ddev composer <args>          # run composer command di dalam container
 
-ddev exec php <file>  # run PHP script di dalam container
-ddev exec php -r "..."# run PHP one-liner
+ddev exec php <file>          # run PHP script di dalam container
+ddev exec php -r "..."        # run PHP one-liner
 
-ddev mysql            # masuk MariaDB shell
+ddev mysql                    # masuk MariaDB shell
 ddev mysql -e "SHOW TABLES;"  # query cepat
-ddev logs             # tail logs container
+ddev logs                     # tail logs container
+```
+
+### Reset database dari nol
+
+```bash
+ddev mysql -e "DROP DATABASE IF EXISTS silk_swarakarna; CREATE DATABASE silk_swarakarna;"
+ddev import-db --src=database/silk_swarakarna.sql
 ```
 
 ### Kredensial DDEV default
@@ -76,9 +83,7 @@ Tidak perlu edit `.env` secara manual — DDEV inject env vars lewat `web_enviro
 silk-swarakarna-uas/
 ├── .ddev/                              ← DDEV config (tracked)
 │   ├── config.yaml                     ← PHP 8.2, MariaDB 10.11
-│   └── commands/host/
-│       ├── setup-db                    ← ddev setup-db
-│       └── reset-db                    ← ddev reset-db
+│   └── .gitignore                      ← ignore DDEV runtime state
 │
 ├── public/                             ← Document root
 │   ├── index.php                       ← Front controller + router

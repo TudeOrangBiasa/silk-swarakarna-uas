@@ -18,6 +18,6 @@ This project uses DDEV for the dev environment. No baremetal PHP required.
 
 - All PHP commands run via `ddev exec php ...` or `ddev exec vendor/bin/...`
 - Composer: `ddev composer <args>`
-- Database: `ddev mysql`, `ddev setup-db`, `ddev reset-db`
+- Database: `ddev mysql`, `ddev import-db --src=...`, `ddev mysql -e "DROP DATABASE ..."` for reset
 - DB host inside container: `db`. DB name: `silk_swarakarna`. User/pass: `db`/`db`.
 - `.env` is auto-injected by DDEV via `.ddev/config.yaml` → `web_environment`. No manual edit needed.
