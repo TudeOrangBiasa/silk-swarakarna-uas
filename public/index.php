@@ -4,6 +4,23 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/bootstrap.php';
 
+use Silk\Exception\ValidationException;
+
+/**
+ * Set flash + errors + old_input, then redirect to referer (or /).
+ * Used by POST handler catch blocks and class_exists fallback.
+ */
+function redirectBackWithError(string $flashMessage, array $errors = []): never
+{
+    $_SESSION['flash_error'] = $flashMessage;
+    if ($errors !== []) {
+        $_SESSION['errors'] = $errors;
+    }
+    $_SESSION['old_input'] = $_POST;
+    header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/'));
+    exit;
+}
+
 // ---------------------------------------------------------------------------
 // Route table: maps page key to view path (relative to views/)
 // Keys use dot notation (e.g. pasien.create) matching browser URL paths
@@ -90,18 +107,13 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
             $_SESSION['flash_success'] = ucfirst($entity) . ' berhasil disimpan.';
             header('Location: /' . ($entity ?: ''));
             exit;
+        } catch (ValidationException $e) {
+            redirectBackWithError('Validasi gagal, periksa input', $e->getErrors());
         } catch (\Throwable $e) {
-            $_SESSION['flash_error'] = $e->getMessage();
-            $_SESSION['old_input']  = $_POST;
-            $referer = $_SERVER['HTTP_REFERER'] ?? '/';
-            header('Location: ' . $referer);
-            exit;
+            redirectBackWithError($e->getMessage());
         }
     } else {
-        $_SESSION['flash_error'] = 'Class ' . $action['class'] . ' not yet implemented.';
-        $referer = $_SERVER['HTTP_REFERER'] ?? '/';
-        header('Location: ' . $referer);
-        exit;
+        redirectBackWithError('Class ' . $action['class'] . ' not yet implemented.');
     }
 }
 
