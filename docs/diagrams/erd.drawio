@@ -1,72 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="drawio" version="26.0.0">
   <diagram name="ERD" id="erd-silk-swarakarna">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="750" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <mxCell id="title" value="SILK-Swarakarna — Entity Relationship Diagram&#xa;&#xa;3 master (pasien, dokter, layanan) + 1 transaksi (pemeriksaan) — Kardinalitas 1:N dari masing-masing master ke pemeriksaan" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#5c3a1e;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="80" y="20" width="940" height="60" as="geometry" />
+        <mxCell id="title" value="ERD — SILK-Swarakarna&#xa;3 master + 1 transaksi, 1:N ke pemeriksaan" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#5c3a1e;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="940" height="50" as="geometry" />
         </mxCell>
 
-        <mxCell id="pasien" value="&lt;b&gt;pasien&lt;/b&gt;&lt;hr&gt;PK · id_pasien &lt;i&gt;VARCHAR(20)&lt;/i&gt;&lt;br&gt;No Rekam Medis, format RM-XXX&lt;br&gt;&lt;br&gt;nama_pasien &lt;i&gt;VARCHAR(100)&lt;/i&gt;&lt;br&gt;tanggal_lahir &lt;i&gt;DATE&lt;/i&gt;&lt;br&gt;no_hp &lt;i&gt;VARCHAR(20)&lt;/i&gt;&lt;br&gt;alamat &lt;i&gt;TEXT&lt;/i&gt;&lt;br&gt;created_at · updated_at" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;sketch=1;fontFamily=Helvetica;fontSize=12;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="60" y="120" width="280" height="200" as="geometry" />
+        <mxCell id="pasien" value="&lt;b&gt;pasien&lt;/b&gt;&lt;hr&gt;PK id_pasien &lt;i&gt;VARCHAR(20)&lt;/i&gt;&lt;br&gt;  RM-XXX (No Rekam Medis)&lt;br&gt;&lt;br&gt;nama_pasien &lt;i&gt;VARCHAR(100)&lt;/i&gt;&lt;br&gt;tanggal_lahir &lt;i&gt;DATE&lt;/i&gt;&lt;br&gt;no_hp &lt;i&gt;VARCHAR(20)&lt;/i&gt;&lt;br&gt;alamat &lt;i&gt;TEXT&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;sketch=1;fontFamily=Helvetica;fontSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="100" width="280" height="170" as="geometry" />
         </mxCell>
 
-        <mxCell id="dokter" value="&lt;b&gt;dokter&lt;/b&gt;&lt;hr&gt;PK · id_dokter &lt;i&gt;INT (auto)&lt;/i&gt;&lt;br&gt;&lt;br&gt;nama_dokter &lt;i&gt;VARCHAR(100)&lt;/i&gt;&lt;br&gt;spesialisasi &lt;i&gt;VARCHAR(100)&lt;/i&gt;&lt;br&gt;no_izin_praktik &lt;i&gt;VARCHAR(50) UNIQUE&lt;/i&gt;&lt;br&gt;created_at · updated_at" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;sketch=1;fontFamily=Helvetica;fontSize=12;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="410" y="120" width="280" height="200" as="geometry" />
+        <mxCell id="dokter" value="&lt;b&gt;dokter&lt;/b&gt;&lt;hr&gt;PK id_dokter &lt;i&gt;INT auto&lt;/i&gt;&lt;br&gt;&lt;br&gt;nama_dokter &lt;i&gt;VARCHAR(100)&lt;/i&gt;&lt;br&gt;spesialisasi &lt;i&gt;VARCHAR(100)&lt;/i&gt;&lt;br&gt;no_izin_praktik &lt;i&gt;VARCHAR(50) UNIQUE&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;sketch=1;fontFamily=Helvetica;fontSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="100" width="280" height="170" as="geometry" />
         </mxCell>
 
-        <mxCell id="layanan" value="&lt;b&gt;layanan&lt;/b&gt;&lt;hr&gt;PK · id_layanan &lt;i&gt;INT (auto)&lt;/i&gt;&lt;br&gt;&lt;br&gt;nama_layanan &lt;i&gt;VARCHAR(100)&lt;/i&gt;&lt;br&gt;mis. Audiometri, OAE, BERA&lt;br&gt;biaya &lt;i&gt;INT&lt;/i&gt; (rupiah)&lt;br&gt;created_at · updated_at" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;sketch=1;fontFamily=Helvetica;fontSize=12;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="760" y="120" width="280" height="200" as="geometry" />
+        <mxCell id="layanan" value="&lt;b&gt;layanan&lt;/b&gt;&lt;hr&gt;PK id_layanan &lt;i&gt;INT auto&lt;/i&gt;&lt;br&gt;&lt;br&gt;nama_layanan &lt;i&gt;VARCHAR(100)&lt;/i&gt;&lt;br&gt;  Audiometri, OAE, BERA&lt;br&gt;biaya &lt;i&gt;INT&lt;/i&gt; (IDR)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;sketch=1;fontFamily=Helvetica;fontSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="100" width="280" height="170" as="geometry" />
         </mxCell>
 
-        <mxCell id="pemeriksaan" value="&lt;b&gt;pemeriksaan&lt;/b&gt;&lt;hr&gt;PK · id_periksa &lt;i&gt;VARCHAR(20)&lt;/i&gt;&lt;br&gt;No Transaksi, format TRX-YYYYNNN&lt;br&gt;&lt;br&gt;FK · id_pasien → pasien&lt;br&gt;FK · id_dokter → dokter&lt;br&gt;FK · id_layanan → layanan&lt;br&gt;tanggal_periksa &lt;i&gt;DATE&lt;/i&gt;&lt;br&gt;keluhan &lt;i&gt;TEXT&lt;/i&gt;&lt;br&gt;status_pemeriksaan &lt;i&gt;ENUM&lt;/i&gt;&lt;br&gt;  Menunggu · Sedang Diperiksa · Selesai&lt;br&gt;created_at · updated_at" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffd9b3;strokeColor=#c25100;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;sketch=1;fontFamily=Helvetica;fontSize=12;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="410" y="430" width="280" height="280" as="geometry" />
+        <mxCell id="pemeriksaan" value="&lt;b&gt;pemeriksaan&lt;/b&gt; (transaksi)&lt;hr&gt;PK id_periksa &lt;i&gt;VARCHAR(20)&lt;/i&gt;&lt;br&gt;  TRX-YYYYNNN (No Transaksi)&lt;br&gt;&lt;br&gt;FK id_pasien → pasien&lt;br&gt;FK id_dokter → dokter&lt;br&gt;FK id_layanan → layanan&lt;br&gt;tanggal_periksa &lt;i&gt;DATE&lt;/i&gt;&lt;br&gt;keluhan &lt;i&gt;TEXT&lt;/i&gt;&lt;br&gt;status_pemeriksaan &lt;i&gt;ENUM&lt;/i&gt;&lt;br&gt;  Menunggu · Sedang Diperiksa · Selesai" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffd9b3;strokeColor=#c25100;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;sketch=1;fontFamily=Helvetica;fontSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="380" width="280" height="240" as="geometry" />
         </mxCell>
 
-        <mxCell id="rel-pasien-pemeriksaan" value="1 — N" style="endArrow=ERmandOne;startArrow=ERone;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;sketch=1;curved=1;strokeColor=#b8651e;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#fff8e7;" edge="1" parent="1" source="pasien" target="pemeriksaan">
+        <mxCell id="rel-pasien-pemeriksaan" value="1—N" style="endArrow=ERmandOne;startArrow=ERone;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;sketch=1;curved=1;strokeColor=#b8651e;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#fff8e7;" edge="1" parent="1" source="pasien" target="pemeriksaan">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="200" y="380" />
+              <mxPoint x="200" y="330" />
             </Array>
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="rel-dokter-pemeriksaan" value="1 — N" style="endArrow=ERmandOne;startArrow=ERone;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;sketch=1;curved=1;strokeColor=#b8651e;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#fff8e7;" edge="1" parent="1" source="dokter" target="pemeriksaan">
+        <mxCell id="rel-dokter-pemeriksaan" value="1—N" style="endArrow=ERmandOne;startArrow=ERone;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;sketch=1;curved=1;strokeColor=#b8651e;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#fff8e7;" edge="1" parent="1" source="dokter" target="pemeriksaan">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="550" y="380" />
+              <mxPoint x="550" y="330" />
             </Array>
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="rel-layanan-pemeriksaan" value="1 — N" style="endArrow=ERmandOne;startArrow=ERone;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;sketch=1;curved=1;strokeColor=#b8651e;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#fff8e7;" edge="1" parent="1" source="layanan" target="pemeriksaan">
+        <mxCell id="rel-layanan-pemeriksaan" value="1—N" style="endArrow=ERmandOne;startArrow=ERone;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;sketch=1;curved=1;strokeColor=#b8651e;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#fff8e7;" edge="1" parent="1" source="layanan" target="pemeriksaan">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="900" y="380" />
+              <mxPoint x="900" y="330" />
             </Array>
           </mxGeometry>
         </mxCell>
 
         <mxCell id="legend-pk" value="PK" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#5c8a49;strokeColor=#2f5a25;fontColor=#ffffff;fontStyle=1;fontSize=10;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="60" y="780" width="40" height="22" as="geometry" />
+          <mxGeometry x="60" y="680" width="40" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="legend-pk-text" value="Primary Key" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#5c3a1e;sketch=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="110" y="780" width="120" height="22" as="geometry" />
+        <mxCell id="legend-pk-text" value="primary key" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#5c3a1e;sketch=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="110" y="680" width="100" height="22" as="geometry" />
         </mxCell>
         <mxCell id="legend-fk" value="FK" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c25100;strokeColor=#7a3500;fontColor=#ffffff;fontStyle=1;fontSize=10;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="240" y="780" width="40" height="22" as="geometry" />
+          <mxGeometry x="220" y="680" width="40" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="legend-fk-text" value="Foreign Key" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#5c3a1e;sketch=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="290" y="780" width="120" height="22" as="geometry" />
+        <mxCell id="legend-fk-text" value="foreign key" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#5c3a1e;sketch=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="270" y="680" width="100" height="22" as="geometry" />
         </mxCell>
         <mxCell id="legend-trans" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffd9b3;strokeColor=#c25100;sketch=1;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="420" y="780" width="40" height="22" as="geometry" />
+          <mxGeometry x="380" y="680" width="40" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="legend-trans-text" value="Tabel transaksi (transaksi = pemeriksaan)" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#5c3a1e;sketch=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="470" y="780" width="280" height="22" as="geometry" />
+        <mxCell id="legend-trans-text" value="tabel transaksi" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#5c3a1e;sketch=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="430" y="680" width="160" height="22" as="geometry" />
         </mxCell>
 
       </root>

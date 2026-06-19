@@ -1,143 +1,123 @@
 # SILK-Swarakarna
 
-> **Sistem Informasi Layanan Klinik Swakararna** — Aplikasi web PHP OOP untuk digitalisasi pencatatan rekam medis dan pendaftaran tes pendengaran di klinik THT (Telinga Hidung Tenggorokan) spesialis pendengaran & keseimbangan.
-
-**UAS Pemrograman Web — Pagi 01 — Primakara University**
-
----
+Sistem Informasi Layanan Klinik Swarakarna. Aplikasi web PHP OOP untuk klinik THT spesialis pendengaran dan keseimbangan. UAS Pemrograman Web, Pagi 01, Primakara University.
 
 ## Daftar Isi
 
 1. [Ringkasan](#ringkasan)
-2. [Entity Relationship Diagram](#entity-relationship-diagram)
-3. [Alur Request (Flowchart)](#alur-request-flowchart)
-4. [Struktur Proyek](#struktur-proyek)
-5. [Quick Start](#quick-start) — 3 mode: **DDEV**, **baremetal**, **shared hosting**
-6. [Tech Stack](#tech-stack)
-7. [Sprint Roadmap](#sprint-roadmap) — 20 issue, dependency-aware
-8. [Domain Reference](#domain-reference)
+2. [Entity relationship diagram](#entity-relationship-diagram)
+3. [Alur request](#alur-request)
+4. [Struktur proyek](#struktur-proyek)
+5. [Quick start](#quick-start)
+6. [Tech stack](#tech-stack)
+7. [Sprint roadmap](#sprint-roadmap)
+8. [Domain reference](#domain-reference)
 9. [Deployment](#deployment)
-10. [Kontributor](#kontributor)
-
----
+10. [Referensi untuk dosen penilai](#referensi-untuk-dosen-penilai)
 
 ## Ringkasan
 
 | Aspek | Detail |
 |---|---|
-| **Topik** | Sistem Klinik (varian: Klinik THT Swarakarna) |
-| **Use case** | Pendaftaran pasien, manajemen dokter/layanan, pencatatan transaksi pemeriksaan |
-| **Actor** | Admin / Resepsionis klinik (1 role) |
-| **Master data** | 3 — pasien, dokter, layanan |
-| **Transaksi** | 1 — pemeriksaan (relasi ke 3 master) |
-| **Tabel DB** | 4 |
-| **Class OOP** | 5 — Database + 4 entity |
-| **Pattern** | Front controller + PDO singleton + MVC ringan |
-| **Output** | Web app native PHP, tanpa framework |
+| Topik | Sistem Klinik (varian: Klinik THT Swarakarna) |
+| Use case | Pendaftaran pasien, manajemen dokter/layanan, pencatatan transaksi pemeriksaan |
+| Actor | Admin / Resepsionis klinik (1 role) |
+| Master data | 3 (pasien, dokter, layanan) |
+| Transaksi | 1 (pemeriksaan, relasi ke 3 master) |
+| Tabel DB | 4 |
+| Class OOP | 5 (Database + 4 entity) |
+| Pattern | Front controller + PDO singleton + MVC ringan |
+| Output | Web app native PHP, tanpa framework |
 
----
-
-## Entity Relationship Diagram
-
-3 master (atas) → 1 transaksi (bawah). Kardinalitas **1:N** dari masing-masing master ke `pemeriksaan`.
+## Entity relationship diagram
 
 ![ERD SILK-Swarakarna](docs/diagrams/erd.png)
 
-*File sumber: [docs/diagrams/erd.drawio](docs/diagrams/erd.drawio) — buka di [app.diagrams.net](https://app.diagrams.net) atau draw.io desktop untuk edit.*
+Sumber: [docs/diagrams/erd.drawio](docs/diagrams/erd.drawio). Edit di [app.diagrams.net](https://app.diagrams.net) atau draw.io desktop.
 
-**Ringkasan skema:**
-
-| Tabel | Tipe | Primary Key | Foreign Key | Catatan |
+| Tabel | Tipe | Primary key | Foreign key | Catatan |
 |---|---|---|---|---|
-| `pasien` | Master | `id_pasien` (VARCHAR, **No Rekam Medis** `RM-XXX`) | — | Kode otomatis |
-| `dokter` | Master | `id_dokter` (INT, auto) | — | `no_izin_praktik` UNIQUE |
-| `layanan` | Master | `id_layanan` (INT, auto) | — | `biaya` IDR integer |
-| `pemeriksaan` | Transaksi | `id_periksa` (VARCHAR, **No Transaksi** `TRX-YYYYNNN`) | `id_pasien`, `id_dokter`, `id_layanan` | `status_pemeriksaan` ENUM |
+| `pasien` | Master | `id_pasien` VARCHAR, `RM-XXX` | | Kode otomatis |
+| `dokter` | Master | `id_dokter` INT auto | | `no_izin_praktik` UNIQUE |
+| `layanan` | Master | `id_layanan` INT auto | | `biaya` IDR integer |
+| `pemeriksaan` | Transaksi | `id_periksa` VARCHAR, `TRX-YYYYNNN` | `id_pasien`, `id_dokter`, `id_layanan` | `status_pemeriksaan` ENUM |
 
-FK constraint: `ON DELETE RESTRICT` — master yang sudah punya riwayat pemeriksaan tidak bisa dihapus. Setelah `status_pemeriksaan = 'Selesai'`, baris `pemeriksaan` **immutable** untuk audit trail.
+FK constraint: `ON DELETE RESTRICT`. Master yang sudah punya riwayat pemeriksaan tidak bisa dihapus. Setelah `status_pemeriksaan = 'Selesai'`, baris `pemeriksaan` immutable untuk audit trail.
 
----
+## Alur request
 
-## Alur Request (Flowchart)
+![Request flow](docs/diagrams/flowchart.png)
 
-Lifecycle sebuah HTTP request — dari klik di browser sampai HTML response.
+Sumber: [docs/diagrams/flowchart.drawio](docs/diagrams/flowchart.drawio).
 
-![Request Flow](docs/diagrams/flowchart.png)
-
-*File sumber: [docs/diagrams/flowchart.drawio](docs/diagrams/flowchart.drawio).*
-
-**Singkatnya:**
+Singkatnya:
 
 ```
-User → Browser → Apache/Nginx → public/index.php (router)
+User → Browser → Nginx/Apache → public/index.php (router)
   → includes/bootstrap.php (session + config + autoload)
-  → match route → instantiate class (Pasien/Dokter/Layanan/Pemeriksaan)
+  → match route → new Class() → method
   → Database::getInstance() → MariaDB
   → views/<page>.php (render HTML + Tailwind)
-  → HTML response → Browser
+  → HTML response
 ```
 
-Detail per layer: lihat [docs/architecture.md](docs/architecture.md).
+Detail per layer ada di [docs/architecture.md](docs/architecture.md).
 
----
-
-## Struktur Proyek
+## Struktur proyek
 
 ```
 silk-swarakarna-uas/
-├── .ddev/                              ← DDEV config (PHP 8.2, MariaDB 10.11)
+├── .ddev/                              DDEV config (PHP 8.2, MariaDB 10.11)
 │
-├── public/                             ← Document root (jangan expose src!)
-│   ├── index.php                       ← Front controller + router
-│   ├── .htaccess                       ← URL rewrite
+├── public/                             Document root
+│   ├── index.php                       Front controller + router
+│   ├── .htaccess                       URL rewrite
 │   └── assets/css/
 │
-├── src/                                ← Domain layer (5 class OOP)
-│   ├── Database.php                    ← PDO singleton
-│   ├── Pasien.php                      ← CRUD + generateKodeOtomatis
-│   ├── Dokter.php                      ← CRUD
-│   ├── Layanan.php                     ← CRUD
-│   └── Pemeriksaan.php                 ← Transaksi + JOIN + status
+├── src/                                Domain layer (5 class OOP)
+│   ├── Database.php                    PDO singleton
+│   ├── Pasien.php                      CRUD + generateKodeOtomatis
+│   ├── Dokter.php                      CRUD
+│   ├── Layanan.php                     CRUD
+│   └── Pemeriksaan.php                 Transaksi + JOIN + status
 │
-├── includes/                           ← Bootstrap layer
-│   ├── bootstrap.php                   ← session + autoload + error handler
-│   └── config.php                      ← Env loader (.env)
+├── includes/                           Bootstrap layer
+│   ├── bootstrap.php                   session + autoload + error handler
+│   └── config.php                      Env loader (.env)
 │
-├── views/                              ← Presentation layer
-│   ├── layout/{header,footer}.php      ← Shell HTML + Tailwind
+├── views/                              Presentation layer
+│   ├── layout/{header,footer}.php      Shell HTML + Tailwind
 │   ├── dashboard.php
 │   ├── pasien/  dokter/  layanan/  pemeriksaan/
 │
 ├── database/
-│   └── silk_swarakarna.sql             ← Schema + seed (3 pasien, 3 dokter, 4 layanan)
+│   └── silk_swarakarna.sql             Schema + seed (3 pasien, 3 dokter, 4 layanan)
 │
-├── docs/                               ← Dokumentasi
-│   ├── architecture.md                 ← Request lifecycle + class diagram
-│   ├── business-logic.md               ← Flowchart per fitur
-│   ├── diagrams/                       ← ERD + Flowchart (DrawIO source)
-│   └── agents/                         ← Skill config
+├── docs/                               Dokumentasi
+│   ├── architecture.md                 Request lifecycle + class diagram
+│   ├── business-logic.md               Flowchart per fitur
+│   ├── diagrams/                       ERD + Flowchart (DrawIO source)
+│   └── agents/                         Skill config
 │
-├── .scratch/silk-swarakarna-uas/       ← Issue tracker (local markdown)
+├── .scratch/silk-swarakarna-uas/       Issue tracker (local markdown)
 │   ├── PRD.md
 │   └── issues/01..20-*.md
 │
-├── CONTEXT.md                          ← Glossary domain
-├── AGENTS.md                           ← Agent runtime config
-├── composer.json                       ← PSR-4 autoload `Silk\` → `src/`
+├── CONTEXT.md                          Glossary domain
+├── AGENTS.md                           Agent runtime config
+├── composer.json                       PSR-4 autoload `Silk\` → `src/`
 ├── .env.example
 ├── .gitignore
 └── README.md
 ```
 
----
+## Quick start
 
-## Quick Start
+Pilih salah satu. DDEV paling cepat karena tidak perlu install PHP lokal.
 
-Pilih salah satu mode di bawah. **DDEV direkomendasikan** — paling cepat, tanpa install PHP lokal.
+### Mode A: DDEV (Docker)
 
-### Mode A — DDEV (Docker)
-
-> Prasyarat: [Docker](https://docs.docker.com/get-docker/) + [DDEV](https://ddev.readthedocs.io/en/latest/).
+Prasyarat: [Docker](https://docs.docker.com/get-docker/) + [DDEV](https://ddev.readthedocs.io/en/latest/).
 
 ```bash
 git clone git@github.com:TudeOrangBiasa/silk-swarakarna-uas.git
@@ -150,166 +130,145 @@ ddev launch
 
 URL: `https://silk-swarakarna-uas.ddev.site/`
 
-Kredensial DB otomatis: `db`/`db` di host `db` dalam container, db `silk_swarakarna`.
+Kredensial DB otomatis: `db`/`db` di host `db` dalam container, database `silk_swarakarna`. Env di-inject oleh DDEV lewat `web_environment`, jadi tidak perlu edit `.env`.
 
-### Mode B — Baremetal (PHP lokal)
+### Mode B: baremetal (PHP lokal)
 
-> Prasyarat: PHP ≥ 8.0 + extension `pdo_mysql`, Composer, MySQL 5.7+ / MariaDB 10.3+.
+Prasyarat: PHP 8.0+ + extension `pdo_mysql`, Composer, MySQL 5.7+ atau MariaDB 10.3+.
 
 ```bash
 git clone git@github.com:TudeOrangBiasa/silk-swarakarna-uas.git
 cd silk-swarakarna-uas
 
-# 1. Install deps
 composer install
-
-# 2. Konfigurasi DB
 cp .env.example .env
-# Edit .env: DB_HOST, DB_NAME, DB_USER, DB_PASS
+# edit .env: DB_HOST, DB_NAME, DB_USER, DB_PASS
 
-# 3. Import schema + seed
 mysql -u root -p < database/silk_swarakarna.sql
-
-# 4. Jalankan
 php -S localhost:8000 -t public/
 ```
 
 URL: `http://localhost:8000/`
 
-### Mode C — Shared Hosting (cPanel / public_html)
+### Mode C: shared hosting (cPanel / public_html)
 
-> Prasyarat: akun hosting dengan PHP 8.0+ dan MySQL.
+Prasyarat: akun hosting dengan PHP 8.0+ dan MySQL.
 
 ```bash
-# 1. Lokal: build artifact (opsional, untuk upload sekali jalan)
+# 1. Lokal: build artifact (opsional)
 composer install --no-dev --optimize-autoloader
 
-# 2. Upload ke cPanel File Manager / FTP:
-#    - Upload SELURUH isi repo ke public_html/
-#    - atau upload ke folder di luar public_html/, symlink public/ ke public_html/
+# 2. Upload via cPanel File Manager / FTP:
+#    - Upload SELURUH isi repo ke /home/user/silk-swarakarna/
+#    - Symlink public/ ke /home/user/public_html/
+#      atau upload public/ ke public_html/ langsung
 
 # 3. cPanel → MySQL Databases:
 #    - Buat database `username_silk_swarakarna`
 #    - Buat user + password
-#    - Grant ALL pada database baru
+#    - Grant ALL
 
 # 4. cPanel → phpMyAdmin:
-#    - Import database/silk_swarakarna.sql ke database baru
+#    - Import database/silk_swarakarna.sql
 
-# 5. Edit .env di server (atau set env var di cPanel):
+# 5. Edit .env di server:
 #    DB_HOST=localhost
 #    DB_NAME=username_silk_swarakarna
 #    DB_USER=username_dbuser
 #    DB_PASS=...
 #    APP_URL=https://yourdomain.tld
 #    APP_DEBUG=false
-
-# 6. Document root di cPanel harus point ke folder public/, BUKAN root repo.
-#    Struktur target:
-#    /home/user/silk-swarakarna/    ← {src, includes, views, ...}
-#    /home/user/public_html/         ← symlink ke silk-swarakarna/public/
 ```
 
-Detail deployment shared hosting: lihat [docs/agents/issue-tracker.md](docs/agents/issue-tracker.md) (umum) + panduan `shared-hosting-deployment` skill.
+Struktur target di server:
 
----
+```
+/home/user/silk-swarakarna/    {src, includes, views, ...}
+/home/user/public_html/         symlink → silk-swarakarna/public/
+```
 
-## Tech Stack
+Document root cPanel harus point ke folder `public/`, bukan root repo. Ini penting: kalau root repo yang di-expose, file `.env` dan source code bisa diakses publik.
+
+## Tech stack
 
 | Layer | Teknologi | Versi |
 |---|---|---|
 | Backend | PHP (OOP, PDO) | 8.2 (DDEV) / 8.0+ minimum |
 | Database | MariaDB (DDEV) / MySQL | 10.11 / 5.7+ |
-| Web server | nginx-fpm (DDEV) / Apache | — |
+| Web server | nginx-fpm (DDEV) / Apache | |
 | Frontend | Tailwind CSS via CDN | 3.x |
 | Autoload | Composer PSR-4 | 2.x |
 | Dev env | DDEV (Docker) | 1.25+ |
-| Version control | Git + GitHub | — |
+| Version control | Git + GitHub | |
 
-**Tidak ada framework** — pure PHP native dengan class. Sesuai spec UAS "Aplikasi wajib menerapkan OOP murni".
+Tidak pakai framework. Sesuai spec UAS: OOP murni, class pisah jelas.
 
----
+## Sprint roadmap
 
-## Sprint Roadmap
+20 issue, dependency-aware. Detail per issue di [`.scratch/silk-swarakarna-uas/issues/`](.scratch/silk-swarakarna-uas/issues/).
 
-20 issue, dependency-aware. Detail per issue: [`.scratch/silk-swarakarna-uas/issues/`](.scratch/silk-swarakarna-uas/issues/).
-
-| Wave | Issue | Bisa Paralel | Deskripsi |
+| Wave | Issue | Bisa paralel | Deskripsi |
 |---|---|---|---|
 | 1 | 01–05 | 5 orang | Foundation: bootstrap, DB, schema, router, layout |
 | 2 | 06–09 | 4 orang | Domain classes: Pasien, Dokter, Layanan, Pemeriksaan |
-| 3 | 10–17 | 8 orang | Views: list + form per master, create + list for transaksi |
+| 3 | 10–17 | 8 orang | Views: list + form per master, create + list untuk transaksi |
 | 4 | 18–19 | 2 orang | Dashboard widget + delete handlers |
 | 5 | 20 | 1 orang | Final integration + README polish |
 
-**Cara baca issue:** buka file `issues/<NN>-<slug>.md`. Tiap file punya:
-- `Status: ready-for-agent` (per [`triage-labels.md`](docs/agents/triage-labels.md))
+Tiap file issue punya:
+- `Status: ready-for-agent` (lihat [triage-labels.md](docs/agents/triage-labels.md))
 - `Depends:` (issue yang harus selesai dulu)
-- `## Files` (file yang harus dibuat/dimodifikasi)
+- `## Files` (file yang harus dibuat)
 - `## Acceptance` (checklist testable)
-- `## Test` (code snippet expected behavior)
-- `## Out of scope` (batas-batas biar ga scope creep)
+- `## Test` (code snippet)
+- `## Out of scope` (batas-batas biar tidak scope creep)
 
----
-
-## Domain Reference
+## Domain reference
 
 Glossary lengkap di [CONTEXT.md](CONTEXT.md). Ringkas:
 
-- **Pasien** — orang yang terdaftar di klinik. ID = **No Rekam Medis** `RM-XXX` (auto-generated, disimpan di kolom `id_pasien`).
-- **Dokter** — spesialis THT. ID = `id_dokter` (auto-increment).
-- **Layanan** — jenis tes (Audiometri, OAE, BERA, Timpanometri). ID = `id_layanan`. Punya `biaya` (IDR).
-- **Pemeriksaan** — transaksi: 1 Pasien + 1 Dokter + 1 Layanan pada tanggal tertentu. ID = **No Transaksi** `TRX-YYYYNNN` (auto-generated, disimpan di kolom `id_periksa`).
-- **Status Pemeriksaan** — `Menunggu` → `Sedang Diperiksa` → `Selesai`. Sekali `Selesai`, **immutable** (audit trail).
-
----
+- **Pasien**: orang yang terdaftar di klinik. ID = No Rekam Medis `RM-XXX` (auto-generated, disimpan di kolom `id_pasien`).
+- **Dokter**: spesialis THT. ID = `id_dokter` (auto-increment).
+- **Layanan**: jenis tes (Audiometri, OAE, BERA, Timpanometri). ID = `id_layanan`. Punya `biaya` (IDR).
+- **Pemeriksaan**: transaksi 1 Pasien + 1 Dokter + 1 Layanan pada tanggal tertentu. ID = No Transaksi `TRX-YYYYNNN` (disimpan di kolom `id_periksa`).
+- **Status Pemeriksaan**: `Menunggu` → `Sedang Diperiksa` → `Selesai`. Sekali `Selesai`, immutable (audit trail).
 
 ## Deployment
 
-| Target | Cocok Untuk | Panduan |
+| Target | Cocok untuk | Panduan |
 |---|---|---|
-| **Local dev (DDEV)** | Pengembangan harian, demo ke dosen | [Mode A di Quick Start](#mode-a--ddev-docker) |
-| **Local dev (baremetal)** | Yang sudah punya PHP/MySQL di host | [Mode B di Quick Start](#mode-b--baremetal-php-lokal) |
-| **Shared hosting (cPanel)** | Submit tugas UAS, demo publik, portfolio | [Mode C di Quick Start](#mode-c--shared-hosting-cpanel--public_html) |
-| **VPS (Docker)** | Scaling / production real | Setup Docker Compose custom (di luar scope UAS) |
+| Local dev (DDEV) | Pengembangan harian, demo ke dosen | [Mode A](#mode-a-ddev-docker) |
+| Local dev (baremetal) | Sudah punya PHP/MySQL di host | [Mode B](#mode-b-baremetal-php-lokal) |
+| Shared hosting (cPanel) | Submit UAS, demo publik, portfolio | [Mode C](#mode-c-shared-hosting-cpanel--public_html) |
+| VPS (Docker) | Scaling / production real | Di luar scope UAS |
 
-**Checklist sebelum submit UAS:**
-- [ ] Semua 20 issue selesai (`Status: done` atau di luar workflow)
+Checklist sebelum submit UAS:
+
+- [ ] Semua 20 issue selesai
 - [ ] `ddev start` + `ddev launch` jalan tanpa error
-- [ ] `ddev mysql -e "SELECT COUNT(*) FROM pemeriksaan;"` return > 0 (ada data demo)
+- [ ] `ddev mysql -e "SELECT COUNT(*) FROM pemeriksaan;"` return > 0
 - [ ] `ddev import-db --file=database/silk_swarakarna.sql` bisa diulang dari nol
-- [ ] README + ERD + Flowchart terbaca dengan baik
-- [ ] Folder `public/` jadi document root (cek `.htaccess` rewrite)
-
----
+- [ ] README + ERD + Flowchart terbaca
+- [ ] `public/` jadi document root (cek `.htaccess` rewrite)
 
 ## Kontributor
 
-**Tim SILK-Swarakarna — Teknik Informatika Pagi 01, Primakara University**
+Tim SILK-Swarakarna, Teknik Informatika Pagi 01, Primakara University. 6 mahasiswa, lihat git log untuk breakdown commit.
 
-- Project lead: [@TudeOrangBiasa](https://github.com/TudeOrangBiasa)
-- Tim: 6 mahasiswa (lihat git log untuk breakdown commit)
+Lisensi: MIT. Bebas dipakai untuk akademik, portfolio, atau pembelajaran.
 
----
+## Referensi untuk dosen penilai
 
-## Lisensi
-
-MIT — Bebas digunakan untuk keperluan akademik (UAS), portfolio, atau pembelajaran.
-
----
-
-## Referensi untuk Dosen Penilai
-
-| Aspek UAS | Lokasi di Repo |
+| Aspek UAS | Lokasi |
 |---|---|
 | Topik project + deskripsi | [`.scratch/silk-swarakarna-uas/PRD.md`](.scratch/silk-swarakarna-uas/PRD.md) |
 | Analisis kebutuhan sistem | Section 2 PRD |
-| Data master + CRUD | Lihat [issues 06–17](.scratch/silk-swarakarna-uas/issues/) (tiap master punya issue sendiri) |
-| Data transaksi + relasi | Lihat [issue 09](.scratch/silk-swarakarna-uas/issues/09-pemeriksaan-class.md) + [issue 17](.scratch/silk-swarakarna-uas/issues/17-view-pemeriksaan-list.md) |
-| Ketentuan OOP (5 class) | Lihat [`src/`](src/) (Database, Pasien, Dokter, Layanan, Pemeriksaan) |
-| Fitur minimal (7 fitur) | Lihat [Sprint Roadmap](#sprint-roadmap) — semua tercakup di 20 issue |
-| Fitur tambahan (kode otomatis + status transaksi) | [Issue 06](.scratch/silk-swarakarna-uas/issues/06-pasien-class.md) + [Issue 17](.scratch/silk-swarakarna-uas/issues/17-view-pemeriksaan-list.md) |
+| Data master + CRUD | [issues 06–17](.scratch/silk-swarakarna-uas/issues/) (tiap master punya issue sendiri) |
+| Data transaksi + relasi | [issue 09](.scratch/silk-swarakarna-uas/issues/09-pemeriksaan-class.md) + [issue 17](.scratch/silk-swarakarna-uas/issues/17-view-pemeriksaan-list.md) |
+| Ketentuan OOP (5 class) | [`src/`](src/) (Database, Pasien, Dokter, Layanan, Pemeriksaan) |
+| Fitur minimal (7 fitur) | [Sprint roadmap](#sprint-roadmap) |
+| Fitur tambahan (kode otomatis + status transaksi) | [issue 06](.scratch/silk-swarakarna-uas/issues/06-pasien-class.md) + [issue 17](.scratch/silk-swarakarna-uas/issues/17-view-pemeriksaan-list.md) |
 | ERD | [docs/diagrams/erd.png](docs/diagrams/erd.png) |
 | Flowchart | [docs/diagrams/flowchart.png](docs/diagrams/flowchart.png) |
 | Schema database | [database/silk_swarakarna.sql](database/silk_swarakarna.sql) |
-| Cara jalanin | [Quick Start](#quick-start) di README ini |
+| Cara jalanin | [Quick start](#quick-start) di README ini |
