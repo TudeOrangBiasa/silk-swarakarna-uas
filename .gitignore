@@ -27,3 +27,9 @@ public/assets/css/tailwind.css
 # Project-local (not needed in repo)
 khusus uas.md
 *.pdf
+
+# DDEV (project config stays local)
+.ddev/
+
+# Local issue tracker (use GitHub Issues instead)
+.scratch/

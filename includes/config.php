@@ -36,3 +36,7 @@ define('DB_USER', $_ENV['DB_USER'] ?? getenv('DB_USER') ?: 'root');
 define('DB_PASS', $_ENV['DB_PASS'] ?? getenv('DB_PASS') ?: '');
 define('APP_URL', $_ENV['APP_URL'] ?? getenv('APP_URL') ?: 'http://localhost:8000');
 define('APP_DEBUG', ($_ENV['APP_DEBUG'] ?? getenv('APP_DEBUG') ?: 'true') === 'true');
+define('APP_ENV', $_ENV['APP_ENV'] ?? getenv('APP_ENV') ?: 'development');
+
+// Backwards-compat alias for APP_URL (spec uses BASE_URL name)
+define('BASE_URL', defined('APP_URL') ? APP_URL : '');

@@ -8,7 +8,10 @@
   },
   "autoload": {
     "psr-4": {
-      "Silk\\": "src/"
+      "Silk\\": "src/",
+      "Silk\\Includes\\": "includes/",
+      "Silk\\Entity\\": "src/Entity/",
+      "Silk\\Repository\\": "src/Repository/"
     }
   },
   "scripts": {

@@ -9,6 +9,18 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Default timezone: Indonesia (WIB) per spec
+date_default_timezone_set('Asia/Jakarta');
+
+// Convert PHP errors (notices, warnings, deprecations) to ErrorException
+// so they can be caught upstream like any other exception.
+set_error_handler(static function (int $errno, string $errstr, string $errfile, int $errline): bool {
+    if ((error_reporting() & $errno) === 0) {
+        return false; // respect error_reporting() level
+    }
+    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+});
+
 // Error reporting
 if (defined('APP_DEBUG') && APP_DEBUG) {
     error_reporting(E_ALL);

@@ -12,6 +12,10 @@ Default English status strings written as a `Status:` line near the top of each 
 
 Single-context: one `CONTEXT.md` at the repo root, ADRs under `docs/adr/`. See `docs/agents/domain.md`.
 
+### Design system
+
+Single spec of record: [DESIGN.md](DESIGN.md). Read it before editing any view, layout, or CSS file. Bootstrap 5.3 + Bootstrap Icons via CDN. No Tailwind. Brand color navy `#1e40af`. Bahasa Indonesia for all UI strings.
+
 ## Runtime
 
 This project uses DDEV for the dev environment. No baremetal PHP required.
@@ -21,3 +25,5 @@ This project uses DDEV for the dev environment. No baremetal PHP required.
 - Database: `ddev mysql`, `ddev import-db --src=...`, `ddev mysql -e "DROP DATABASE ..."` for reset
 - DB host inside container: `db`. DB name: `silk_swarakarna`. User/pass: `db`/`db`.
 - `.env` is auto-injected by DDEV via `.ddev/config.yaml` → `web_environment`. No manual edit needed.
+- Verify PHP syntax: `ddev exec php -l <file>`
+- Verify view renders: `ddev launch` then open `https://<project>.ddev.site/<route>`
