@@ -227,15 +227,6 @@ Glossary lengkap di [CONTEXT.md](CONTEXT.md). Ringkas:
 | Shared hosting (cPanel) | Submit UAS, demo publik, portfolio | [Mode C](#mode-c-shared-hosting-cpanel--public_html) |
 | VPS (Docker) | Scaling / production real | Di luar scope UAS |
 
-Checklist sebelum submit UAS:
-
-- [ ] Semua issue GitHub closed
-- [ ] `ddev start` + `ddev launch` jalan tanpa error
-- [ ] `ddev mysql -e "SELECT COUNT(*) FROM pemeriksaan;"` return > 0
-- [ ] `ddev import-db --file=database/silk_swarakarna.sql` bisa diulang dari nol
-- [ ] README terbaca
-- [ ] `public/` jadi document root (cek `.htaccess` rewrite)
-
 ## Kontributor
 
 Tim SILK-Swarakarna, Teknik Informatika Pagi 01, Primakara University. 6 mahasiswa, lihat git log untuk breakdown commit.
