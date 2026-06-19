@@ -42,7 +42,7 @@
         <mxCell id="dokter" value="&lt;b&gt;Dokter&lt;/b&gt;" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#ffe4b5;strokeColor=#b8651e;sketch=1;fontFamily=Helvetica;fontSize=13;" vertex="1" parent="1">
           <mxGeometry x="700" y="100" width="240" height="200" as="geometry" />
         </mxCell>
-        <mxCell id="dokter-attrs" value="- $db: PDO" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;sketch=0;fontFamily=Helvetica;" vertex="1" parent="dokter">
+        <mxCell id="dokter-attrs" value="- $db: PDO" style="text;html=1;align:left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;sketch=0;fontFamily=Helvetica;" vertex="1" parent="dokter">
           <mxGeometry y="26" width="240" height="26" as="geometry" />
         </mxCell>
         <mxCell id="dokter-sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=10;rotatable=0;labelPosition=left;points=[];portConstraint=eastwest;" vertex="1" parent="dokter">
@@ -78,17 +78,37 @@
           <mxGeometry y="82" width="300" height="198" as="geometry" />
         </mxCell>
 
-        <mxCell id="db-rel-pasien" value="" style="endArrow=open;dashed=1;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.3;sketch=1;curved=1;strokeColor=#5c8a49;strokeWidth=2;" edge="1" parent="1" source="db" target="pasien">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="db-rel-pasien" value="" style="endArrow=open;dashed=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=1;sketch=1;curved=1;strokeColor=#5c8a49;strokeWidth=2;" edge="1" parent="1" source="db" target="pasien">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="180" y="410" />
+              <mxPoint x="520" y="410" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="db-rel-dokter" value="" style="endArrow=open;dashed=1;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;sketch=1;curved=1;strokeColor=#5c8a49;strokeWidth=2;" edge="1" parent="1" source="db" target="dokter">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="db-rel-dokter" value="" style="endArrow=open;dashed=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=1;sketch=1;curved=1;strokeColor=#5c8a49;strokeWidth=2;" edge="1" parent="1" source="db" target="dokter">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="430" />
+              <mxPoint x="820" y="430" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="db-rel-layanan" value="" style="endArrow=open;dashed=1;html=1;exitX=1;exitY=0.7;entryX=0;entryY=0.7;sketch=1;curved=1;strokeColor=#5c8a49;strokeWidth=2;" edge="1" parent="1" source="db" target="layanan">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="db-rel-layanan" value="" style="endArrow=open;dashed=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=1;sketch=1;curved=1;strokeColor=#5c8a49;strokeWidth=2;" edge="1" parent="1" source="db" target="layanan">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="450" />
+              <mxPoint x="1120" y="450" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="db-rel-periksa" value="" style="endArrow=open;dashed=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;sketch=1;curved=1;strokeColor=#5c8a49;strokeWidth=2;" edge="1" parent="1" source="db" target="periksa">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="db-rel-periksa" value="" style="endArrow=open;dashed=1;html=1;exitX=0.75;exitY=1;entryX=0.5;entryY=0;sketch=1;curved=1;strokeColor=#5c8a49;strokeWidth=2;" edge="1" parent="1" source="db" target="periksa">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="240" y="480" />
+              <mxPoint x="650" y="480" />
+            </Array>
+          </mxGeometry>
         </mxCell>
 
         <mxCell id="rel-pasien-periksa" value="1—N&#xa;FK id_pasien" style="endArrow=open;html=1;exitX=0.5;exitY=1;entryX=0.25;entryY=0;sketch=1;curved=1;strokeColor=#b8651e;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#5c3a1e;fontFamily=Helvetica;labelBackgroundColor=#fff8e7;" edge="1" parent="1" source="pasien" target="periksa">

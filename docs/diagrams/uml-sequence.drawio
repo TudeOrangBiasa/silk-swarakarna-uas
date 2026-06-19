@@ -29,6 +29,22 @@
           <mxGeometry x="860" y="100" width="100" height="1230" as="geometry" />
         </mxCell>
 
+        <mxCell id="act-index" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff8e7;strokeColor=#8b7355;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="264" y="230" width="12" height="970" as="geometry" />
+        </mxCell>
+        <mxCell id="act-bootstrap" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff8e7;strokeColor=#8b7355;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="424" y="290" width="12" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="act-periksa" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff8e7;strokeColor=#c25100;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="584" y="640" width="12" height="510" as="geometry" />
+        </mxCell>
+        <mxCell id="act-db" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff8e7;strokeColor=#5c8a49;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="744" y="350" width="12" height="760" as="geometry" />
+        </mxCell>
+        <mxCell id="act-mysql" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff8e7;strokeColor=#5c8a49;sketch=1;" vertex="1" parent="1">
+          <mxGeometry x="904" y="890" width="12" height="180" as="geometry" />
+        </mxCell>
+
         <mxCell id="step" value="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#5c3a1e;sketch=0;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="40" y="220" width="20" height="20" as="geometry" />
         </mxCell>
