@@ -1,11 +1,5 @@
 # Design prompts
 
-Copy-paste tiap prompt ke Open CoDesign. Generate, tweak kalau perlu, export HTML ke folder ini.
-
-Tool: Open CoDesign (open-source, MIT, BYOK via OpenRouter)
-Provider: OpenRouter (sk-or-...)
-Model rekomendasi: Claude Sonnet 4.5 (balance quality/cost)
-
 ## 1. Layout (master shell)
 
 ```
@@ -16,7 +10,7 @@ max-w-6xl mx-auto p-6 dengan background gray-50. Footer: text center
 "© 2026 SILK-Swarakarna — UAS Pemrograman Web Pagi 01", text-xs text-gray-500,
 py-4 border-t.
 
-Primary color biru navy (#1e40af). Bahasa Indonesia. Tailwind CSS. Light theme.
+Primary color biru navy (#1e40af). Bahasa Indonesia. Bootstrap 5 CSS. Light theme.
 Responsive: nav collapse ke hamburger di mobile.
 ```
 
@@ -34,7 +28,7 @@ Di bawah: card "5 Pemeriksaan Terbaru" dengan tabel:
 No, No Transaksi, Tanggal, Pasien, Dokter, Layanan, Status (badge: Menunggu=yellow, Sedang Diperiksa=blue, Selesai=green, rounded-full px-2).
 
 Style: card bg-white shadow rounded-lg, angka widget text-3xl font-bold, primary
-color biru navy. Bahasa Indonesia. Tailwind.
+color biru navy. Bahasa Indonesia. Bootstrap 5.
 ```
 
 ## 3. Pasien list
@@ -55,7 +49,7 @@ Pagination di bawah: "Menampilkan 1-10 dari 25" + Prev 1 2 3 Next.
 Empty state (kalau ga ada data): icon orang besar gray-300 + text "Belum ada
 data pasien" + tombol "Tambah Pasien pertama".
 
-Bahasa Indonesia. Tailwind. Container max-w-6xl.
+Bahasa Indonesia. Bootstrap 5. Container max-w-6xl.
 ```
 
 ## 4. Pasien form
@@ -79,7 +73,7 @@ bg-white border, link kembali ke list).
 
 Page title: "Tambah Pasien" atau "Edit Pasien" (text-2xl mb-6).
 
-Bahasa Indonesia. Tailwind.
+Bahasa Indonesia. Bootstrap 5.
 ```
 
 ## 5. Dokter list
@@ -107,7 +101,7 @@ Fields:
 
 Tombol: "Simpan" + "Batal". Page title: "Tambah Dokter"/"Edit Dokter".
 
-Bahasa Indonesia. Tailwind.
+Bahasa Indonesia. Bootstrap 5.
 ```
 
 ## 7. Layanan list
@@ -122,7 +116,7 @@ Tabel: No, Nama Layanan, Biaya (format Rp 250.000, right-aligned), Aksi
 Empty state: "Belum ada data layanan".
 
 Catatan: tidak perlu search bar (master data kecil, biasanya < 20 row).
-Bahasa Indonesia. Tailwind.
+Bahasa Indonesia. Bootstrap 5.
 ```
 
 ## 8. Layanan form
@@ -138,7 +132,7 @@ Helper text di bawah biaya: "Dalam rupiah, tanpa titik/koma. Contoh: 250000".
 
 Tombol: "Simpan" + "Batal". Page title: "Tambah Layanan"/"Edit Layanan".
 
-Bahasa Indonesia. Tailwind.
+Bahasa Indonesia. Bootstrap 5.
 ```
 
 ## 9. Pemeriksaan form (create)
@@ -163,7 +157,7 @@ Bottom info (di bawah tanggal): "Hari ini: [nama hari], [tanggal]"
 
 Tombol: "Daftarkan" (primary) + "Batal" (secondary).
 
-Bahasa Indonesia. Tailwind. Primary biru navy.
+Bahasa Indonesia. Bootstrap 5. Primary biru navy.
 ```
 
 ## 10. Pemeriksaan list
@@ -187,16 +181,5 @@ Aksi per status:
 
 Pagination + empty state "Belum ada data pemeriksaan".
 
-Bahasa Indonesia. Tailwind. Status badge rounded-full px-3 py-1 text-xs font-medium.
+Bahasa Indonesia. Bootstrap 5. Status badge rounded-full px-3 py-1 text-xs font-medium.
 ```
-
-## Quick start (1 menit)
-
-1. Buka Open CoDesign desktop app
-2. Settings → Providers → OpenRouter → paste `sk-or-...` → pilih model
-3. Pilih salah satu prompt di atas
-4. Generate, lihat preview
-5. Adjust kalau perlu (klik element → kasih comment → model rewrite)
-6. Export → HTML
-7. Save ke file yang sesuai di folder ini
-8. Commit

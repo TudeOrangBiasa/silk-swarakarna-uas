@@ -83,7 +83,7 @@ User → Browser → Nginx/Apache → public/index.php (router)
   → includes/bootstrap.php (session + config + autoload)
   → match route → new Class() → method
   → Database::getInstance() → MariaDB
-  → views/<page>.php (render HTML + Tailwind)
+  → views/<page>.php (render HTML + Bootstrap 5)
   → HTML response
 ```
 
@@ -112,7 +112,7 @@ silk-swarakarna-uas/
 │   └── config.php                      Env loader (.env)
 │
 ├── views/                              Presentation layer
-│   ├── layout/{header,footer}.php      Shell HTML + Tailwind
+│   ├── layout/{header,footer}.php      Shell HTML + Bootstrap 5
 │   ├── dashboard.php
 │   ├── pasien/  dokter/  layanan/  pemeriksaan/
 │
@@ -222,7 +222,7 @@ Document root cPanel harus point ke folder `public/`, bukan root repo. Ini penti
 | Backend | PHP (OOP, PDO) | 8.2 (DDEV) / 8.0+ minimum |
 | Database | MariaDB (DDEV) / MySQL | 10.11 / 5.7+ |
 | Web server | nginx-fpm (DDEV) / Apache | |
-| Frontend | Tailwind CSS via CDN | 3.x |
+| Frontend | Bootstrap 5.3 + Bootstrap Icons via CDN | 5.3.3 / 1.11.3 |
 | Autoload | Composer PSR-4 | 2.x |
 | Dev env | DDEV (Docker) | 1.25+ |
 | Version control | Git + GitHub | |

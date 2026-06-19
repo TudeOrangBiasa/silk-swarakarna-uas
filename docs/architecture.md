@@ -10,7 +10,7 @@ silk-swarakarna/
 │   ├── index.php                    ← Front controller + router
 │   ├── .htaccess                    ← URL rewrite (semua → index.php)
 │   └── assets/
-│       ├── css/                     ← Tailwind output
+│       ├── css/                     ← Bootstrap output (app.css)
 │       ├── js/
 │       └── img/
 │
@@ -27,7 +27,7 @@ silk-swarakarna/
 │
 ├── views/                           ← Presentation layer
 │   ├── layout/
-│   │   ├── header.php               ← <html> + Tailwind + navbar
+│   │   ├── header.php               ← <html> + Bootstrap CDN + navbar
 │   │   └── footer.php               ← </body> + scripts
 │   ├── dashboard.php
 │   ├── pasien/
@@ -108,7 +108,7 @@ graph TB
     Master -->|return data array| Page
     Trans -->|return data + JOIN| Page
     Page --> Layout
-    Layout -->|HTML + Tailwind| UI
+    Layout -->|HTML + Bootstrap 5| UI
 
     style Browser fill:#e3f2fd
     style Public fill:#fff3e0
