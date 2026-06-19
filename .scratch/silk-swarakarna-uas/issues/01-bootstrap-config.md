@@ -1,6 +1,6 @@
 # 01 — Bootstrap + Config scaffolding
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 01-bootstrap-config
 Depends: —
 Estimate: 1h

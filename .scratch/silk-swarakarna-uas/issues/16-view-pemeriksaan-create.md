@@ -1,6 +1,6 @@
 # 16 — View Pemeriksaan Create Form
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 16-view-pemeriksaan-create
 Depends: 04, 05, 09
 Estimate: 1.5h

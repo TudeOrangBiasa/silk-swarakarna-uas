@@ -1,6 +1,6 @@
 # 08 — Layanan CRUD
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 08-layanan-class
 Depends: 02
 Estimate: 1h

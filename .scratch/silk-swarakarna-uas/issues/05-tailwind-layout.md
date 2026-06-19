@@ -1,6 +1,6 @@
 # 05 — Tailwind CSS + Layout
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 05-tailwind-layout
 Depends: 04
 Estimate: 1.5h

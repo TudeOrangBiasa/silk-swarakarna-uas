@@ -1,6 +1,6 @@
 # 14 — View Layanan List
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 14-view-layanan-list
 Depends: 04, 05, 08
 Estimate: 45m

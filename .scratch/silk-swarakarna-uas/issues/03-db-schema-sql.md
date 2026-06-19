@@ -1,6 +1,6 @@
 # 03 — Database schema + seed SQL
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 03-db-schema-sql
 Depends: —
 Estimate: 1h

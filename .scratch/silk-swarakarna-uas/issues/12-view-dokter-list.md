@@ -1,6 +1,6 @@
 # 12 — View Dokter List
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 12-view-dokter-list
 Depends: 04, 05, 07
 Estimate: 45m

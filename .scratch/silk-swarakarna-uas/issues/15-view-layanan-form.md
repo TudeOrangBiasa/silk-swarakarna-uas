@@ -1,6 +1,6 @@
 # 15 — View Layanan Create + Edit
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 15-view-layanan-form
 Depends: 04, 05, 08, 14
 Estimate: 1h

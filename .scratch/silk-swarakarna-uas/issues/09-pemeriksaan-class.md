@@ -1,6 +1,6 @@
 # 09 — Pemeriksaan Transaksi Class
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 09-pemeriksaan-class
 Depends: 02, 06, 07, 08
 Estimate: 2h

@@ -1,6 +1,6 @@
 # 17 — View Pemeriksaan List + Quick Actions
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 17-view-pemeriksaan-list
 Depends: 04, 05, 09, 16
 Estimate: 1.5h

@@ -1,6 +1,6 @@
 # 20 — README + .gitignore
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 20-readme-run
 Depends: 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
 Estimate: 1h

@@ -1,6 +1,6 @@
 # 19 — Delete Handlers (All Entities)
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 19-delete-handlers
 Depends: 06, 07, 08, 09, 10, 12, 14, 17
 Estimate: 1h

@@ -1,6 +1,6 @@
 # 11 — View Pasien Create + Edit
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 11-view-pasien-form
 Depends: 04, 05, 06, 10
 Estimate: 1.5h

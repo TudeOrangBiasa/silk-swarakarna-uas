@@ -1,6 +1,6 @@
 # 02 — Database PDO Singleton
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 02-database-class
 Depends: 01
 Estimate: 1h

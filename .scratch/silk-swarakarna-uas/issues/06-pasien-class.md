@@ -1,6 +1,6 @@
 # 06 — Pasien CRUD + Kode Otomatis
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 06-pasien-class
 Depends: 02
 Estimate: 1.5h

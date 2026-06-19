@@ -1,6 +1,6 @@
 # 10 — View Pasien List + Search
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 10-view-pasien-list
 Depends: 04, 05, 06
 Estimate: 1h

@@ -1,6 +1,6 @@
 # 07 — Dokter CRUD + Search
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 07-dokter-class
 Depends: 02
 Estimate: 1h

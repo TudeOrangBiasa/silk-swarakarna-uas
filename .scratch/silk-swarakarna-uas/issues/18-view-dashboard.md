@@ -1,6 +1,6 @@
 # 18 — Dashboard View
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 18-view-dashboard
 Depends: 04, 05, 06, 07, 08, 09
 Estimate: 1h

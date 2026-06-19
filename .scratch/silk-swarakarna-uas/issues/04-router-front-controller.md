@@ -1,6 +1,6 @@
 # 04 — Router + Front Controller
 
-Status: ready-for-agent
+Status: ready-for-dev
 Slug: 04-router-front-controller
 Depends: 01
 Estimate: 1.5h
