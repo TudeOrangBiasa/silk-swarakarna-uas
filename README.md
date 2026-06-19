@@ -13,7 +13,6 @@ Sistem Informasi Layanan Klinik Swarakarna. Aplikasi web PHP OOP untuk klinik TH
 7. [Sprint roadmap](#sprint-roadmap)
 8. [Domain reference](#domain-reference)
 9. [Deployment](#deployment)
-10. [Referensi untuk dosen penilai](#referensi-untuk-dosen-penilai)
 
 ## Ringkasan
 
@@ -256,19 +255,3 @@ Checklist sebelum submit UAS:
 Tim SILK-Swarakarna, Teknik Informatika Pagi 01, Primakara University. 6 mahasiswa, lihat git log untuk breakdown commit.
 
 Lisensi: MIT. Bebas dipakai untuk akademik, portfolio, atau pembelajaran.
-
-## Referensi untuk dosen penilai
-
-| Aspek UAS | Lokasi |
-|---|---|
-| Topik project + deskripsi | [`.scratch/silk-swarakarna-uas/PRD.md`](.scratch/silk-swarakarna-uas/PRD.md) |
-| Analisis kebutuhan sistem | Section 2 PRD |
-| Data master + CRUD | [issues 06–17](.scratch/silk-swarakarna-uas/issues/) (tiap master punya issue sendiri) |
-| Data transaksi + relasi | [issue 09](.scratch/silk-swarakarna-uas/issues/09-pemeriksaan-class.md) + [issue 17](.scratch/silk-swarakarna-uas/issues/17-view-pemeriksaan-list.md) |
-| Ketentuan OOP (5 class) | [`src/`](src/) (Database, Pasien, Dokter, Layanan, Pemeriksaan) |
-| Fitur minimal (7 fitur) | [Sprint roadmap](#sprint-roadmap) |
-| Fitur tambahan (kode otomatis + status transaksi) | [issue 06](.scratch/silk-swarakarna-uas/issues/06-pasien-class.md) + [issue 17](.scratch/silk-swarakarna-uas/issues/17-view-pemeriksaan-list.md) |
-| ERD | [docs/diagrams/erd.png](docs/diagrams/erd.png) |
-| Flowchart | [docs/diagrams/flowchart.png](docs/diagrams/flowchart.png) |
-| Schema database | [database/silk_swarakarna.sql](database/silk_swarakarna.sql) |
-| Cara jalanin | [Quick start](#quick-start) di README ini |
