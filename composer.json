@@ -12,7 +12,8 @@
       "Silk\\Includes\\": "includes/",
       "Silk\\Entity\\": "src/Entity/",
         "Silk\\Repository\\": "src/Repository/",
-        "Silk\\Presenter\\": "src/Presenter/"
+        "Silk\\Presenter\\": "src/Presenter/",
+        "Silk\\Query\\": "src/Query/"
     }
   },
   "scripts": {

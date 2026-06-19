@@ -92,6 +92,7 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
             exit;
         } catch (\Throwable $e) {
             $_SESSION['flash_error'] = $e->getMessage();
+            $_SESSION['old_input']  = $_POST;
             $referer = $_SERVER['HTTP_REFERER'] ?? '/';
             header('Location: ' . $referer);
             exit;
@@ -102,6 +103,14 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
         header('Location: ' . $referer);
         exit;
     }
+}
+
+// ---------------------------------------------------------------------------
+// Cleanup stale form data on GET (flash_message clears on read; old_input
+// and errors may not be read if a view never calls flash_message())
+// ---------------------------------------------------------------------------
+if ($method === 'GET') {
+    unset($_SESSION['old_input'], $_SESSION['errors']);
 }
 
 // ---------------------------------------------------------------------------

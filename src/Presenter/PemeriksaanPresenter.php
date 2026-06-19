@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Silk\Presenter;
 
+use Silk\Entity\Dokter;
+use Silk\Entity\Layanan;
+use Silk\Entity\Pasien;
 use Silk\Entity\Pemeriksaan;
 
 /**
@@ -23,8 +26,22 @@ final class PemeriksaanPresenter
     /** Allowed status values for the form select. */
     private const STATUS_OPTIONS = ['Menunggu', 'Sedang Diperiksa', 'Selesai'];
 
-    public function __construct(private Pemeriksaan $pemeriksaan)
-    {
+    private PasienPresenter $pasienPresenter;
+    private DokterPresenter $dokterPresenter;
+    private LayananPresenter $layananPresenter;
+
+    public function __construct(
+        private Pemeriksaan $pemeriksaan,
+        ?PasienPresenter $pasienPresenter = null,
+        ?DokterPresenter $dokterPresenter = null,
+        ?LayananPresenter $layananPresenter = null,
+    ) {
+        $pasien   = new Pasien();
+        $dokter   = new Dokter();
+        $layanan  = new Layanan();
+        $this->pasienPresenter  = $pasienPresenter  ?? new PasienPresenter($pasien);
+        $this->dokterPresenter  = $dokterPresenter  ?? new DokterPresenter($dokter);
+        $this->layananPresenter = $layananPresenter ?? new LayananPresenter($layanan);
     }
 
     /**
@@ -67,6 +84,36 @@ final class PemeriksaanPresenter
     }
 
     /**
+     * Options for pasien <select>: value=id_pasien, label="RM-xxx - Nama Pasien".
+     *
+     * @return list<array{value: string, label: string}>
+     */
+    public function getPasienOptions(): array
+    {
+        return $this->pasienPresenter->getOptions();
+    }
+
+    /**
+     * Options for dokter <select>: value=id_dokter, label="Nama Dokter - Spesialisasi".
+     *
+     * @return list<array{value: string, label: string}>
+     */
+    public function getDokterOptions(): array
+    {
+        return $this->dokterPresenter->getOptions();
+    }
+
+    /**
+     * Options for layanan <select>: value=id_layanan, label="Nama Layanan (Rp Biaya)".
+     *
+     * @return list<array{value: string, label: string}>
+     */
+    public function getLayananOptions(): array
+    {
+        return $this->layananPresenter->getOptions();
+    }
+
+    /**
      * Status options for the form select dropdown.
      *
      * @return list<string>
@@ -84,12 +131,7 @@ final class PemeriksaanPresenter
      */
     public function getAllowedTransitions(string $currentStatus): array
     {
-        $map = [
-            'Menunggu'         => ['Sedang Diperiksa', 'Selesai'],
-            'Sedang Diperiksa' => ['Menunggu', 'Selesai'],
-            'Selesai'          => [],
-        ];
-        return $map[$currentStatus] ?? [];
+        return $this->pemeriksaan->getAllowedTransitions($currentStatus);
     }
 
     /**

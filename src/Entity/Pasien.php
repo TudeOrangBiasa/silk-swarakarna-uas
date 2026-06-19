@@ -6,6 +6,7 @@ namespace Silk\Entity;
 
 use PDOException;
 use RuntimeException;
+use Silk\Query\PasienQuery;
 use Silk\Repository\PasienRepository;
 
 /**
@@ -19,15 +20,17 @@ final class Pasien
     private const REQUIRED = ['nama_pasien', 'tanggal_lahir', 'no_hp', 'alamat'];
 
     private PasienRepository $repo;
+    private PasienQuery $query;
 
     public function __construct()
     {
-        $this->repo = new PasienRepository();
+        $this->repo  = new PasienRepository();
+        $this->query = new PasienQuery();
     }
 
     public function generateKodeOtomatis(): string
     {
-        return $this->repo->generateKodeOtomatis();
+        return $this->query->generateKodeOtomatis();
     }
 
     /**
@@ -36,7 +39,7 @@ final class Pasien
     public function create(array $data): string
     {
         $this->validateRequired($data, self::REQUIRED);
-        $id = $this->repo->generateKodeOtomatis();
+        $id = $this->query->generateKodeOtomatis();
         $this->repo->insert($id, $data);
         return $id;
     }
@@ -66,7 +69,12 @@ final class Pasien
 
     public function search(string $keyword): array
     {
-        return $this->repo->searchByName($keyword);
+        return $this->query->searchByName($keyword);
+    }
+
+    public function readForOptions(): array
+    {
+        return $this->query->findPasienForOptions();
     }
 
     public function count(): int

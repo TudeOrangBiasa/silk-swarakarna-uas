@@ -35,6 +35,20 @@ final class LayananPresenter
         return $this->formatRow($row);
     }
 
+    /**
+     * Options for <select> element: value=id_layanan, label="Nama Layanan (Rp Biaya)".
+     *
+     * @return list<array{value: string, label: string}>
+     */
+    public function getOptions(): array
+    {
+        $rows = $this->layanan->readForOptions();
+        return array_map(fn($r) => [
+            'value' => (string) $r['id_layanan'],
+            'label' => $r['nama_layanan'] . ' (Rp ' . number_format((int) $r['biaya'], 0, ',', '.') . ')',
+        ], $rows);
+    }
+
     public function getCount(): int
     {
         return $this->layanan->count();

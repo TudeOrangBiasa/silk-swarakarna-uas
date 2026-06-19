@@ -7,6 +7,7 @@ namespace Silk\Entity;
 use PDOException;
 use RuntimeException;
 use Silk\Database;
+use Silk\Query\PemeriksaanQuery;
 use Silk\Repository\PemeriksaanRepository;
 
 /**
@@ -29,17 +30,19 @@ final class Pemeriksaan
     private const REQUIRED = ['id_pasien', 'id_dokter', 'id_layanan', 'tanggal_periksa', 'keluhan'];
 
     private PemeriksaanRepository $repo;
+    private PemeriksaanQuery $query;
     private Database $db;
 
     public function __construct()
     {
-        $this->repo = new PemeriksaanRepository();
-        $this->db   = Database::getInstance();
+        $this->repo  = new PemeriksaanRepository();
+        $this->query = new PemeriksaanQuery();
+        $this->db    = Database::getInstance();
     }
 
     public function generateKodeOtomatis(): string
     {
-        return $this->repo->generateKodeOtomatis();
+        return $this->query->generateKodeOtomatis();
     }
 
     /**
@@ -48,7 +51,7 @@ final class Pemeriksaan
     public function create(array $data): string
     {
         $this->validateRequired($data, self::REQUIRED);
-        $id = $this->repo->generateKodeOtomatis();
+        $id = $this->query->generateKodeOtomatis();
         $data['id_periksa'] = $id;
         $this->repo->insert($data);
         return $id;
@@ -61,17 +64,17 @@ final class Pemeriksaan
 
     public function readWithJoin(?string $keyword = null): array
     {
-        return $this->repo->findAllJoined($keyword);
+        return $this->query->findAllJoined($keyword);
     }
 
     public function getById(string $id): array
     {
-        return $this->repo->findByIdJoined($id);
+        return $this->query->findByIdJoined($id);
     }
 
     public function readLatest(int $limit = 5): array
     {
-        return $this->repo->findLatest($limit);
+        return $this->query->findLatest($limit);
     }
 
     /**
@@ -81,7 +84,7 @@ final class Pemeriksaan
     {
         $this->db->beginTransaction();
         try {
-            $current = $this->repo->findStatusForUpdate($id);
+            $current = $this->query->findStatusForUpdate($id);
             if ($current === null) {
                 throw new RuntimeException("Pemeriksaan {$id} not found");
             }
@@ -108,6 +111,16 @@ final class Pemeriksaan
     public function countByDate(string $date): int
     {
         return $this->repo->countByDate($date);
+    }
+
+    /**
+     * Get allowed status transitions for the given current status.
+     *
+     * @return list<string>
+     */
+    public function getAllowedTransitions(string $currentStatus): array
+    {
+        return self::TRANSITIONS[$currentStatus] ?? [];
     }
 
     private function validateRequired(array $data, array $fields): void

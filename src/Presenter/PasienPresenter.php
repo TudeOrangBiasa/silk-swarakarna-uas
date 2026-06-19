@@ -45,6 +45,20 @@ final class PasienPresenter
         return $this->formatRow($row);
     }
 
+    /**
+     * Options for <select> element: value=id_pasien, label="RM-xxx - Nama Pasien".
+     *
+     * @return list<array{value: string, label: string}>
+     */
+    public function getOptions(): array
+    {
+        $rows = $this->pasien->readForOptions();
+        return array_map(fn($r) => [
+            'value' => $r['id_pasien'],
+            'label' => $r['id_pasien'] . ' - ' . $r['nama_pasien'],
+        ], $rows);
+    }
+
     public function getCount(): int
     {
         return $this->pasien->count();

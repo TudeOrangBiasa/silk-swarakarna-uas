@@ -6,6 +6,7 @@ namespace Silk\Entity;
 
 use PDOException;
 use RuntimeException;
+use Silk\Query\DokterQuery;
 use Silk\Repository\DokterRepository;
 
 /**
@@ -16,10 +17,12 @@ final class Dokter
     private const REQUIRED = ['nama_dokter', 'no_izin_praktik'];
 
     private DokterRepository $repo;
+    private DokterQuery $query;
 
     public function __construct()
     {
-        $this->repo = new DokterRepository();
+        $this->repo  = new DokterRepository();
+        $this->query = new DokterQuery();
     }
 
     public function create(array $data): int
@@ -53,7 +56,12 @@ final class Dokter
 
     public function search(string $keyword): array
     {
-        return $this->repo->searchByName($keyword);
+        return $this->query->searchByName($keyword);
+    }
+
+    public function readForOptions(): array
+    {
+        return $this->query->findDokterForOptions();
     }
 
     public function count(): int

@@ -19,17 +19,6 @@ final class PasienRepository
         $this->db = Database::getInstance();
     }
 
-    public function generateKodeOtomatis(): string
-    {
-        $rows = $this->db->query(
-            "SELECT MAX(CAST(SUBSTRING(id_pasien, 4) AS UNSIGNED)) AS max_num
-             FROM pasien
-             WHERE id_pasien REGEXP '^RM-[0-9]+$'"
-        );
-        $next = ((int) ($rows[0]['max_num'] ?? 0)) + 1;
-        return 'RM-' . str_pad((string) $next, 3, '0', STR_PAD_LEFT);
-    }
-
     public function insert(string $id, array $data): void
     {
         $this->db->execute(
@@ -70,14 +59,6 @@ final class PasienRepository
     public function delete(string $id): void
     {
         $this->db->execute('DELETE FROM pasien WHERE id_pasien = ?', [$id]);
-    }
-
-    public function searchByName(string $keyword): array
-    {
-        return $this->db->query(
-            'SELECT * FROM pasien WHERE nama_pasien LIKE ? ORDER BY nama_pasien ASC',
-            ['%' . $keyword . '%']
-        );
     }
 
     public function count(): int

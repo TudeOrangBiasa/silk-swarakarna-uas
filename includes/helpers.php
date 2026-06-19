@@ -47,3 +47,57 @@ function format_datetime(string $iso): string
         return $iso;
     }
 }
+
+/**
+ * Get old POST input value (for form repopulation after validation error).
+ * Falls back to empty string.
+ */
+function old_input(string $key, string $default = ''): string
+{
+    return (string) ($_SESSION['old_input'][$key] ?? $default);
+}
+
+/**
+ * Check if a field has a stored error.
+ */
+function has_error(string $key): bool
+{
+    return isset($_SESSION['errors'][$key]);
+}
+
+/**
+ * Get error message for a field (if any).
+ */
+function error_for(string $key): ?string
+{
+    return $_SESSION['errors'][$key] ?? null;
+}
+
+/**
+ * Consume and return the flash message (success or error).
+ * Returns null if no flash. After calling, the session keys are cleared.
+ *
+ * @return array{type: 'success'|'error', message: string}|null
+ */
+function flash_message(): ?array
+{
+    if (isset($_SESSION['flash_success'])) {
+        $msg = ['type' => 'success', 'message' => (string) $_SESSION['flash_success']];
+        unset($_SESSION['flash_success'], $_SESSION['old_input'], $_SESSION['errors']);
+        return $msg;
+    }
+    if (isset($_SESSION['flash_error'])) {
+        $msg = ['type' => 'error', 'message' => (string) $_SESSION['flash_error']];
+        unset($_SESSION['flash_error'], $_SESSION['old_input'], $_SESSION['errors']);
+        return $msg;
+    }
+    return null;
+}
+
+/**
+ * Get a query string parameter with default.
+ */
+function query_param(string $key, string $default = ''): string
+{
+    return (string) ($_GET[$key] ?? $default);
+}

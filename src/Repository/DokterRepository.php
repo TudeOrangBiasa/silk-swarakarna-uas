@@ -66,14 +66,6 @@ final class DokterRepository
         $this->db->execute('DELETE FROM dokter WHERE id_dokter = ?', [$id]);
     }
 
-    public function searchByName(string $keyword): array
-    {
-        return $this->db->query(
-            'SELECT * FROM dokter WHERE nama_dokter LIKE ? ORDER BY nama_dokter ASC',
-            ['%' . $keyword . '%']
-        );
-    }
-
     public function count(): int
     {
         $rows = $this->db->query('SELECT COUNT(*) AS n FROM dokter');

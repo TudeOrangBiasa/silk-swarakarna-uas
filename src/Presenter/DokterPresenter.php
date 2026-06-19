@@ -38,6 +38,20 @@ final class DokterPresenter
         return $this->formatRow($row);
     }
 
+    /**
+     * Options for <select> element: value=id_dokter, label="dr. Nama - Spesialisasi".
+     *
+     * @return list<array{value: string, label: string}>
+     */
+    public function getOptions(): array
+    {
+        $rows = $this->dokter->readForOptions();
+        return array_map(fn($r) => [
+            'value' => (string) $r['id_dokter'],
+            'label' => $r['nama_dokter'] . ' - ' . $r['spesialisasi'],
+        ], $rows);
+    }
+
     public function getCount(): int
     {
         return $this->dokter->count();

@@ -6,6 +6,7 @@ namespace Silk\Entity;
 
 use PDOException;
 use RuntimeException;
+use Silk\Query\LayananQuery;
 use Silk\Repository\LayananRepository;
 
 /**
@@ -14,10 +15,17 @@ use Silk\Repository\LayananRepository;
 final class Layanan
 {
     private LayananRepository $repo;
+    private LayananQuery $query;
 
     public function __construct()
     {
-        $this->repo = new LayananRepository();
+        $this->repo  = new LayananRepository();
+        $this->query = new LayananQuery();
+    }
+
+    public function readForOptions(): array
+    {
+        return $this->query->findLayananForOptions();
     }
 
     public function create(array $data): int
