@@ -9,9 +9,8 @@ Sistem Informasi Layanan Klinik Swarakarna. Aplikasi web PHP OOP untuk klinik TH
 3. [Struktur proyek](#struktur-proyek)
 4. [Quick start](#quick-start)
 5. [Tech stack](#tech-stack)
-6. [Sprint roadmap](#sprint-roadmap)
-7. [Domain reference](#domain-reference)
-8. [Deployment](#deployment)
+6. [Domain reference](#domain-reference)
+7. [Deployment](#deployment)
 
 ## Ringkasan
 
@@ -209,26 +208,6 @@ Document root cPanel harus point ke folder `public/`, bukan root repo. Ini penti
 
 Tidak pakai framework. Sesuai spec UAS: OOP murni, class pisah jelas.
 
-## Sprint roadmap
-
-20 issue, dependency-aware. Detail per issue di [`.scratch/silk-swarakarna-uas/issues/`](.scratch/silk-swarakarna-uas/issues/).
-
-| Wave | Issue | Bisa paralel | Deskripsi |
-|---|---|---|---|
-| 1 | 01–05 | 5 orang | Foundation: bootstrap, DB, schema, router, layout |
-| 2 | 06–09 | 4 orang | Domain classes: Pasien, Dokter, Layanan, Pemeriksaan |
-| 3 | 10–17 | 8 orang | Views: list + form per master, create + list untuk transaksi |
-| 4 | 18–19 | 2 orang | Dashboard widget + delete handlers |
-| 5 | 20 | 1 orang | Final integration + README polish |
-
-Tiap file issue punya:
-- `Status: ready-for-agent` (lihat [triage-labels.md](docs/agents/triage-labels.md))
-- `Depends:` (issue yang harus selesai dulu)
-- `## Files` (file yang harus dibuat)
-- `## Acceptance` (checklist testable)
-- `## Test` (code snippet)
-- `## Out of scope` (batas-batas biar tidak scope creep)
-
 ## Domain reference
 
 Glossary lengkap di [CONTEXT.md](CONTEXT.md). Ringkas:
@@ -250,7 +229,7 @@ Glossary lengkap di [CONTEXT.md](CONTEXT.md). Ringkas:
 
 Checklist sebelum submit UAS:
 
-- [ ] Semua 20 issue selesai
+- [ ] Semua issue GitHub closed
 - [ ] `ddev start` + `ddev launch` jalan tanpa error
 - [ ] `ddev mysql -e "SELECT COUNT(*) FROM pemeriksaan;"` return > 0
 - [ ] `ddev import-db --file=database/silk_swarakarna.sql` bisa diulang dari nol
