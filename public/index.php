@@ -70,7 +70,21 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
     if (class_exists($class)) {
         try {
             $instance = new $class();
-            $result   = $instance->{$action['method']}();
+            // Build args by method signature:
+            //   create      → ($_POST)
+            //   update      → ($id, $_POST)
+            //   updateStatus → ($id, $newStatus)
+            // id can come from POST body or GET query (forms embed hidden id;
+            // some flows pass via ?id=). newStatus reads status_pemeriksaan from POST.
+            $id        = $_POST['id'] ?? $_GET['id'] ?? null;
+            $newStatus = $_POST['status_pemeriksaan'] ?? null;
+            $args      = match ($action['method']) {
+                'create'       => [$_POST],
+                'update'       => [$id, $_POST],
+                'updateStatus' => [$id, $newStatus],
+                default        => [],
+            };
+            $result = $instance->{$action['method']}(...$args);
             // Success: redirect to the entity list page
             $entity = explode('.', $routeKey)[0];
             $_SESSION['flash_success'] = ucfirst($entity) . ' berhasil disimpan.';
