@@ -17,7 +17,7 @@ $action_labels = [
     'update_status'  => 'Update Status',
 ];
 ?>
-<header class="topbar sticky-top flex-shrink-0 d-flex align-items-center px-3 px-lg-4 py-2 bg-white border-bottom shadow-sm">
+<header class="topbar flex-shrink-0 d-flex align-items-center px-3 px-lg-4 py-2 bg-white border-bottom shadow-sm">
     <button type="button" class="btn btn-link text-body p-0 me-3 border-0" id="topbarToggle" aria-label="Toggle navigation">
         <i class="bi bi-list fs-4"></i>
     </button>

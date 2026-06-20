@@ -130,6 +130,14 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
     }
 }
 
+// Logout: clear session and redirect to home
+if ($url === 'logout' && $method === 'GET') {
+    $_SESSION = [];
+    session_destroy();
+    header('Location: /');
+    exit;
+}
+
 // ---------------------------------------------------------------------------
 // GET route resolution
 // ---------------------------------------------------------------------------

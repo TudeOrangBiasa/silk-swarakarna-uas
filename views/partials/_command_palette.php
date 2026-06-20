@@ -7,7 +7,7 @@
                            id="commandPaletteInput" placeholder="Cari atau navigasi..."
                            aria-label="Cari" autocomplete="off">
                 </div>
-                <ul class="list-group list-group-flush" id="commandPaletteResults" role="listbox">
+                <ul class="list-group list-group-flush" id="commandPaletteResults">
                     <?php foreach ([
                         ['url' => '/',              'icon' => 'bi-grid-1x2',         'label' => 'Dashboard'],
                         ['url' => '/pasien',        'icon' => 'bi-people',           'label' => 'Pasien'],
@@ -15,7 +15,7 @@
                         ['url' => '/layanan',       'icon' => 'bi-tags',             'label' => 'Layanan'],
                         ['url' => '/pemeriksaan',   'icon' => 'bi-journal-medical',  'label' => 'Pemeriksaan'],
                     ] as $item): ?>
-                        <li class="list-group-item command-item" data-url="<?= htmlspecialchars($item['url']) ?>" role="option" tabindex="0">
+                        <li class="list-group-item command-item" data-url="<?= htmlspecialchars($item['url']) ?>" tabindex="0">
                             <i class="bi <?= htmlspecialchars($item['icon']) ?> me-3 fs-5 text-muted"></i>
                             <span><?= htmlspecialchars($item['label']) ?></span>
                         </li>

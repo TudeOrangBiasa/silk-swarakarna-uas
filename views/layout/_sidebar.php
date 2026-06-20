@@ -26,7 +26,7 @@ $transaksi_items = [
         </a>
 
         <!-- Nav (scrollable area — scrolls if nav too long) -->
-        <div class="sidebar-nav-scroll flex-grow-1 overflow-y-auto">
+        <div class="flex-grow-1 overflow-y-auto">
             <?php
             $label = 'Utama';
             $items = $utama_items;
