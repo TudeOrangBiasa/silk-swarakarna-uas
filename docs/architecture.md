@@ -1,97 +1,127 @@
 # Architecture
 
-Diagram arsitektur SILK-Swarakarna: struktur direktori + request lifecycle.
+Diagram arsitektur SILK-Swarakarna: struktur direktori, request lifecycle, class diagram.
 
-## 1. Project Layout
+## 1. Project layout
 
 ```
 silk-swarakarna/
 ├── src/
 │   ├── Database.php
-│   ├── Entity/                  (Silk\Entity\*)
+│   ├── Entity/                     (Silk\Entity\*)
 │   │   ├── Pasien.php
 │   │   ├── Dokter.php
 │   │   ├── Layanan.php
 │   │   └── Pemeriksaan.php
-│   ├── Repository/              (Silk\Repository\*)
+│   ├── Repository/                 (Silk\Repository\*)
 │   │   ├── PasienRepository.php
 │   │   ├── DokterRepository.php
 │   │   ├── LayananRepository.php
 │   │   └── PemeriksaanRepository.php
-│   ├── Query/                   (Silk\Query\*)
+│   ├── Query/                      (Silk\Query\*)
 │   │   ├── PasienQuery.php
 │   │   ├── DokterQuery.php
 │   │   ├── LayananQuery.php
 │   │   └── PemeriksaanQuery.php
-│   └── Presenter/               (Silk\Presenter\*)
-│       ├── PasienPresenter.php
-│       ├── DokterPresenter.php
-│       ├── LayananPresenter.php
-│       └── PemeriksaanPresenter.php
+│   ├── Presenter/                  (Silk\Presenter\*)
+│   │   ├── PasienPresenter.php
+│   │   ├── DokterPresenter.php
+│   │   ├── LayananPresenter.php
+│   │   └── PemeriksaanPresenter.php
+│   ├── Exception/
+│   │   └── ValidationException.php | Map field => error message
+│   └── Validation/                 (Silk\Validation\*)
+│       ├── Validator.php           | Process rules, throw on error
+│       └── Rule/                   (Silk\Validation\Rule\*)
+│           ├── Rule.php            | Interface
+│           ├── Required.php
+│           ├── MaxLength.php
+│           ├── DateNotFuture.php
+│           ├── PhoneFormat.php
+│           ├── Enum.php
+│           └── PositiveNumber.php
 │
 ├── includes/
-│   ├── bootstrap.php
-│   ├── config.php
-│   └── helpers.php              (format + form helpers)
+│   ├── bootstrap.php               | Security headers, session, autoload, error handler
+│   ├── config.php                  | .env parser
+│   ├── helpers.php                 | Tanggal, Rupiah, flash, pagination helpers
+│   ├── auth.php                    | Login/logout, CSRF token/field/verify
+│   └── logger.php                  | Error logger
 │
 ├── public/
-│   ├── index.php                (front controller + router)
+│   ├── index.php                   | Front controller + router
 │   ├── .htaccess
-│   └── assets/css/app.css
+│   └── assets/css/app.css          | Design system, 342 baris
 │
-├── views/                       (no namespace, templates)
-│   ├── layout/{header,footer}.php
+├── views/                          | Bootstrap 5.3 template
+│   ├── layout/
+│   │   ├── header.php              | <head>, sidebar, topbar, skip-to-content
+│   │   ├── footer.php              | </main>, command palette, sidebar toggle JS
+│   │   ├── _sidebar.php            | Dark nav: Utama, Master Data, Transaksi, profile
+│   │   └── _topbar.php             | Sticky: toggle, breadcrumb, search button
+│   ├── partials/
+│   │   ├── _flash.php              | Flash dismissible message
+│   │   ├── _sidebar_section.php    | Sidebar section reusable
+│   │   ├── _command_palette.php    | cmd+K modal navigasi
+│   │   └── pagination.php          | Bootstrap 5 pagination
+│   ├── auth/
+│   │   └── login.php               | Login form
+│   ├── dashboard.php
+│   ├── pasien/                     | CRUD views
+│   ├── dokter/                     | CRUD views
+│   ├── layanan/                    | CRUD views
+│   ├── pemeriksaan/                | Index, create, delete, update_status
 │   ├── errors/404.php
 │   └── _placeholder.php
 │
+├── tests/
+│   ├── bootstrap.php
+│   ├── EntityTestCase.php
+│   ├── Auth/                       | Auth flow test
+│   ├── Entity/                     | Entity validation + CRUD
+│   ├── Repository/
+│   ├── Query/
+│   └── Presenter/
+│
 ├── database/
-│   └── silk_swarakarna.sql
+│   └── silk_swarakarna.sql         | Schema + seed (4 tabel, trigger)
 │
-├── docs/
-│   ├── architecture.md          (this file)
-│   ├── business-logic.md
-│   ├── designs/
-│   └── agents/
-│
-├── .ddev/
-├── composer.json                (PSR-4 autoload)
+├── docs/                           | Dokumentasi
+├── composer.json                   | PSR-4 autoload
+├── DESIGN.md                       | Design system spec
+├── AGENTS.md                       | Agent runtime config
+├── CONTEXT.md                      | Domain glossary
 ├── .env.example
-├── .gitignore
-├── AGENTS.md
-├── DESIGN.md
-├── CONTEXT.md
-└── README.md
+└── .gitignore
 ```
 
-## 2. Request Lifecycle
-
-Setiap HTTP request dari browser flow-nya gini:
+## 2. Request lifecycle
 
 ```mermaid
 graph TB
     subgraph Browser["Browser"]
-        UI[User klik menu/<br/>submit form]
+        UI[User klik menu / submit form]
     end
 
     subgraph Public["public/ (Document Root)"]
-        HC[".htaccess<br/>rewrite ke index.php"]
-        Router["index.php<br/>Front Controller + Router"]
+        HC[".htaccess rewrite ke index.php"]
+        Router["index.php<br/>Front Controller + Router + Auth Gate + CSRF check"]
     end
 
     subgraph Bootstrap["includes/"]
-        Boot["bootstrap.php<br/>- session_start<br/>- require autoload<br/>- require config"]
-        Cfg["config.php<br/>DB_HOST, DB_NAME,<br/>DB_USER, DB_PASS"]
+        Boot["bootstrap.php<br/>- session_start<br/>- CSP + XCTO + Referrer-Policy headers<br/>- autoload<br/>- config<br/>- error handler"]
+        Auth["auth.php<br/>- is_logged_in()<br/>- login() / logout()<br/>- csrf_token / csrf_field / csrf_verify"]
     end
 
     subgraph Domain["src/ (Domain Layer)"]
-        DBClass["Database<br/>PDO singleton<br/>query / execute"]
-        Master["Master classes<br/>Pasien / Dokter / Layanan<br/>- create<br/>- read<br/>- update<br/>- delete<br/>- generateKodeOtomatis (Pasien)"]
-        Trans["Pemeriksaan<br/>- create<br/>- readWithJoin<br/>- updateStatus"]
+        DBClass["Database<br/>PDO singleton"]
+        Entity["Entity classes<br/>Pasien, Dokter, Layanan, Pemeriksaan<br/>- Validator + rules<br/>- Business logic<br/>- Delegasi ke Repo/Query"]
+        Val["Validator + 6 Rule classes<br/>throw ValidationException"]
     end
 
     subgraph View["views/"]
-        Layout["layout/<br/>header.php + footer.php"]
-        Page["page file<br/>mis. pasien/index.php"]
+        Layout["layout/<br/>header + sidebar + topbar + footer"]
+        Page["page file<br/>dashboard, pasien/index, dll"]
     end
 
     subgraph Data["MySQL"]
@@ -104,20 +134,21 @@ graph TB
     UI -->|"GET /pasien<br/>POST form"| HC
     HC --> Router
     Router --> Boot
-    Boot --> Cfg
-    Boot --> Router
-    Router -->|route = 'pasien.index'| Page
-    Router -->|route = 'pasien.create'| Master
-    Master -->|"new Pasien()"| DBClass
+    Router --> Auth
+    Auth -->|"not logged in, not /login"| Login["Redirect ke /login"]
+    Auth -->|"POST without CSRF"| Forbidden["HTTP 403 + redirect"]
+    Router -->|"route match"| Entity
+    Entity --> Val
+    Val -->|"error"| Flash["Flash error + redirect back"]
+    Entity --> DBClass
     DBClass --> T1
     DBClass --> T2
     DBClass --> T3
-    Trans --> DBClass
     DBClass --> T4
-    Master -->|return data array| Page
-    Trans -->|return data + JOIN| Page
+    Entity -->|"data array"| Router
+    Router --> Page
     Page --> Layout
-    Layout -->|HTML + Bootstrap 5| UI
+    Layout -->|"HTML + Bootstrap 5"| UI
 
     style Browser fill:#e3f2fd
     style Public fill:#fff3e0
@@ -126,95 +157,67 @@ graph TB
     style Data fill:#fce4ec
 ```
 
-## 3. Layered Architecture Overview
+## 3. Layered architecture
 
 ```
-┌─────────────────────────────────────────────────┐
-│ views/                  (template HTML, no class)│
-│   ↓ uses                                          │
-│ Presenter/*           (format data for view)     │
-│   ↓ uses                                          │
-│ Entity/*              (validation, business rules)│
-│   ↓ composition                                   │
-│   ├── Repository/*     (CRUD: insert/update/delete)│
-│   └── Query/*          (complex reads + generate) │
-│        ↓ uses                                      │
-│        Database (Silk\Database)                   │
-│        ↓ uses                                      │
-│        PDO + MariaDB                              │
-└─────────────────────────────────────────────────┘
+views/                   (template HTML, access Presenter only)
+  | uses
+Presenter/*              (format data for view: pagination, Rupiah, badges)
+  | uses
+Entity/*                 (validation, business rules)
+  | composition
+  |-- Repository/*       (CRUD: insert/update/delete)
+  |-- Query/*            (complex reads, JOINs, generate code)
+  |-- Validator + Rules  (throw ValidationException)
+  |    | uses
+  |    Database (PDO singleton)
+  |    | uses
+  |    PDO + MariaDB
 ```
 
-## 4. CQRS Rationale (Repository vs Query)
+## 4. CQRS rationale
 
-Repository = Command + basic read. Handles:
-- `insert()`, `update()`, `delete()` (write operations)
-- `findAll()`, `findById()` (simple reads by ID, no JOIN)
-- `count()` (simple aggregate, no WHERE)
+Repository = Command + basic read. Methods:
+- `insert()`, `update()`, `delete()` (write)
+- `findAll()`, `findById()` (simple read, no JOIN)
+- `count()` (simple aggregate)
 
-Query = Read. Handles:
-- `searchByName()` (LIKE queries, can be slow at scale)
-- `findAllJoined()`, `findByIdJoined()` (multi-table JOINs)
-- `findLatest($limit)` (top-N queries)
-- `findStatusForUpdate()` (row-level locks in transactions)
-- `generateKodeOtomatis()` (computation involving MAX query)
-- `countByDate()` (date-filtered aggregates)
+Query = Read. Methods:
+- `searchByName()` (LIKE query)
+- `findAllJoined()`, `findByIdJoined()` (multi-table JOIN)
+- `findLatest($limit)` (top-N)
+- `findStatusForUpdate()` (row-level lock `FOR UPDATE`)
+- `generateKodeOtomatis()` (computation: MAX + increment)
+- `countByDate()`, `getCountByMonth()` (date aggregate)
+- `getTopLayanan()`, `getDokterStats()` (grouped stats)
 
-Boundary rule: if a query is simple (single table, basic WHERE, no JOIN), it goes in Repository. If it involves JOINs, LIKE, computed values, or row locks, it goes in Query.
+Boundary rule: simple read (single table, no JOIN) goes in Repository. JOIN, LIKE, computed values, row locks go in Query.
 
-## 5. Code Examples
+## 5. Code examples
 
-**Entity with Query delegation (Pasien):**
+### Validator usage (Pasien create)
 
 ```php
-final class Pasien
-{
-    private PasienRepository $repo;
-    private PasienQuery $query;
-
-    public function __construct()
-    {
-        $this->repo  = new PasienRepository();
-        $this->query = new PasienQuery();
-    }
-
-    public function generateKodeOtomatis(): string
-    {
-        return $this->query->generateKodeOtomatis();
-    }
-
-    public function search(string $keyword): array
-    {
-        return $this->query->searchByName($keyword);
-    }
-    // create, read, update, delete -> repo
-}
+(new Validator())->validate($data, [
+    'nama_pasien'      => [new Required('Nama pasien wajib diisi'),
+                            new MaxLength('Nama pasien maksimal 100 karakter', 100)],
+    'tanggal_lahir'    => [new Required('Tanggal lahir wajib diisi'),
+                            new DateNotFuture('Tanggal lahir tidak boleh di masa depan')],
+    'jenis_kelamin'    => [new Required('Jenis kelamin wajib diisi'),
+                            new Enum(['L', 'P'], 'Jenis kelamin harus L atau P')],
+    'pekerjaan'        => [new MaxLength('Pekerjaan maksimal 100 karakter', 100)],
+    'golongan_darah'   => [new Enum(['A', 'B', 'AB', 'O'],
+                            'Golongan darah harus A, B, AB, atau O')],
+    'no_hp'            => [new Required('No HP wajib diisi'),
+                            new PhoneFormat('No HP harus 10-15 digit angka')],
+    'alamat'           => [new Required('Alamat wajib diisi'),
+                            new MaxLength('Alamat maksimal 255 karakter', 255)],
+]);
 ```
 
-**Presenter pattern:**
+Validator iterates field rules. Each rule has `validate(value): ?string`. Returns `null` if valid, error message if invalid. First error per field stops. Throws `ValidationException` with `field => message` map. Router catches it, redirects with flash + old input.
 
-```php
-final class PasienPresenter
-{
-    public function __construct(private Pasien $pasien) {}
-
-    public function getListData(?string $keyword = null): array
-    {
-        $rows = $keyword
-            ? $this->pasien->search($keyword)
-            : $this->pasien->read();
-        return array_map([$this, 'formatRow'], $rows);
-    }
-
-    private function formatRow(array $r): array
-    {
-        $r['tanggal_lahir_fmt'] = format_tanggal($r['tanggal_lahir'] ?? '');
-        return $r;
-    }
-}
-```
-
-**Pemeriksaan with transaction (race-safe status update):**
+### Pemeriksaan updateStatus (race-safe)
 
 ```php
 public function updateStatus(string $id, string $newStatus): int
@@ -236,11 +239,32 @@ public function updateStatus(string $id, string $newStatus): int
 }
 ```
 
-## 6. Updated Project Layout
+`findStatusForUpdate` locks the row. Two concurrent requests cannot race. Transition validation happens inside the lock.
 
-> Project layout sudah diperbarui pada **Section 1**. Struktur direktori sekarang memisahkan Entity, Repository, Query, dan Presenter ke dalam subfolder masing-masing di `src/`.
+## 6. Class responsibilities
 
-## 7. Composer Autoload (PSR-4)
+| Class | Responsibility | Methods |
+|---|---|---|
+| `Database` | PDO singleton | `getInstance()`, `query()`, `execute()`, `lastInsertId()`, `beginTransaction()`, `commit()`, `rollBack()` |
+| `Entity\Pasien` | Validasi + CRUD + generate RM-XXX | `create()`, `read()`, `update()`, `delete()`, `search()`, `generateKodeOtomatis()`, `readForOptions()`, `count()` |
+| `Entity\Dokter` | Validasi + CRUD | `create()`, `read()`, `update()`, `delete()`, `search()`, `count()` |
+| `Entity\Layanan` | Validasi + CRUD | `create()`, `read()`, `update()`, `delete()`, `count()` |
+| `Entity\Pemeriksaan` | Transaksi + state machine + FOR UPDATE | `create()`, `read()`, `readWithJoin()`, `getById()`, `readLatest()`, `updateStatus()`, `delete()`, `count()`, `countByDate()`, `getAllowedTransitions()` |
+| `Repository\*` | SQL data access (command) | `insert()`, `findAll()`, `findById()`, `update()`, `delete()`, `count()` |
+| `Query\*` | Complex reads (query) | `searchByName()`, `findAllJoined()`, `findByIdJoined()`, `findLatest()`, `findStatusForUpdate()`, `generateKodeOtomatis()`, `countByDate()`, `getCountByMonth()`, `getTopLayanan()`, `getDokterStats()` |
+| `Presenter\*` | Format for view | `getListData()`, `getFormData()`, `getOptions()`, `getCount()`, `getDashboardStats()` (Pemeriksaan), `getLatest()` (Pemeriksaan) |
+| `Validator` | Validate data against rule set | `validate(data, rules)` |
+| `Rule\Rule` | Interface | `validate(value): ?string` |
+| `Rule\Required` | Field must not be empty | `validate(value)` |
+| `Rule\MaxLength` | Max char length | `validate(value)` |
+| `Rule\DateNotFuture` | Date <= today | `validate(value)` |
+| `Rule\PhoneFormat` | 10-15 digit numeric | `validate(value)` |
+| `Rule\Enum` | Must be in list | `validate(value)` |
+| `Rule\PositiveNumber` | Number > 0 | `validate(value)` |
+| `ValidationException` | Per-field error container | `getErrors()` |
+| `auth.php` functions | Login, logout, CSRF | `is_logged_in()`, `current_user()`, `login()`, `logout()`, `csrf_token()`, `csrf_field()`, `csrf_verify()` |
+
+## 7. Composer autoload (PSR-4)
 
 ```json
 "autoload": {
@@ -249,49 +273,85 @@ public function updateStatus(string $id, string $newStatus): int
         "Silk\\Includes\\": "includes/",
         "Silk\\Entity\\": "src/Entity/",
         "Silk\\Repository\\": "src/Repository/",
-        "Silk\\Query\\": "src/Query/",
-        "Silk\\Presenter\\": "src/Presenter/"
+        "Silk\\Presenter\\": "src/Presenter/",
+        "Silk\\Query\\": "src/Query/"
     }
 }
 ```
 
-## 8. Class Responsibilities
+`Silk\Exception\ValidationException` and `Silk\Validation\*` resolved by `Silk\` -> `src/` mapping.
 
-| Class | Tanggung Jawab | Methods |
-|---|---|---|
-| `Database` | Koneksi PDO, eksekusi query global | `getInstance()`, `query()`, `execute()`, `lastInsertId()` |
-| `Entity\Pasien` | Delegasi ke Repository + Query | `create()`, `read()`, `update()`, `delete()`, `generateKodeOtomatis()`, `search()` |
-| `Entity\Dokter` | Delegasi ke Repository + Query | `create()`, `read()`, `update()`, `delete()`, `search()` |
-| `Entity\Layanan` | Delegasi ke Repository | `create()`, `read()`, `update()`, `delete()` |
-| `Entity\Pemeriksaan` | Transaksi + JOIN + status via Query/Repository | `create()`, `readWithJoin()`, `updateStatus()`, `search()`, `getById()` |
-| `Repository\*` | CRUD + simple reads (Command side) | `insert()`, `update()`, `delete()`, `findAll()`, `findById()`, `count()` |
-| `Query\*` | Complex reads + computation (Query side) | `searchByName()`, `findAllJoined()`, `findByIdJoined()`, `findLatest()`, `findStatusForUpdate()`, `generateKodeOtomatis()`, `countByDate()` |
-| `Presenter\*` | Format data untuk view template | `getListData()`, `formatRow()` |
+## 8. Security
 
-## 9. Database Connection Pattern
+All security config in `includes/bootstrap.php` and `includes/auth.php`.
+
+### HTTP headers
+
+Set before any output in bootstrap.php:
+
+- `X-Content-Type-Options: nosniff` -- prevent MIME sniffing
+- `Content-Security-Policy` -- restrict script/style/font sources to self + CDN (jsdelivr), block frames, restrict form-action
+- `Referrer-Policy: strict-origin-when-cross-origin`
+
+### Session config
+
+- `session.cookie_httponly = 1` -- JS cannot access session cookie
+- `session.cookie_samesite = Lax` -- CSRF protection baseline
+- `session.use_strict_mode = 1` -- reject uninitialized session IDs
+
+### Auth flow
+
+1. Router checks `is_logged_in()` for every route except `/login`.
+2. Unauthenticated requests redirect to `/login`.
+3. Login validates with `password_verify`, calls `session_regenerate_id(true)` to prevent fixation.
+4. Logout destroys session (POST-only to prevent CSRF via image tag).
+5. All POST requests pass through `csrf_verify()` with `hash_equals` constant-time comparison.
+6. All forms include `<?= csrf_field() ?>` hidden input.
+
+## 9. Frontend
+
+### Topbar
+
+Sticky header in `views/layout/_topbar.php`. Left: toggle button (hamburger). Middle: auto-generated breadcrumb from URL path. Right: search button opens command palette.
+
+Toggle behavior:
+- Mobile (<992px): opens sidebar as offcanvas drawer
+- Desktop (>=992px): toggles sidebar collapse (60px icons-only mode)
+
+### Sidebar collapse
+
+CSS class `sidebar-collapsed` on `<html>`. State persisted in `localStorage('sidebar-collapsed')`. Inline script in `header.php` prevents FOUC (applies class before CSS loads).
+
+Collapsed mode: sidebar shrinks to 60px, text + labels hidden, icons centered, logout button becomes circular.
+
+### Command palette
+
+`views/partials/_command_palette.php`. Triggered by `cmd+K` (Mac) or `ctrl+K` (Win/Linux). Bootstrap modal with search input. Filters 5 nav items (Dashboard, Pasien, Dokter, Layanan, Pemeriksaan). Enter navigates to first visible item. Esc closes. Click navigates.
+
+## 10. Database connection pattern
 
 ```mermaid
 sequenceDiagram
-    participant P as Page Handler
-    participant C as Class (mis. Pasien)
-    participant DB as Database
-    participant MySQL as MySQL
+    participant P as Page handler
+    participant E as Entity (e.g., Pasien)
+    participant DB as Database (PDO singleton)
+    participant MySQL as MariaDB
 
-    P->>C: new Pasien()
-    C->>DB: Database::getInstance()
-    DB->>DB: Cek apakah instance ada
-    alt Instance belum ada
+    P->>E: new Pasien()
+    E->>DB: Database::getInstance()
+    DB->>DB: Instance exists?
+    alt No instance
         DB->>MySQL: new PDO(host, db, user, pass)
         MySQL-->>DB: PDO object
         DB->>DB: setAttribute(ERRMODE_EXCEPTION)
     end
-    DB-->>C: PDO connection
-    C->>DB: $this->db->prepare("SELECT * FROM pasien")
-    C->>DB: execute([$params])
+    DB-->>E: PDO connection
+    E->>DB: prepare("SELECT * FROM pasien")
+    E->>DB: execute([params])
     DB->>MySQL: query
     MySQL-->>DB: rows
-    DB-->>C: array of rows
-    C-->>P: return data
+    DB-->>E: rows array
+    E-->>P: return data
 ```
 
-Pattern: **Singleton PDO**. 1 koneksi shared di semua class — hemat resource, gampang di-mock untuk test.
+Singleton PDO. One connection shared across all classes. Makes test mocking easier.
