@@ -16,7 +16,13 @@
       "Silk\\Entity\\": "src/Entity/",
         "Silk\\Repository\\": "src/Repository/",
         "Silk\\Presenter\\": "src/Presenter/",
-        "Silk\\Query\\": "src/Query/"
+        "Silk\\Query\\": "src/Query/",
+      "Tests\\": "tests/"
+    },
+    "autoload-dev": {
+      "psr-4": {
+        "Tests\\": "tests/"
+      }
     }
   },
   "scripts": {

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Entity;
 
-use PHPUnit\Framework\TestCase;
 use Silk\Database;
 use Silk\Entity\Pasien;
 use Silk\Exception\ValidationException;
+use Tests\EntityTestCase;
 
 /**
  * Pasien entity tests.
@@ -22,7 +22,7 @@ use Silk\Exception\ValidationException;
  *   RM-002 Siti Aminah,   1985-11-22, 082345678901, Jl. Tukad Badung No. 12
  *   RM-003 I Wayan Surya, 2010-03-08, 083456789012, Jl. Gatot Subroto No. 88
  */
-final class PasienTest extends TestCase
+final class PasienTest extends EntityTestCase
 {
     private Database $db;
     private Pasien $pasien;
@@ -249,21 +249,6 @@ final class PasienTest extends TestCase
     // ---------------------------------------------------------------
     // Helpers
     // ---------------------------------------------------------------
-
-    /**
-     * @param list<string> $expectedFields
-     */
-    private function expectValidationException(callable $action, array $expectedFields): void
-    {
-        try {
-            $action();
-            $this->fail('Expected ValidationException was not thrown');
-        } catch (ValidationException $e) {
-            foreach ($expectedFields as $field) {
-                $this->assertArrayHasKey($field, $e->getErrors());
-            }
-        }
-    }
 
     /**
      * @return array{nama_pasien: string, tanggal_lahir: string, no_hp: string, alamat: string}
