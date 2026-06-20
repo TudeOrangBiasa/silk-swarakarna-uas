@@ -169,7 +169,6 @@ silk-swarakarna-uas/
 │   ├── architecture.md              | Request lifecycle, CQRS, class diagram
 │   └── business-logic.md            | Flowchart per fitur
 │
-├── DESIGN.md                        | Design system spec
 ├── phpunit.xml
 ├── composer.json
 ├── .env.example
