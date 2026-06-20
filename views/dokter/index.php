@@ -13,15 +13,9 @@ $page = max(1, (int) query_param('page', '1'));
 $data = $presenter->getListData($keyword, $page);
 $rows = $data['rows'];
 $pagination = $data['pagination'];
-$flash = flash_message();
 ?>
 
-<?php if ($flash): ?>
-    <div class="alert alert-<?= $flash['type'] === 'success' ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert">
-        <?= htmlspecialchars($flash['message']) ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
+<?php include __DIR__ . '/../partials/_flash.php'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 fw-semibold mb-0">Data Dokter</h1>

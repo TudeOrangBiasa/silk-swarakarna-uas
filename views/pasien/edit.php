@@ -10,15 +10,9 @@ use Silk\Presenter\PasienPresenter;
 $presenter = new PasienPresenter(new Pasien());
 $id = query_param('id');
 $row = $presenter->getFormData($id !== '' ? $id : null);
-$flash = flash_message();
 ?>
 
-<?php if ($flash): ?>
-    <div class="alert alert-<?= $flash['type'] === 'success' ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert">
-        <?= htmlspecialchars($flash['message']) ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
+<?php include __DIR__ . '/../partials/_flash.php'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 fw-semibold mb-0">Edit Pasien</h1>
