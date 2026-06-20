@@ -170,8 +170,6 @@ silk-swarakarna-uas/
 │   └── business-logic.md            | Flowchart per fitur
 │
 ├── DESIGN.md                        | Design system spec
-├── AGENTS.md                        | Agent runtime config
-├── CONTEXT.md                       | Domain glossary
 ├── phpunit.xml
 ├── composer.json
 ├── .env.example
