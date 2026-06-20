@@ -33,8 +33,40 @@ final class PemeriksaanQuery
         return $prefix . str_pad((string) $next, 3, '0', STR_PAD_LEFT);
     }
 
-    public function findAllJoined(?string $keyword = null, int $limit = 50, int $offset = 0): array
+    /** @return array{0: string, 1: list<mixed>} */
+    private function buildFilter(?string $keyword, ?string $status, ?string $startDate, ?string $endDate): array
     {
+        $clauses = [];
+        $params = [];
+        if ($keyword !== null && $keyword !== '') {
+            $clauses[] = 'ps.nama_pasien LIKE ?';
+            $params[] = '%' . $keyword . '%';
+        }
+        if ($status !== null && $status !== '') {
+            $clauses[] = 'p.status_pemeriksaan = ?';
+            $params[] = $status;
+        }
+        if ($startDate !== null && $startDate !== '') {
+            $clauses[] = 'p.tanggal_periksa >= ?';
+            $params[] = $startDate;
+        }
+        if ($endDate !== null && $endDate !== '') {
+            $clauses[] = 'p.tanggal_periksa <= ?';
+            $params[] = $endDate;
+        }
+        $where = $clauses === [] ? '' : ' WHERE ' . implode(' AND ', $clauses);
+        return [$where, $params];
+    }
+
+    public function findAllJoined(
+        ?string $keyword = null,
+        ?string $status = null,
+        ?string $startDate = null,
+        ?string $endDate = null,
+        int $limit = 50,
+        int $offset = 0
+    ): array {
+        [$where, $params] = $this->buildFilter($keyword, $status, $startDate, $endDate);
         $sql = 'SELECT p.*,
                   ps.nama_pasien,
                   d.nama_dokter, d.spesialisasi,
@@ -42,26 +74,21 @@ final class PemeriksaanQuery
                 FROM pemeriksaan p
                 JOIN pasien ps ON p.id_pasien = ps.id_pasien
                 JOIN dokter d ON p.id_dokter = d.id_dokter
-                JOIN layanan l ON p.id_layanan = l.id_layanan';
-        $params = [];
-        if ($keyword !== null && $keyword !== '') {
-            $sql .= ' WHERE ps.nama_pasien LIKE ?';
-            $params[] = '%' . $keyword . '%';
-        }
-        $sql .= ' ORDER BY p.tanggal_periksa DESC, p.created_at DESC LIMIT ? OFFSET ?';
+                JOIN layanan l ON p.id_layanan = l.id_layanan' . $where . '
+                ORDER BY p.tanggal_periksa DESC, p.created_at DESC LIMIT ? OFFSET ?';
         $params[] = (int) $limit;
         $params[] = (int) $offset;
         return $this->db->query($sql, $params);
     }
 
-    public function countAllJoined(?string $keyword = null): int
-    {
-        $sql = 'SELECT COUNT(*) AS n FROM pemeriksaan p JOIN pasien ps ON p.id_pasien = ps.id_pasien';
-        $params = [];
-        if ($keyword !== null && $keyword !== '') {
-            $sql .= ' WHERE ps.nama_pasien LIKE ?';
-            $params[] = '%' . $keyword . '%';
-        }
+    public function countAllJoined(
+        ?string $keyword = null,
+        ?string $status = null,
+        ?string $startDate = null,
+        ?string $endDate = null
+    ): int {
+        [$where, $params] = $this->buildFilter($keyword, $status, $startDate, $endDate);
+        $sql = 'SELECT COUNT(*) AS n FROM pemeriksaan p JOIN pasien ps ON p.id_pasien = ps.id_pasien' . $where;
         $rows = $this->db->query($sql, $params);
         return (int) $rows[0]['n'];
     }
@@ -85,8 +112,6 @@ final class PemeriksaanQuery
 
     public function findLatest(int $limit): array
     {
-        // Try prepared statement first. If LIMIT ? fails with native prepares,
-        // revert to (int)$limit + interpolation (already safe).
         return $this->db->query(
             "SELECT p.*, ps.nama_pasien, d.nama_dokter, l.nama_layanan, l.biaya
              FROM pemeriksaan p

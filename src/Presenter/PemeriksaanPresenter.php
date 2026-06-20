@@ -51,13 +51,19 @@ final class PemeriksaanPresenter
     /**
      * @return array{rows: list<array<string, mixed>>, pagination: array{total: int, page: int, per_page: int, total_pages: int, offset: int, has_next: bool, has_prev: bool}}
      */
-    public function getListData(?string $keyword = null, int $page = 1, int $perPage = 20): array
-    {
+    public function getListData(
+        ?string $keyword = null,
+        ?string $status = null,
+        ?string $startDate = null,
+        ?string $endDate = null,
+        int $page = 1,
+        int $perPage = 20
+    ): array {
         $perPage = max(1, min(100, $perPage));
         $page = max(1, $page);
         $offset = ($page - 1) * $perPage;
-        $rows = $this->query->findAllJoined($keyword, $perPage, $offset);
-        $total = $this->query->countAllJoined($keyword);
+        $rows = $this->query->findAllJoined($keyword, $status, $startDate, $endDate, $perPage, $offset);
+        $total = $this->query->countAllJoined($keyword, $status, $startDate, $endDate);
         return [
             'rows' => array_values(array_map([$this, 'formatRow'], $rows)),
             'pagination' => paginate($total, $page, $perPage),
