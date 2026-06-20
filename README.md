@@ -52,7 +52,7 @@ silk-swarakarna-uas/
 ├── public/                             | Document root (web entry)
 │   ├── index.php                       | Front controller: route table + POST dispatch + 404 fallback
 │   ├── .htaccess                       | Apache rewrite: semua URI → index.php?url=...
-│   └── assets/css/app.css              | Override --bs-primary ke navy #1e40af
+│   └── assets/css/app.css              | Override --bs-primary ke cyan-teal #0e7490
 │
 ├── src/                                | Domain layer — 25 class OOP, arsitektur CQRS
 │   ├── Database.php                    | PDO singleton: query, execute, transaction, lastInsertId
@@ -126,7 +126,7 @@ silk-swarakarna-uas/
 │   ├── agents/                         | Skill config: domain, issue tracker, triage labels
 │   └── designs/                        | Open CoDesign prompts untuk UI/UX design (system-prompt + 10 page briefs)
 │
-├── DESIGN.md                           | Design system spec (Bootstrap 5.3, navy #1e40af, format Rupiah, status badge)
+├── DESIGN.md                           | Design system spec (Bootstrap 5.3, cyan-teal #0e7490, format Rupiah, status badge)
 ├── AGENTS.md                           | Agent runtime config + DESIGN.md reference
 ├── CONTEXT.md                          | Domain glossary (Pasien, Dokter, Layanan, Pemeriksaan, state machine)
 ├── phpunit.xml                         | PHPUnit config (testsuite dir + coverage filter)

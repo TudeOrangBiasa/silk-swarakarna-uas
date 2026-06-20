@@ -2,6 +2,13 @@
 /** @var string $page_title Set this variable before including header.php to override the page title. */
 $page_title = $page_title ?? 'SILK-Swarakarna';
 $current_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$active = match (true) {
+    str_starts_with($current_uri, '/pasien')      => 'pasien',
+    str_starts_with($current_uri, '/dokter')      => 'dokter',
+    str_starts_with($current_uri, '/layanan')     => 'layanan',
+    str_starts_with($current_uri, '/pemeriksaan') => 'pemeriksaan',
+    default                                       => '',
+};
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -14,51 +21,82 @@ $current_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/app.css">
 </head>
 <body class="bg-body">
+    <a class="visually-hidden-focusable" href="#mainContent">Skip to main content</a>
     <div class="d-flex min-vh-100 flex-column flex-lg-row">
-        <!-- Sidebar -->
-        <aside class="sidebar bg-light border-end flex-shrink-0">
-            <div class="p-4 position-sticky top-0 d-flex flex-column sidebar-sticky">
-                <a href="<?= APP_URL ?>" class="d-flex align-items-center mb-4 text-decoration-none text-dark fw-bold fs-5">
-                    <div class="bg-dark text-white rounded p-1 me-2 d-flex align-items-center justify-content-center icon-box-sm">
-                        <i class="bi bi-moon-stars-fill"></i>
+        <!-- Sidebar (offcanvas on mobile, static on desktop) -->
+        <aside class="sidebar sidebar-dark offcanvas offcanvas-lg offcanvas-start" id="sidebarDrawer" tabindex="-1" aria-label="Sidebar navigation" data-bs-config='{"backdrop":true,"scroll":false,"keyboard":true}'>
+            <div class="offcanvas-header d-lg-none border-bottom border-secondary border-opacity-25">
+                <h5 class="offcanvas-title text-white fw-bold">SILK-Swarakarna</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body p-0 d-flex flex-column">
+
+                <!-- Brand (desktop only) -->
+                <a href="<?= APP_URL ?>" class="d-none d-lg-flex align-items-center p-4 sidebar-brand fs-5 fw-bold">
+                    <div class="bg-info text-white rounded p-1 me-2 d-flex align-items-center justify-content-center icon-box-sm">
+                        <i class="bi bi-soundwave"></i>
                     </div>
                     SILK-Swarakarna
                 </a>
-                
-                <ul class="nav flex-column gap-1">
-                    <?php
-                    $navLinks = [
-                        '/'             => ['icon' => 'bi-grid-1x2', 'label' => 'Dashboard'],
-                        '/pasien'       => ['icon' => 'bi-people', 'label' => 'Pasien'],
-                        '/dokter'       => ['icon' => 'bi-heart-pulse', 'label' => 'Dokter'],
-                        '/layanan'      => ['icon' => 'bi-tags', 'label' => 'Layanan'],
-                        '/pemeriksaan'  => ['icon' => 'bi-journal-medical', 'label' => 'Pemeriksaan'],
-                    ];
-                    foreach ($navLinks as $path => $item):
-                        $active = $current_uri === $path || str_starts_with($current_uri, $path . '/');
-                        $activeClass = $active ? 'bg-secondary text-dark bg-opacity-10 fw-semibold rounded' : 'text-muted';
-                    ?>
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-3 px-3 py-2 <?= $activeClass ?>" href="<?= $path ?>">
-                                <i class="bi <?= $item['icon'] ?> fs-5"></i>
-                                <span><?= $item['label'] ?></span>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
+
+                <!-- Master Data section -->
+                <div class="px-3 pt-3 pb-1">
+                    <small class="text-uppercase fw-semibold sidebar-section-label">Master Data</small>
+                </div>
+                <ul class="nav flex-column px-2">
+                    <li class="nav-item">
+                        <a class="sidebar-link <?= $active === 'pasien' ? 'active' : '' ?>" href="/pasien" <?= $active === 'pasien' ? 'aria-current="page"' : '' ?>>
+                            <i class="bi bi-people me-3 fs-5"></i>
+                            <span>Pasien</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link <?= $active === 'dokter' ? 'active' : '' ?>" href="/dokter" <?= $active === 'dokter' ? 'aria-current="page"' : '' ?>>
+                            <i class="bi bi-heart-pulse me-3 fs-5"></i>
+                            <span>Dokter</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link <?= $active === 'layanan' ? 'active' : '' ?>" href="/layanan" <?= $active === 'layanan' ? 'aria-current="page"' : '' ?>>
+                            <i class="bi bi-tags me-3 fs-5"></i>
+                            <span>Layanan</span>
+                        </a>
+                    </li>
                 </ul>
 
-                <div class="mt-auto p-3 bg-white rounded shadow-sm border">
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="bi bi-person-circle fs-3 text-dark me-2"></i>
+                <!-- Transaksi section -->
+                <div class="px-3 pt-3 pb-1">
+                    <small class="text-uppercase fw-semibold sidebar-section-label">Transaksi</small>
+                </div>
+                <ul class="nav flex-column px-2 mb-3">
+                    <li class="nav-item">
+                        <a class="sidebar-link <?= $active === 'pemeriksaan' ? 'active' : '' ?>" href="/pemeriksaan" <?= $active === 'pemeriksaan' ? 'aria-current="page"' : '' ?>>
+                            <i class="bi bi-journal-medical me-3 fs-5"></i>
+                            <span>Pemeriksaan</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Profile card (pushed to bottom) -->
+                <div class="mt-auto p-3 sidebar-profile">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-circle fs-3 text-info me-2"></i>
                         <div>
-                            <div class="fw-bold fs-6">Admin</div>
-                            <div class="text-muted small">Resepsionis</div>
+                            <div class="fw-semibold text-white">Admin</div>
+                            <div class="text-light opacity-75 small">Resepsionis</div>
                         </div>
                     </div>
                 </div>
             </div>
         </aside>
 
-        <!-- Main Content -->
+        <!-- Main content area -->
         <div class="content-wrapper flex-grow-1 bg-body-tertiary d-flex flex-column w-100 overflow-hidden">
-            <main class="container-fluid p-4 p-lg-5">
+            <!-- Mobile top bar (hamburger + brand) -->
+            <div class="d-lg-none bg-primary text-white p-3 d-flex align-items-center shadow-sm">
+                <button class="btn btn-link text-white p-0 me-3 border-0" data-bs-toggle="offcanvas" data-bs-target="#sidebarDrawer" aria-label="Open navigation">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
+                <span class="fw-semibold">SILK-Swarakarna</span>
+            </div>
+            <main id="mainContent" class="container-fluid p-4 p-lg-5">

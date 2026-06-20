@@ -19,21 +19,53 @@ CDN:
 
 ## Brand color
 
-Primary: navy `#1e40af` (Bootstrap `bg-primary` default, override ke navy via CSS variable di `header.php`).
+Primary: cyan-teal `#0e7490` (Bootstrap `bg-primary` default, override via CSS variable di `app.css`).
 
 | Token | Hex | Bootstrap class | Pakai untuk |
 |---|---|---|---|
-| Primary | `#1e40af` | `bg-primary`, `btn-primary` | Navbar, primary button, link aktif |
-| Primary dark | `#1e3a8a` | hover state | |
-| Body bg | `#f8f9fa` | `bg-body` | Page background |
-| Surface | `#ffffff` | `bg-white` | Card, navbar, table head |
+| Primary | `#0e7490` | `bg-primary`, `btn-primary` | Navbar, primary button, sidebar accent, link aktif |
+| Primary light | `#0d9488` | gradient | Dashboard hero card (gradient 135deg primary → primary-light) |
+| Sidebar bg | `#0f172a` | `.sidebar-dark` | Dark sidebar (slate-900) |
+| Sidebar accent | `#5eead4` | `.sidebar-link.active` | Active link indicator (teal-300, left border 3px) |
+| Body bg | `#fafaf9` | `body` | Page background (warm off-white) |
+| Surface | `#ffffff` | `bg-white` | Card, table head |
 | Text | `#212529` | `text-body` | Default body |
 | Muted | `#6c757d` | `text-muted` | Helper, footer, caption |
 | Border | `#dee2e6` | `border` | Card, input, divider |
-| Success | `#198754` | `bg-success` | Status Selesai |
-| Warning | `#ffc107` | `bg-warning` | Status Menunggu |
-| Info | `#0dcaf0` | `bg-info` | Status Sedang Diperiksa |
+| Success | `#10b981` | `bg-success` | Status Selesai (emerald) |
+| Warning | `#f59e0b` | `bg-warning` | Status Menunggu (amber) |
+| Info | `#06b6d4` | `bg-info` | Status Sedang Diperiksa (cyan) |
 | Danger | `#dc3545` | `bg-danger` | Hapus, error |
+
+## Sidebar
+
+Dark theme (slate-900 background). Sectioned navigation (Master Data, Transaksi). Active state has 3px teal-300 left border + bg highlight.
+
+```html
+<aside class="sidebar sidebar-dark offcanvas-lg offcanvas-start" id="sidebarDrawer">
+    <div class="offcanvas-body p-0 d-flex flex-column">
+        <a class="d-none d-lg-flex align-items-center p-4 sidebar-brand fs-5 fw-bold" href="/">
+            <div class="bg-info text-white rounded p-1 me-2 d-flex align-items-center justify-content-center icon-box-sm">
+                <i class="bi bi-soundwave"></i>
+            </div>
+            SILK-Swarakarna
+        </a>
+        <div class="px-3 pt-3 pb-1">
+            <small class="text-uppercase fw-semibold sidebar-section-label">Master Data</small>
+        </div>
+        <ul class="nav flex-column px-2">
+            <li class="nav-item">
+                <a class="sidebar-link active" href="/pasien" aria-current="page">
+                    <i class="bi bi-people me-3 fs-5"></i>
+                    <span>Pasien</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</aside>
+```
+
+On screens < lg, sidebar becomes a Bootstrap offcanvas drawer opened via hamburger button (`.btn[data-bs-toggle="offcanvas"][data-bs-target="#sidebarDrawer"]`).
 
 ## Typography
 

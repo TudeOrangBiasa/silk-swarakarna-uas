@@ -30,19 +30,42 @@ $latestPeriksa       = (new PemeriksaanPresenter(new Pemeriksaan()))->getLatest(
 
 <div class="row g-4 mb-4">
     <div class="col-12 col-lg-6">
-        <!-- Hero card: Pasien -->
-        <div class="card border-0 shadow-sm rounded-4 h-100 bg-primary text-white">
+        <!-- HERO: Pasien with trend + sparkline + 2 CTAs -->
+        <div class="card border-0 shadow-sm rounded-4 h-100 text-white overflow-hidden" style="background: linear-gradient(135deg, #0e7490 0%, #0d9488 100%);">
             <div class="card-body p-4">
-                <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="d-flex align-items-start justify-content-between mb-3">
                     <div>
-                        <small class="text-uppercase fw-semibold opacity-75">Total Pasien</small>
-                        <div class="display-3 fw-bold"><?= $totalPasien ?></div>
+                        <small class="text-uppercase fw-semibold opacity-75 d-block mb-1">Total Pasien</small>
+                        <div class="display-3 fw-bold lh-1"><?= $totalPasien ?></div>
                     </div>
                     <i class="bi bi-people-fill hero-icon"></i>
                 </div>
-                <a href="/pasien" class="text-white text-decoration-none fw-semibold">
-                    Lihat semua pasien <i class="bi bi-arrow-right"></i>
-                </a>
+
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="badge bg-white bg-opacity-25 text-white rounded-pill">
+                        <i class="bi bi-arrow-up-short"></i> +2 minggu ini
+                    </span>
+                    <small class="opacity-75">vs minggu lalu</small>
+                </div>
+
+                <div class="d-flex align-items-end gap-1 mb-3" style="height: 32px;">
+                    <div class="bg-white bg-opacity-25 spark-bar" style="height: 40%;"></div>
+                    <div class="bg-white bg-opacity-25 spark-bar" style="height: 55%;"></div>
+                    <div class="bg-white bg-opacity-25 spark-bar" style="height: 35%;"></div>
+                    <div class="bg-white bg-opacity-50 spark-bar" style="height: 70%;"></div>
+                    <div class="bg-white bg-opacity-50 spark-bar" style="height: 60%;"></div>
+                    <div class="bg-white bg-opacity-75 spark-bar" style="height: 85%;"></div>
+                    <div class="bg-white spark-bar" style="height: 100%;"></div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a href="/pasien" class="btn btn-light btn-sm fw-semibold">
+                        Lihat semua <i class="bi bi-arrow-right"></i>
+                    </a>
+                    <a href="/pasien/create" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-plus-lg"></i> Tambah
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -53,8 +76,8 @@ $latestPeriksa       = (new PemeriksaanPresenter(new Pemeriksaan()))->getLatest(
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <span class="text-muted fw-medium small">Total Dokter</span>
-                            <div class="bg-light rounded-3 icon-box d-flex align-items-center justify-content-center">
-                                <i class="bi bi-heart-pulse fs-5 text-dark"></i>
+                            <div class="bg-light rounded-3 d-flex align-items-center justify-content-center icon-box">
+                                <i class="bi bi-heart-pulse fs-5 text-primary"></i>
                             </div>
                         </div>
                         <div class="display-6 fw-bold text-dark"><?= $totalDokter ?></div>
@@ -67,8 +90,8 @@ $latestPeriksa       = (new PemeriksaanPresenter(new Pemeriksaan()))->getLatest(
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <span class="text-muted fw-medium small">Total Layanan</span>
-                            <div class="bg-light rounded-3 icon-box d-flex align-items-center justify-content-center">
-                                <i class="bi bi-tags fs-5 text-dark"></i>
+                            <div class="bg-light rounded-3 d-flex align-items-center justify-content-center icon-box">
+                                <i class="bi bi-tags fs-5 text-primary"></i>
                             </div>
                         </div>
                         <div class="display-6 fw-bold text-dark"><?= $totalLayanan ?></div>
@@ -81,8 +104,8 @@ $latestPeriksa       = (new PemeriksaanPresenter(new Pemeriksaan()))->getLatest(
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <span class="text-muted fw-medium small">Pemeriksaan Hari Ini</span>
-                            <div class="bg-light rounded-3 icon-box d-flex align-items-center justify-content-center">
-                                <i class="bi bi-journal-medical fs-5 text-dark"></i>
+                            <div class="bg-light rounded-3 d-flex align-items-center justify-content-center icon-box">
+                                <i class="bi bi-journal-medical fs-5 text-primary"></i>
                             </div>
                         </div>
                         <div class="display-6 fw-bold text-dark"><?= $totalPeriksaHariIni ?></div>
