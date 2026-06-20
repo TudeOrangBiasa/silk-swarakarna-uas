@@ -83,12 +83,12 @@ function flash_message(): ?array
 {
     if (isset($_SESSION['flash_success'])) {
         $msg = ['type' => 'success', 'message' => (string) $_SESSION['flash_success']];
-        unset($_SESSION['flash_success'], $_SESSION['old_input'], $_SESSION['errors']);
+        unset($_SESSION['flash_success']);
         return $msg;
     }
     if (isset($_SESSION['flash_error'])) {
         $msg = ['type' => 'error', 'message' => (string) $_SESSION['flash_error']];
-        unset($_SESSION['flash_error'], $_SESSION['old_input'], $_SESSION['errors']);
+        unset($_SESSION['flash_error']);
         return $msg;
     }
     return null;

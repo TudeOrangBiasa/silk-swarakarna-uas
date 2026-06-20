@@ -131,14 +131,6 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
 }
 
 // ---------------------------------------------------------------------------
-// Cleanup stale form data on GET (flash_message clears on read; old_input
-// and errors may not be read if a view never calls flash_message())
-// ---------------------------------------------------------------------------
-if ($method === 'GET') {
-    unset($_SESSION['old_input'], $_SESSION['errors']);
-}
-
-// ---------------------------------------------------------------------------
 // GET route resolution
 // ---------------------------------------------------------------------------
 $viewPath = $routes[$routeKey] ?? null;
@@ -169,8 +161,15 @@ if (!isset($page_title)) {
 }
 
 // ---------------------------------------------------------------------------
-// Render layout + view
+// Render layout + view (output-buffered so we can clear session after render)
 // ---------------------------------------------------------------------------
+ob_start();
 require_once __DIR__ . '/../views/layout/header.php';
 require $viewFile;
 require_once __DIR__ . '/../views/layout/footer.php';
+$output = ob_get_clean();
+
+// View has been rendered; old_input and errors are no longer needed.
+unset($_SESSION['old_input'], $_SESSION['errors']);
+
+echo $output;
