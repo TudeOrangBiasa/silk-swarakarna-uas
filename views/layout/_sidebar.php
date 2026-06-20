@@ -55,9 +55,12 @@ $transaksi_items = [
                     <div class="text-light opacity-75 small text-truncate">Resepsionis</div>
                 </div>
             </div>
-            <a href="/logout" class="btn btn-outline-danger btn-sm w-100 sidebar-logout-btn">
-                <i class="bi bi-box-arrow-right me-2"></i><span>Keluar</span>
-            </a>
+            <form method="post" action="/logout" class="m-0">
+                <?= csrf_field() ?>
+                <button type="submit" class="btn btn-outline-danger btn-sm w-100 sidebar-logout-btn">
+                    <i class="bi bi-box-arrow-right me-2"></i><span>Keluar</span>
+                </button>
+            </form>
         </div>
     </div>
 </aside>

@@ -42,6 +42,7 @@ $transitions = $presenter->getAllowedTransitions($currentStatus);
             <div class="alert alert-info" role="alert">Tidak ada transisi status yang tersedia.</div>
         <?php else: ?>
             <form method="post" action="/pemeriksaan/update_status">
+                <?= csrf_field() ?>
                 <input type="hidden" name="id" value="<?= htmlspecialchars($row['id_periksa']) ?>">
                 <div class="mb-3">
                     <label class="form-label" for="status_pemeriksaan">Status Baru <span class="text-danger">*</span></label>

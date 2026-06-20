@@ -21,6 +21,7 @@ $row = $presenter->getFormData($id !== '' ? $id : null);
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-4">
         <form method="post" action="/pasien/update" novalidate>
+            <?= csrf_field() ?>
             <input type="hidden" name="id" value="<?= htmlspecialchars($row['id_pasien']) ?>">
 
             <div class="mb-3">

@@ -23,6 +23,7 @@ $layananOptions = $presenter->getLayananOptions();
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-4">
         <form method="post" action="/pemeriksaan" novalidate>
+            <?= csrf_field() ?>
             <div class="mb-3">
                 <label class="form-label" for="id_pasien">Pasien <span class="text-danger">*</span></label>
                 <select id="id_pasien" name="id_pasien" required class="form-select<?= has_error('id_pasien') ? ' is-invalid' : '' ?>">

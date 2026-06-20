@@ -85,6 +85,7 @@ $statusOptions = $presenter->getStatusOptions();
                                         ?>
                                         <?php foreach ($transitions as $nextStatus): ?>
                                             <form method="post" action="/pemeriksaan/update_status" class="m-0 p-0">
+                                                <?= csrf_field() ?>
                                                 <input type="hidden" name="id" value="<?= htmlspecialchars($p['id_periksa']) ?>">
                                                 <input type="hidden" name="status_pemeriksaan" value="<?= htmlspecialchars($nextStatus) ?>">
                                                 <?php if ($nextStatus === 'Sedang Diperiksa'): ?>

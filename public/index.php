@@ -3,6 +3,15 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/bootstrap.php';
+require_once __DIR__ . '/../includes/auth.php';
+
+// All POST requests must pass CSRF check
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !csrf_verify()) {
+    http_response_code(403);
+    $_SESSION['flash_error'] = 'Sesi tidak valid. Silakan coba lagi.';
+    header('Location: /');
+    exit;
+}
 
 use Silk\Exception\ValidationException;
 
@@ -81,6 +90,13 @@ if ($url === '') {
 $routeKey = str_replace('/', '.', $url);
 $method   = $_SERVER['REQUEST_METHOD'];
 
+// Auth gate: redirect to /login if not authenticated (except for public routes)
+$public_routes = ['login'];
+if (!is_logged_in() && !in_array($url, $public_routes, true)) {
+    header('Location: /login');
+    exit;
+}
+
 // ---------------------------------------------------------------------------
 // POST handler
 // ---------------------------------------------------------------------------
@@ -130,11 +146,30 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
     }
 }
 
-// Logout: clear session and redirect to home
-if ($url === 'logout' && $method === 'GET') {
-    $_SESSION = [];
-    session_destroy();
-    header('Location: /');
+// Logout: POST-only to prevent CSRF via <img src="/logout">
+if ($url === 'logout' && $method === 'POST') {
+    logout();
+    header('Location: /login');
+    exit;
+}
+
+// ---------------------------------------------------------------------------
+// Login route (GET + POST, no auth required)
+// ---------------------------------------------------------------------------
+if ($url === 'login') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $username = trim((string) ($_POST['username'] ?? ''));
+        $password = (string) ($_POST['password'] ?? '');
+        if (login($username, $password)) {
+            $_SESSION['flash_success'] = 'Selamat datang, ' . htmlspecialchars($username) . '.';
+            header('Location: /');
+            exit;
+        }
+        $_SESSION['flash_error'] = 'Nama pengguna atau kata sandi salah.';
+        header('Location: /login');
+        exit;
+    }
+    require __DIR__ . '/../views/auth/login.php';
     exit;
 }
 

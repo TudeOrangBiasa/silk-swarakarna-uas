@@ -44,6 +44,7 @@ if (empty($row) || empty($row['id_periksa'])) {
             </div>
 
             <form method="post" action="/pemeriksaan/delete" class="d-flex gap-2 justify-content-center mt-4">
+                <?= csrf_field() ?>
                 <input type="hidden" name="id" value="<?= htmlspecialchars($row['id_periksa']) ?>">
                 <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Hapus</button>
                 <a href="/pemeriksaan" class="btn btn-outline-secondary">Batal</a>

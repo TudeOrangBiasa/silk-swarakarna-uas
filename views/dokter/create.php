@@ -20,6 +20,7 @@ $row = $presenter->getFormData(null);
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-4">
         <form method="post" action="/dokter" novalidate>
+            <?= csrf_field() ?>
             <div class="mb-3">
                 <label class="form-label" for="nama_dokter">Nama Dokter <span class="text-danger">*</span></label>
                 <input type="text" id="nama_dokter" name="nama_dokter" required maxlength="100"

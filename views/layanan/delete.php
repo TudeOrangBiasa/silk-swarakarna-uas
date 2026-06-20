@@ -36,6 +36,7 @@ if (empty($row) || empty($row['id_layanan'])) {
         </div>
 
         <form method="post" action="/layanan/delete" class="d-flex gap-2 justify-content-center mt-4">
+            <?= csrf_field() ?>
             <input type="hidden" name="id" value="<?= (int) $row['id_layanan'] ?>">
             <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Hapus</button>
             <a href="/layanan" class="btn btn-outline-secondary">Batal</a>

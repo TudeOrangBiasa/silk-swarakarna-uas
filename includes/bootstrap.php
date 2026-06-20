@@ -2,6 +2,16 @@
 
 declare(strict_types=1);
 
+// Security headers (must be set before any output)
+header('X-Content-Type-Options: nosniff');
+header('Content-Security-Policy: default-src \'self\'; style-src \'self\' \'unsafe-inline\' https://cdn.jsdelivr.net; script-src \'self\' \'unsafe-inline\' https://cdn.jsdelivr.net; font-src \'self\' https://cdn.jsdelivr.net data:; img-src \'self\' data:; connect-src \'self\'; form-action \'self\'; base-uri \'self\'; frame-ancestors \'none\'');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+
+// Session config (more secure defaults)
+ini_set('session.cookie_httponly', '1');
+ini_set('session.cookie_samesite', 'Lax');
+ini_set('session.use_strict_mode', '1');
+
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/logger.php';
