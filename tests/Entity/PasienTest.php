@@ -114,11 +114,12 @@ final class PasienTest extends EntityTestCase
         $data = [
             'nama_pasien'   => '',
             'tanggal_lahir'  => '',
+            'jenis_kelamin' => '',
             'no_hp'         => '',
             'alamat'        => '',
         ];
         $this->expectValidationException(fn() => $this->pasien->create($data), [
-            'nama_pasien', 'tanggal_lahir', 'no_hp', 'alamat',
+            'nama_pasien', 'tanggal_lahir', 'jenis_kelamin', 'no_hp', 'alamat',
         ]);
     }
 
@@ -141,6 +142,85 @@ final class PasienTest extends EntityTestCase
         $data = $this->validData();
         $data['no_hp'] = '123';
         $this->expectValidationException(fn() => $this->pasien->create($data), ['no_hp']);
+    }
+
+    // ---------------------------------------------------------------
+    // create() — new field validation
+    // ---------------------------------------------------------------
+
+    public function testCreateWithValidJenisKelaminL(): void
+    {
+        $data = $this->validData();
+        $data['jenis_kelamin'] = 'L';
+        $id   = $this->pasien->create($data);
+        $this->createdIds[] = $id;
+        $saved = $this->pasien->read($id);
+        $this->assertSame('L', $saved['jenis_kelamin']);
+    }
+
+    public function testCreateWithValidJenisKelaminP(): void
+    {
+        $data = $this->validData();
+        $data['jenis_kelamin'] = 'P';
+        $id   = $this->pasien->create($data);
+        $this->createdIds[] = $id;
+        $saved = $this->pasien->read($id);
+        $this->assertSame('P', $saved['jenis_kelamin']);
+    }
+
+    public function testCreateWithInvalidJenisKelaminThrowsValidationException(): void
+    {
+        $data = $this->validData();
+        $data['jenis_kelamin'] = 'X';
+        $this->expectValidationException(fn() => $this->pasien->create($data), ['jenis_kelamin']);
+    }
+
+    public function testCreateWithInvalidGolonganDarahThrowsValidationException(): void
+    {
+        $data = $this->validData();
+        $data['jenis_kelamin'] = 'L';
+        $data['golongan_darah'] = 'X';
+        $this->expectValidationException(fn() => $this->pasien->create($data), ['golongan_darah']);
+    }
+
+    public function testCreateWithAllNewFieldsSucceeds(): void
+    {
+        $data = $this->validData();
+        $data['jenis_kelamin'] = 'L';
+        $data['pekerjaan'] = 'Dokter';
+        $data['golongan_darah'] = 'AB';
+        $data['riwayat_penyakit'] = 'Hipertensi';
+        $data['alergi'] = 'Debu';
+        $id   = $this->pasien->create($data);
+        $this->createdIds[] = $id;
+
+        $saved = $this->pasien->read($id);
+        $this->assertSame('L', $saved['jenis_kelamin']);
+        $this->assertSame('Dokter', $saved['pekerjaan']);
+        $this->assertSame('AB', $saved['golongan_darah']);
+        $this->assertSame('Hipertensi', $saved['riwayat_penyakit']);
+        $this->assertSame('Debu', $saved['alergi']);
+    }
+
+    public function testCreateWithOptionalFieldsNullSucceeds(): void
+    {
+        $data = $this->validData();
+        $data['jenis_kelamin'] = 'P';
+        // pekerjaan, golongan_darah, riwayat_penyakit, alergi omitted
+        $id   = $this->pasien->create($data);
+        $this->createdIds[] = $id;
+
+        $saved = $this->pasien->read($id);
+        $this->assertSame('P', $saved['jenis_kelamin']);
+        $this->assertNull($saved['pekerjaan'] ?? null);
+        $this->assertNull($saved['golongan_darah'] ?? null);
+    }
+
+    public function testCreateWithoutJenisKelaminThrowsValidationException(): void
+    {
+        $data = $this->validData();
+        unset($data['jenis_kelamin']);
+        $this->expectValidationException(fn() => $this->pasien->create($data), ['jenis_kelamin']);
     }
 
     // ---------------------------------------------------------------
@@ -251,7 +331,7 @@ final class PasienTest extends EntityTestCase
     // ---------------------------------------------------------------
 
     /**
-     * @return array{nama_pasien: string, tanggal_lahir: string, no_hp: string, alamat: string}
+     * @return array{nama_pasien: string, tanggal_lahir: string, jenis_kelamin: string, no_hp: string, alamat: string}
      */
     private function validData(): array
     {
@@ -259,6 +339,7 @@ final class PasienTest extends EntityTestCase
         return [
             'nama_pasien'   => "Test Pasien {$suffix}",
             'tanggal_lahir' => '1990-01-01',
+            'jenis_kelamin' => 'L',
             'no_hp'         => '081234567890',
             'alamat'        => 'Jl. Test No. 123, Denpasar',
         ];

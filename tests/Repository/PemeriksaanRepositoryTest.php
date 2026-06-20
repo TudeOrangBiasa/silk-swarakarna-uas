@@ -139,6 +139,7 @@ final class PemeriksaanRepositoryTest extends TestCase
         $id = $pasien->create([
             'nama_pasien'   => 'Test ' . bin2hex(random_bytes(4)),
             'tanggal_lahir' => '1990-01-01',
+            'jenis_kelamin' => 'L',
             'no_hp'         => '081234567890',
             'alamat'        => 'Jl Test',
         ]);

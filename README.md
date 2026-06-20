@@ -23,7 +23,7 @@ Sistem Informasi Layanan Klinik Swarakarna. Aplikasi web PHP OOP untuk klinik TH
 | Master data | 3 (pasien, dokter, layanan) |
 | Transaksi | 1 (pemeriksaan, relasi ke 3 master) |
 | Tabel DB | 4 |
-| Class OOP | 25 (1 Database + 4 Entity + 4 Repository + 4 Query + 4 Presenter + 1 Exception + 1 Validator + 5 Rule + 1 Rule interface) |
+| Class OOP | 26 (1 Database + 4 Entity + 4 Repository + 4 Query + 4 Presenter + 1 Exception + 1 Validator + 6 Rule + 1 Rule interface) |
 | Test | 154 unit/integration, 256 assertions, PHPUnit 10.5 |
 | Pattern | Front controller + PDO singleton + Repository/Query (CQRS) + Presenter + Validation rules |
 | Output | Web app native PHP, tanpa framework |
@@ -72,7 +72,7 @@ silk-swarakarna-uas/
 │   │   ├── LayananQuery.php            | findLayananForOptions
 │   │   └── PemeriksaanQuery.php        | generateKodeOtomatis (TRX-YYYYNNN), findAllJoined, findByIdJoined, findStatusForUpdate
 │   ├── Presenter/                      | View data formatters (view-ready arrays, paginated)
-│   │   ├── PasienPresenter.php         | getListData (paginated), getFormData, getOptions, getCount
+│   │   ├── PasienPresenter.php         | 5 demographic fields + format helpers, getListData (paginated), getFormData, getOptions, getCount
 │   │   ├── DokterPresenter.php         | getListData (paginated), getFormData, getOptions, getCount
 │   │   ├── LayananPresenter.php        | getListData (paginated), getFormData, getOptions + format_rupiah
 │   │   └── PemeriksaanPresenter.php    | getListData (JOIN + paginated + filter), getFormData, status badge HTML, FK dropdowns, getDashboardStats, getLatest
@@ -86,6 +86,7 @@ silk-swarakarna-uas/
 │           ├── MaxLength.php           | Maks karakter
 │           ├── DateNotFuture.php       | Tanggal tidak boleh di masa depan
 │           ├── PhoneFormat.php         | 10-15 digit angka
+│           ├── Enum.php                | Field value must be in allowed list (optional)
 │           └── PositiveNumber.php      | Bilangan positif
 │
 ├── includes/                           | Bootstrap + helpers
@@ -136,7 +137,7 @@ silk-swarakarna-uas/
 └── README.md                           | File ini
 ```
 
-Arsitektur CQRS: Entity (validation/business rules) → Repository (Command: CUD + simple reads) atau Query (Query: complex reads, JOINs, search, generate). Validation pakai Rule engine (interface + 5 concrete) yang lempar `ValidationException` dengan per-field error map — router tangkap dan redirect dengan error flash. Presenter membungkus Entity untuk format data siap-view (tanggal Indonesia, Rupiah, status badge HTML, FK dropdown options) + pagination metadata. View tidak pernah akses Entity/Repository/Query langsung — selalu lewat Presenter.
+Arsitektur CQRS: Entity (validation/business rules) → Repository (Command: CUD + simple reads) atau Query (Query: complex reads, JOINs, search, generate). Validation pakai Rule engine (interface + 6 concrete) yang lempar `ValidationException` dengan per-field error map — router tangkap dan redirect dengan error flash. Presenter membungkus Entity untuk format data siap-view (tanggal Indonesia, Rupiah, status badge HTML, FK dropdown options) + pagination metadata. View tidak pernah akses Entity/Repository/Query langsung — selalu lewat Presenter.
 
 ## Quick start
 

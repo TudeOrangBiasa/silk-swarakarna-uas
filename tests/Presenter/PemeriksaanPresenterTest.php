@@ -181,6 +181,7 @@ final class PemeriksaanPresenterTest extends TestCase
         $pasienId = $pasien->create([
             'nama_pasien'   => 'Presenter Test ' . bin2hex(random_bytes(2)),
             'tanggal_lahir' => '1990-01-01',
+            'jenis_kelamin' => 'L',
             'no_hp'         => '081234567890',
             'alamat'        => 'Jl Test',
         ]);

@@ -111,6 +111,7 @@ final class PasienQueryTest extends TestCase
         return $pasien->create([
             'nama_pasien'   => $fullName,
             'tanggal_lahir' => '1990-01-01',
+            'jenis_kelamin' => 'L',
             'no_hp'         => '081234567890',
             'alamat'        => 'Jl Test',
         ]);

@@ -84,6 +84,11 @@ final class PasienPresenterTest extends TestCase
         $form = $this->presenter->getFormData(null);
         $this->assertSame('', $form['nama_pasien']);
         $this->assertSame('', $form['tanggal_lahir']);
+        $this->assertSame('', $form['jenis_kelamin']);
+        $this->assertSame('', $form['pekerjaan']);
+        $this->assertSame('', $form['golongan_darah']);
+        $this->assertSame('', $form['riwayat_penyakit']);
+        $this->assertSame('', $form['alergi']);
         $this->assertSame('', $form['no_hp']);
         $this->assertSame('', $form['alamat']);
     }
@@ -125,10 +130,15 @@ final class PasienPresenterTest extends TestCase
     {
         $pasien = new Pasien();
         return $pasien->create([
-            'nama_pasien'   => $namePrefix . ' ' . bin2hex(random_bytes(2)),
-            'tanggal_lahir' => '1990-05-15',
-            'no_hp'         => '081234567890',
-            'alamat'        => 'Jl Test',
+            'nama_pasien'      => $namePrefix . ' ' . bin2hex(random_bytes(2)),
+            'tanggal_lahir'    => '1990-05-15',
+            'jenis_kelamin'    => 'L',
+            'pekerjaan'        => 'Mahasiswa',
+            'golongan_darah'   => 'A',
+            'riwayat_penyakit' => 'Tidak ada',
+            'alergi'           => 'Tidak ada',
+            'no_hp'            => '081234567890',
+            'alamat'           => 'Jl Test',
         ]);
     }
 }

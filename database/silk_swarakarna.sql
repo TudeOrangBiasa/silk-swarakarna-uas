@@ -24,6 +24,16 @@ CREATE TABLE IF NOT EXISTS pasien (
     COMMENT 'No Rekam Medis, format RM-XXX, auto-generated',
   nama_pasien VARCHAR(100) NOT NULL,
   tanggal_lahir DATE NOT NULL,
+  jenis_kelamin ENUM('L','P') NOT NULL
+    COMMENT 'L = Laki-laki, P = Perempuan',
+  pekerjaan VARCHAR(100) NULL
+    COMMENT 'Pekerjaan pasien, free text',
+  golongan_darah ENUM('A','B','AB','O') NULL
+    COMMENT 'Golongan darah pasien',
+  riwayat_penyakit TEXT NULL
+    COMMENT 'Riwayat penyakit pasien',
+  alergi TEXT NULL
+    COMMENT 'Alergi pasien',
   no_hp VARCHAR(20) NOT NULL
     COMMENT 'Nomor HP, format 08xxxxxxxxxx',
   alamat TEXT NOT NULL,
@@ -174,11 +184,16 @@ INSERT INTO layanan (nama_layanan, biaya) VALUES
   ('OAE (Otoacoustic Emission)', 350000),
   ('BERA (Brainstem Evoked Response Audiometry)', 750000);
 
--- 3 pasien
-INSERT INTO pasien (id_pasien, nama_pasien, tanggal_lahir, no_hp, alamat) VALUES
-  ('RM-001', 'Andi Pratama', '1990-05-15', '081234567890', 'Jl. Sudirman No. 45, Denpasar'),
-  ('RM-002', 'Siti Aminah', '1985-11-22', '082345678901', 'Jl. Tukad Badung No. 12, Denpasar'),
-  ('RM-003', 'I Wayan Surya', '2010-03-08', '083456789012', 'Jl. Gatot Subroto No. 88, Denpasar');
+-- 8 pasien with new demographic fields
+INSERT INTO pasien (id_pasien, nama_pasien, tanggal_lahir, jenis_kelamin, pekerjaan, golongan_darah, riwayat_penyakit, alergi, no_hp, alamat) VALUES
+  ('RM-001', 'Andi Pratama',         '1990-05-15', 'L', 'PNS',          'O',  'Tidak ada',                'Debu',       '081234567890', 'Jl. Sudirman No. 45, Denpasar'),
+  ('RM-002', 'Siti Aminah',           '1985-11-22', 'P', 'Guru',         'A',  'Hipertensi',               'Seafood',    '082345678901', 'Jl. Tukad Badung No. 12, Denpasar'),
+  ('RM-003', 'I Wayan Surya',         '2010-03-08', 'L', 'Pelajar',      'B',  'Tidak ada',                'Tidak ada',  '083456789012', 'Jl. Gatot Subroto No. 88, Denpasar'),
+  ('RM-004', 'Ni Putu Sari',          '1995-08-20', 'P', 'Wiraswasta',   'AB', 'Tidak ada',                'Tidak ada',  '081345678901', 'Jl. Bypass Ngurah Rai No. 100, Denpasar'),
+  ('RM-005', 'Made Wirawan',          '1978-02-14', 'L', 'Petani',       'O',  'Diabetes',                 'Penisilin',  '082456789012', 'Jl. Raya Ubud No. 56, Gianyar'),
+  ('RM-006', 'Ketut Arini',           '2005-11-30', 'P', 'Mahasiswa',    'A',  'Tidak ada',                'Tidak ada',  '083567890123', 'Jl. Udayana No. 22, Denpasar'),
+  ('RM-007', 'I Gede Surya',          '1965-07-04', 'L', 'Pensiunan PNS','B',  'Diabetes, Hipertensi',     'Tidak ada',  '084678901234', 'Jl. Veteran No. 15, Denpasar'),
+  ('RM-008', 'Ni Kadek Dewi',         '2015-04-12', 'P', 'Pelajar',      'O',  'Tidak ada',                'Susu sapi',  '085789012345', 'Jl. Diponegoro No. 33, Denpasar');
 
 -- 2 pemeriksaan with different statuses
 INSERT INTO pemeriksaan (id_periksa, id_pasien, id_dokter, id_layanan, tanggal_periksa, keluhan, status_pemeriksaan) VALUES

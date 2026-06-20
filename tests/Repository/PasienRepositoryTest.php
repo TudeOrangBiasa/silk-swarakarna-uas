@@ -35,16 +35,16 @@ final class PasienRepositoryTest extends TestCase
     {
         $id = $this->makeId();
         $this->createdIds[] = $id;
-        $this->repo->insert($id, [
-            'nama_pasien'   => 'Test Repo',
-            'tanggal_lahir' => '1990-01-01',
-            'no_hp'         => '081234567890',
-            'alamat'        => 'Jl Test Repo',
-        ]);
+        $this->repo->insert($id, $this->data('Repo'));
 
         $row = $this->repo->findById($id);
         $this->assertSame($id, $row['id_pasien']);
-        $this->assertSame('Test Repo', $row['nama_pasien']);
+        $this->assertSame('Test Repo Repo', $row['nama_pasien']);
+        $this->assertSame('L', $row['jenis_kelamin']);
+        $this->assertSame('PNS', $row['pekerjaan']);
+        $this->assertSame('O', $row['golongan_darah']);
+        $this->assertSame('Tidak ada', $row['riwayat_penyakit']);
+        $this->assertSame('Debu', $row['alergi']);
     }
 
     public function testFindByIdNonExistentReturnsEmpty(): void
@@ -90,6 +90,56 @@ final class PasienRepositoryTest extends TestCase
         $this->assertSame('Test Repo Full', $row['nama_pasien']); // unchanged
     }
 
+    public function testUpdateJenisKelamin(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $this->repo->insert($id, $this->data('JK'));
+
+        $this->repo->update($id, ['jenis_kelamin' => 'P']);
+        $this->assertSame('P', $this->repo->findById($id)['jenis_kelamin']);
+    }
+
+    public function testUpdatePekerjaan(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $this->repo->insert($id, $this->data('Pekerjaan'));
+
+        $this->repo->update($id, ['pekerjaan' => 'Wiraswasta']);
+        $this->assertSame('Wiraswasta', $this->repo->findById($id)['pekerjaan']);
+    }
+
+    public function testUpdateGolonganDarah(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $this->repo->insert($id, $this->data('GD'));
+
+        $this->repo->update($id, ['golongan_darah' => 'AB']);
+        $this->assertSame('AB', $this->repo->findById($id)['golongan_darah']);
+    }
+
+    public function testUpdateRiwayatPenyakit(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $this->repo->insert($id, $this->data('Riwayat'));
+
+        $this->repo->update($id, ['riwayat_penyakit' => 'Diabetes']);
+        $this->assertSame('Diabetes', $this->repo->findById($id)['riwayat_penyakit']);
+    }
+
+    public function testUpdateAlergi(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $this->repo->insert($id, $this->data('Alergi'));
+
+        $this->repo->update($id, ['alergi' => 'Penisilin']);
+        $this->assertSame('Penisilin', $this->repo->findById($id)['alergi']);
+    }
+
     public function testUpdateNonExistentAffectsZero(): void
     {
         $this->assertSame(0, $this->repo->update('RM-99999', ['nama_pasien' => 'X']));
@@ -118,10 +168,15 @@ final class PasienRepositoryTest extends TestCase
     private function data(string $nama): array
     {
         return [
-            'nama_pasien'   => "Test Repo {$nama}",
-            'tanggal_lahir' => '1990-01-01',
-            'no_hp'         => '081234567890',
-            'alamat'        => 'Jl Test Repo',
+            'nama_pasien'      => "Test Repo {$nama}",
+            'tanggal_lahir'    => '1990-01-01',
+            'jenis_kelamin'    => 'L',
+            'pekerjaan'        => 'PNS',
+            'golongan_darah'   => 'O',
+            'riwayat_penyakit' => 'Tidak ada',
+            'alergi'           => 'Debu',
+            'no_hp'            => '081234567890',
+            'alamat'           => 'Jl Test Repo',
         ];
     }
 }

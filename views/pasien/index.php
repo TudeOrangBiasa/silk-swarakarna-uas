@@ -49,13 +49,14 @@ $flash = flash_message();
                         <th class="fw-medium">No Rekam Medis</th>
                         <th class="fw-medium">Nama</th>
                         <th class="fw-medium">Tgl Lahir</th>
+                        <th class="fw-medium">JK</th>
                         <th class="fw-medium">No HP</th>
                         <th class="fw-medium px-4">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($rows)): ?>
-                        <tr><td colspan="6" class="text-center text-muted py-4">Belum ada data pasien.</td></tr>
+                        <tr><td colspan="7" class="text-center text-muted py-4">Belum ada data pasien.</td></tr>
                     <?php else: ?>
                         <?php foreach ($rows as $i => $p): ?>
                             <tr>
@@ -63,6 +64,7 @@ $flash = flash_message();
                                 <td><span class="badge bg-light text-dark border"><?= htmlspecialchars($p['id_pasien']) ?></span></td>
                                 <td class="fw-medium"><?= htmlspecialchars($p['nama_pasien']) ?></td>
                                 <td><?= htmlspecialchars($p['tanggal_lahir_fmt']) ?></td>
+                                <td><?= $p['jenis_kelamin'] === 'L' ? 'Laki-laki' : 'Perempuan' ?></td>
                                 <td><?= htmlspecialchars($p['no_hp'] ?? '-') ?></td>
                                 <td class="px-4">
                                     <div class="d-flex gap-2">

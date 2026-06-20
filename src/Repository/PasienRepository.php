@@ -14,16 +14,41 @@ final class PasienRepository
 {
     private Database $db;
 
+    private const NULLABLE_COLS = ['pekerjaan', 'golongan_darah', 'riwayat_penyakit', 'alergi'];
+
     public function __construct()
     {
         $this->db = Database::getInstance();
     }
 
+    /**
+     * Normalize empty string to null for nullable columns.
+     * HTML form sends "" for unset optional fields; DB expects NULL.
+     */
+    private function nullIfEmpty(mixed $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        return (string) $value;
+    }
+
     public function insert(string $id, array $data): void
     {
         $this->db->execute(
-            'INSERT INTO pasien (id_pasien, nama_pasien, tanggal_lahir, no_hp, alamat) VALUES (?, ?, ?, ?, ?)',
-            [$id, $data['nama_pasien'], $data['tanggal_lahir'], $data['no_hp'], $data['alamat']]
+            'INSERT INTO pasien (id_pasien, nama_pasien, tanggal_lahir, jenis_kelamin, pekerjaan, golongan_darah, riwayat_penyakit, alergi, no_hp, alamat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [
+                $id,
+                $data['nama_pasien'],
+                $data['tanggal_lahir'],
+                $data['jenis_kelamin'],
+                $this->nullIfEmpty($data['pekerjaan'] ?? null),
+                $this->nullIfEmpty($data['golongan_darah'] ?? null),
+                $this->nullIfEmpty($data['riwayat_penyakit'] ?? null),
+                $this->nullIfEmpty($data['alergi'] ?? null),
+                $data['no_hp'],
+                $data['alamat'],
+            ]
         );
     }
 
@@ -45,10 +70,12 @@ final class PasienRepository
     {
         $fields = [];
         $params = [];
-        foreach (['nama_pasien', 'tanggal_lahir', 'no_hp', 'alamat'] as $col) {
+        foreach (['nama_pasien', 'tanggal_lahir', 'jenis_kelamin', 'pekerjaan', 'golongan_darah', 'riwayat_penyakit', 'alergi', 'no_hp', 'alamat'] as $col) {
             if (array_key_exists($col, $data)) {
                 $fields[] = "{$col} = ?";
-                $params[] = $data[$col];
+                $params[] = in_array($col, self::NULLABLE_COLS, true)
+                    ? $this->nullIfEmpty($data[$col])
+                    : $data[$col];
             }
         }
         if ($fields === []) return 0;

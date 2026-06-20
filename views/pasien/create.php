@@ -47,6 +47,46 @@ $flash = flash_message();
             </div>
 
             <div class="mb-3">
+                <label class="form-label d-block">Jenis Kelamin <span class="text-danger">*</span></label>
+                <?php $jk = old_input('jenis_kelamin') ?: ($row['jenis_kelamin'] ?? ''); ?>
+                <div class="btn-group" role="group" aria-label="Jenis Kelamin">
+                    <input type="radio" class="btn-check" name="jenis_kelamin" id="jk_l" value="L" <?= $jk === 'L' ? 'checked' : '' ?> required>
+                    <label class="btn btn-outline-primary" for="jk_l">Laki-laki</label>
+                    <input type="radio" class="btn-check" name="jenis_kelamin" id="jk_p" value="P" <?= $jk === 'P' ? 'checked' : '' ?> required>
+                    <label class="btn btn-outline-primary" for="jk_p">Perempuan</label>
+                </div>
+                <?php if (has_error('jenis_kelamin')): ?>
+                    <div class="text-danger small mt-1"><?= error_for('jenis_kelamin') ?></div>
+                <?php endif; ?>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Pekerjaan</label>
+                <input type="text" name="pekerjaan" maxlength="100"
+                       value="<?= htmlspecialchars(old_input('pekerjaan') ?: ($row['pekerjaan'] ?? '')) ?>"
+                       class="form-control<?= has_error('pekerjaan') ? ' is-invalid' : '' ?>"
+                       placeholder="Contoh: PNS, Wiraswasta, Mahasiswa">
+                <?php if (has_error('pekerjaan')): ?>
+                    <div class="invalid-feedback d-block"><?= error_for('pekerjaan') ?></div>
+                <?php endif; ?>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Golongan Darah</label>
+                <?php $gd = old_input('golongan_darah') ?: ($row['golongan_darah'] ?? ''); ?>
+                <select name="golongan_darah" class="form-select<?= has_error('golongan_darah') ? ' is-invalid' : '' ?>">
+                    <option value="">-- Tidak Diketahui --</option>
+                    <option value="A" <?= $gd === 'A' ? 'selected' : '' ?>>A</option>
+                    <option value="B" <?= $gd === 'B' ? 'selected' : '' ?>>B</option>
+                    <option value="AB" <?= $gd === 'AB' ? 'selected' : '' ?>>AB</option>
+                    <option value="O" <?= $gd === 'O' ? 'selected' : '' ?>>O</option>
+                </select>
+                <?php if (has_error('golongan_darah')): ?>
+                    <div class="invalid-feedback d-block"><?= error_for('golongan_darah') ?></div>
+                <?php endif; ?>
+            </div>
+
+            <div class="mb-3">
                 <label class="form-label">No HP <span class="text-danger">*</span></label>
                 <input type="text" name="no_hp" required pattern="[0-9]{10,15}"
                        value="<?= htmlspecialchars(old_input('no_hp') ?: ($row['no_hp'] ?? '')) ?>"
@@ -62,6 +102,24 @@ $flash = flash_message();
                 <textarea name="alamat" required class="form-control<?= has_error('alamat') ? ' is-invalid' : '' ?>" rows="3"><?= htmlspecialchars(old_input('alamat') ?: ($row['alamat'] ?? '')) ?></textarea>
                 <?php if (has_error('alamat')): ?>
                     <div class="invalid-feedback d-block"><?= error_for('alamat') ?></div>
+                <?php endif; ?>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Riwayat Penyakit</label>
+                <textarea name="riwayat_penyakit" class="form-control<?= has_error('riwayat_penyakit') ? ' is-invalid' : '' ?>" rows="3"
+                          placeholder="Contoh: Hipertensi, Diabetes (kosongkan jika tidak ada)"><?= htmlspecialchars(old_input('riwayat_penyakit') ?: ($row['riwayat_penyakit'] ?? '')) ?></textarea>
+                <?php if (has_error('riwayat_penyakit')): ?>
+                    <div class="invalid-feedback d-block"><?= error_for('riwayat_penyakit') ?></div>
+                <?php endif; ?>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Alergi</label>
+                <textarea name="alergi" class="form-control<?= has_error('alergi') ? ' is-invalid' : '' ?>" rows="3"
+                          placeholder="Contoh: Seafood, Debu, Penisilin"><?= htmlspecialchars(old_input('alergi') ?: ($row['alergi'] ?? '')) ?></textarea>
+                <?php if (has_error('alergi')): ?>
+                    <div class="invalid-feedback d-block"><?= error_for('alergi') ?></div>
                 <?php endif; ?>
             </div>
 

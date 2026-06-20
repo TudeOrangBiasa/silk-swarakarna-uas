@@ -43,3 +43,5 @@ storage/logs/*.log
 
 # Browser QA artifacts
 qa-screenshots/
+qa-evidence/
+evidence-*.png

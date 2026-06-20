@@ -97,11 +97,16 @@ final class PasienPresenter
     private function emptyRow(): array
     {
         return [
-            'id_pasien'      => '',
-            'nama_pasien'    => '',
-            'tanggal_lahir'  => '',
-            'no_hp'          => '',
-            'alamat'         => '',
+            'id_pasien'        => '',
+            'nama_pasien'      => '',
+            'tanggal_lahir'    => '',
+            'jenis_kelamin'    => '',
+            'pekerjaan'        => '',
+            'golongan_darah'   => '',
+            'riwayat_penyakit' => '',
+            'alergi'           => '',
+            'no_hp'            => '',
+            'alamat'           => '',
         ];
     }
 }
