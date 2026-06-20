@@ -31,5 +31,8 @@ khusus uas.md
 # DDEV (project config stays local)
 .ddev/
 
+# Logs (runtime)
+storage/logs/*.log
+
 # Local issue tracker (use GitHub Issues instead)
 .scratch/
