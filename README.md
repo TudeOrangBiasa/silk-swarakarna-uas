@@ -10,7 +10,8 @@ Sistem Informasi Layanan Klinik Swarakarna. Aplikasi web PHP OOP untuk klinik TH
 4. [Quick start](#quick-start)
 5. [Tech stack](#tech-stack)
 6. [Domain reference](#domain-reference)
-7. [Deployment](#deployment)
+7. [Testing](#testing)
+8. [Deployment](#deployment)
 
 ## Ringkasan
 
@@ -22,8 +23,9 @@ Sistem Informasi Layanan Klinik Swarakarna. Aplikasi web PHP OOP untuk klinik TH
 | Master data | 3 (pasien, dokter, layanan) |
 | Transaksi | 1 (pemeriksaan, relasi ke 3 master) |
 | Tabel DB | 4 |
-| Class OOP | 17 (1 Database + 4 Entity + 4 Repository + 4 Query + 4 Presenter) |
-| Pattern | Front controller + PDO singleton + Repository/Query (CQRS) + Presenter |
+| Class OOP | 25 (1 Database + 4 Entity + 4 Repository + 4 Query + 4 Presenter + 1 Exception + 1 Validator + 5 Rule + 1 Rule interface) |
+| Test | 154 unit/integration, 256 assertions, PHPUnit 10.5 |
+| Pattern | Front controller + PDO singleton + Repository/Query (CQRS) + Presenter + Validation rules |
 | Output | Web app native PHP, tanpa framework |
 
 ## Alur request
@@ -43,18 +45,16 @@ Detail per layer ada di [docs/architecture.md](docs/architecture.md).
 
 ## Struktur proyek
 
-Tree lengkap codebase. Deskripsi singkat per file/folder.
+Tree lengkap codebase. Deskripsi singkat per file/folder. Folder `.ddev/` dan `.scratch/` di-gitignore (konfigurasi lokal + issue tracker lokal).
 
 ```
 silk-swarakarna-uas/
-├── .ddev/                              | DDEV config (PHP 8.2, MariaDB 10.11, nginx-fpm)
-│
 ├── public/                             | Document root (web entry)
 │   ├── index.php                       | Front controller: route table + POST dispatch + 404 fallback
 │   ├── .htaccess                       | Apache rewrite: semua URI → index.php?url=...
 │   └── assets/css/app.css              | Override --bs-primary ke navy #1e40af
 │
-├── src/                                | Domain layer — 17 class OOP, arsitektur CQRS
+├── src/                                | Domain layer — 25 class OOP, arsitektur CQRS
 │   ├── Database.php                    | PDO singleton: query, execute, transaction, lastInsertId
 │   ├── Entity/                         | Entity facade: validation + business rules, delegate ke Repo/Query
 │   │   ├── Pasien.php                  | Pasien CRUD + generate RM-XXX + FK-safe delete
@@ -71,24 +71,50 @@ silk-swarakarna-uas/
 │   │   ├── DokterQuery.php             | searchByName, findDokterForOptions
 │   │   ├── LayananQuery.php            | findLayananForOptions
 │   │   └── PemeriksaanQuery.php        | generateKodeOtomatis (TRX-YYYYNNN), findAllJoined, findByIdJoined, findStatusForUpdate
-│   └── Presenter/                      | View data formatters (view-ready arrays)
-│       ├── PasienPresenter.php         | getListData, getFormData, getOptions, getCount, formatRow
-│       ├── DokterPresenter.php         | getListData, getFormData, getOptions, getCount
-│       ├── LayananPresenter.php        | + format_rupiah untuk biaya
-│       └── PemeriksaanPresenter.php    | + status badge HTML + 3 FK dropdowns (pasien/dokter/layanan)
+│   ├── Presenter/                      | View data formatters (view-ready arrays, paginated)
+│   │   ├── PasienPresenter.php         | getListData (paginated), getFormData, getOptions, getCount
+│   │   ├── DokterPresenter.php         | getListData (paginated), getFormData, getOptions, getCount
+│   │   ├── LayananPresenter.php        | getListData (paginated), getFormData, getOptions + format_rupiah
+│   │   └── PemeriksaanPresenter.php    | getListData (JOIN + paginated + filter), getFormData, status badge HTML, FK dropdowns, getDashboardStats, getLatest
+│   ├── Exception/
+│   │   └── ValidationException.php     | Per-field validation error (getErrors() returns map field → message)
+│   └── Validation/                     | Rule engine (mirip Laravel Validator)
+│       ├── Validator.php               | Validates $data against $rules; throws ValidationException
+│       └── Rule/
+│           ├── Rule.php                | Rule interface (1 method: check(value, allData): bool)
+│           ├── Required.php            | Field wajib ada
+│           ├── MaxLength.php           | Maks karakter
+│           ├── DateNotFuture.php       | Tanggal tidak boleh di masa depan
+│           ├── PhoneFormat.php         | 10-15 digit angka
+│           └── PositiveNumber.php      | Bilangan positif
 │
 ├── includes/                           | Bootstrap + helpers
 │   ├── bootstrap.php                   | session_start, error-to-exception, autoload, base_path
 │   ├── config.php                      | .env parser: DB_HOST, DB_NAME, DB_USER, DB_PASS, APP_URL
-│   └── helpers.php                     | format_tanggal, format_rupiah, format_datetime, old_input, has_error, error_for, flash_message, query_param
+│   ├── helpers.php                     | format_tanggal, format_rupiah, format_datetime, old_input, has_error, error_for, flash_message, query_param, paginate
+│   └── logger.php                      | Error logger (logs/error.log)
 │
 ├── views/                              | Presentation templates (Bootstrap 5.3)
 │   ├── layout/
-│   │   ├── header.php                  | <head> + navbar + container main open
+│   │   ├── header.php                  | <head> + sidebar nav + container main open
 │   │   └── footer.php                  | </main> + footer + Bootstrap JS CDN
+│   ├── partials/
+│   │   └── pagination.php              | Bootstrap 5 pagination + "Menampilkan X–Y dari Z" (skip jika 1 halaman)
 │   ├── dashboard.php                   | 4 widget summary + tabel 5 pemeriksaan terbaru
+│   ├── pasien/                         | CRUD: index (search + pagination), create, edit, delete (confirm)
+│   ├── dokter/                         | CRUD: index, create, edit, delete
+│   ├── layanan/                        | CRUD: index, create, edit, delete
+│   ├── pemeriksaan/                    | index (search + status filter + quick status transition), create, delete (blocked if Selesai), update_status
 │   ├── errors/404.php                  | 404 page dengan back-to-dashboard
 │   └── _placeholder.php                | Placeholder untuk view belum diimplementasi
+│
+├── tests/                              | PHPUnit test suite (154 test, 256 assertion)
+│   ├── bootstrap.php                   | Test bootstrap (autoload, DB reset, fixtures)
+│   ├── EntityTestCase.php              | Base class: createdIds tracking + tearDown cleanup
+│   ├── Entity/                         | Entity CRUD + validation + race protection tests
+│   ├── Repository/                     | Repository SQL contract tests
+│   ├── Query/                          | Query/JOIN/search tests
+│   └── Presenter/                      | Presenter integration tests (real DB)
 │
 ├── database/
 │   └── silk_swarakarna.sql             | Schema + seed (3 pasien, 2 dokter, 3 layanan, 2 pemeriksaan)
@@ -97,19 +123,20 @@ silk-swarakarna-uas/
 │   ├── architecture.md                 | Request lifecycle + class diagram + CQRS rationale
 │   ├── business-logic.md               | Flowchart per fitur (Pasien/Dokter/Layanan/Pemeriksaan)
 │   ├── agents/                         | Skill config: domain, issue tracker, triage labels
-│   └── designs/                        | Open CoDesign prompts untuk UI/UX design
+│   └── designs/                        | Open CoDesign prompts untuk UI/UX design (system-prompt + 10 page briefs)
 │
 ├── DESIGN.md                           | Design system spec (Bootstrap 5.3, navy #1e40af, format Rupiah, status badge)
 ├── AGENTS.md                           | Agent runtime config + DESIGN.md reference
 ├── CONTEXT.md                          | Domain glossary (Pasien, Dokter, Layanan, Pemeriksaan, state machine)
-├── composer.json                       | PSR-4 autoload Silk\ → src/
-├── composer.lock                       | Lock file (zero external deps, hanya autoloader)
+├── phpunit.xml                         | PHPUnit config (testsuite dir + coverage filter)
+├── composer.json                       | PSR-4 autoload Silk\ → src/, dev dep: phpunit/phpunit ^10.5
+├── composer.lock                       | Lock file (zero runtime deps, dev: phpunit only)
 ├── .env.example                        | Template DB_HOST, DB_NAME, DB_USER, DB_PASS, APP_URL, APP_DEBUG
-├── .gitignore                          | Exclude: vendor, .env, .ddev, .scratch, node_modules, *.log, .DS_Store
+├── .gitignore                          | Exclude: vendor, .env, .ddev, .scratch, qa-screenshots, node_modules, *.log, .DS_Store
 └── README.md                           | File ini
 ```
 
-Arsitektur CQRS: Entity (validation/business rules) → Repository (Command: CUD + simple reads) atau Query (Query: complex reads, JOINs, search, generate). Presenter membungkus Entity untuk format data siap-view (tanggal Indonesia, Rupiah, status badge HTML, FK dropdown options). View tidak pernah akses Entity/Repository/Query langsung — selalu lewat Presenter.
+Arsitektur CQRS: Entity (validation/business rules) → Repository (Command: CUD + simple reads) atau Query (Query: complex reads, JOINs, search, generate). Validation pakai Rule engine (interface + 5 concrete) yang lempar `ValidationException` dengan per-field error map — router tangkap dan redirect dengan error flash. Presenter membungkus Entity untuk format data siap-view (tanggal Indonesia, Rupiah, status badge HTML, FK dropdown options) + pagination metadata. View tidak pernah akses Entity/Repository/Query langsung — selalu lewat Presenter.
 
 ## Quick start
 
@@ -203,6 +230,7 @@ Document root cPanel harus point ke folder `public/`, bukan root repo. Ini penti
 | Web server | nginx-fpm (DDEV) / Apache | |
 | Frontend | Bootstrap 5.3 + Bootstrap Icons via CDN | 5.3.3 / 1.11.3 |
 | Autoload | Composer PSR-4 | 2.x |
+| Testing | PHPUnit | 10.5 |
 | Dev env | DDEV (Docker) | 1.25+ |
 | Version control | Git + GitHub | |
 
@@ -217,6 +245,27 @@ Glossary lengkap di [CONTEXT.md](CONTEXT.md). Ringkas:
 - **Layanan**: jenis tes (Audiometri, OAE, BERA, Timpanometri). ID = `id_layanan`. Punya `biaya` (IDR).
 - **Pemeriksaan**: transaksi 1 Pasien + 1 Dokter + 1 Layanan pada tanggal tertentu. ID = No Transaksi `TRX-YYYYNNN` (disimpan di kolom `id_periksa`).
 - **Status Pemeriksaan**: `Menunggu` → `Sedang Diperiksa` → `Selesai`. Sekali `Selesai`, immutable (audit trail).
+
+## Testing
+
+Test suite PHPUnit 10.5, 154 test / 256 assertion. Layer: Entity, Repository, Query, Presenter. Semua test pakai DB asli (bukan mock) dengan explicit cleanup di `tearDown` via `EntityTestCase` (tracking `createdIds` + FK-order delete).
+
+```bash
+# DDEV
+ddev exec vendor/bin/phpunit
+
+# baremetal
+vendor/bin/phpunit
+```
+
+Test cepat: ~0.5 detik (DB sudah seeded). Test otomatis reset data per test, jadi bisa dijalankan paralel aman.
+
+Coverage:
+
+- **Entity (4)**: CRUD + validation rules + race protection (Pemeriksaan `FOR UPDATE`)
+- **Repository (4)**: SQL contract — insert/findAll/findById/update/delete + count
+- **Query (3)**: search/filter/JOIN/code generation
+- **Presenter (4)**: formatRow (tanggal Indonesia, Rupiah, status badge), getListData (pagination), getOptions, getDashboardStats
 
 ## Deployment
 
