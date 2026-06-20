@@ -34,6 +34,15 @@
     border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+@media (min-width: 992px) {
+    .offcanvas-lg {
+        visibility: visible !important;
+        position: static !important;
+        transform: none !important;
+        --bs-offcanvas-width: 260px;
+    }
+}
+
 .card {
     --bs-card-bg: #ffffff;
     --bs-card-bg-rgb: 255, 255, 255;
