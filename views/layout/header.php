@@ -21,6 +21,11 @@ $active = match (true) {
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/app.css">
 </head>
 <body class="bg-body">
+    <script>
+        if (localStorage.getItem('sidebar-collapsed') === '1') {
+            document.documentElement.classList.add('sidebar-collapsed');
+        }
+    </script>
     <a class="visually-hidden-focusable" href="#mainContent">Skip to main content</a>
     <div class="d-flex min-vh-100 flex-column flex-lg-row">
         <!-- Sidebar (offcanvas on mobile, static on desktop) -->
@@ -32,11 +37,11 @@ $active = match (true) {
             <div class="offcanvas-body p-0 d-flex flex-column">
 
                 <!-- Brand (desktop only) -->
-                <a href="<?= APP_URL ?>" class="d-none d-lg-flex align-items-center p-4 sidebar-brand fs-5 fw-bold">
+                <a href="<?= APP_URL ?>" class="d-none d-lg-flex align-items-center p-4 sidebar-brand fs-5 fw-bold text-nowrap">
                     <div class="bg-info text-white rounded p-1 me-2 d-flex align-items-center justify-content-center icon-box-sm">
                         <i class="bi bi-soundwave"></i>
                     </div>
-                    SILK-Swarakarna
+                    <span class="sidebar-brand-text">SILK-Swarakarna</span>
                 </a>
 
                 <!-- Master Data section -->
@@ -77,15 +82,32 @@ $active = match (true) {
                     </li>
                 </ul>
 
-                <!-- Profile card (pushed to bottom) -->
-                <div class="mt-auto p-3 sidebar-profile">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-person-circle fs-3 text-info me-2"></i>
-                        <div>
-                            <div class="fw-semibold text-white">Admin</div>
-                            <div class="text-light opacity-75 small">Resepsionis</div>
+                <!-- Toggle button + Profile at bottom -->
+                <div class="mt-auto">
+                    <!-- Profile -->
+                    <div class="sidebar-profile p-3">
+                        <div class="d-flex align-items-center">
+                            <div class="sidebar-avatar me-2">AD</div>
+                            <div>
+                                <div class="fw-semibold text-white">Admin</div>
+                                <div class="text-light opacity-75 small">Resepsionis</div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Logout button -->
+                    <div class="px-3 pb-2">
+                        <a href="/logout" class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-box-arrow-right me-2"></i>
+                            <span class="logout-text">Keluar</span>
+                        </a>
+                    </div>
+
+                    <!-- Toggle button (desktop only) -->
+                    <button type="button" class="sidebar-toggle-btn d-none d-lg-flex align-items-center w-100" id="sidebarToggle" aria-label="Toggle sidebar">
+                        <i class="bi bi-arrow-bar-left sidebar-toggle-icon"></i>
+                        <span class="sidebar-toggle-text ms-2">Collapse</span>
+                    </button>
                 </div>
             </div>
         </aside>

@@ -5,5 +5,11 @@
         </div> <!-- End Content Wrapper -->
     </div> <!-- End d-flex -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script>
+        document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+            const isCollapsed = document.documentElement.classList.toggle('sidebar-collapsed');
+            localStorage.setItem('sidebar-collapsed', isCollapsed ? '1' : '0');
+        });
+    </script>
 </body>
 </html>
