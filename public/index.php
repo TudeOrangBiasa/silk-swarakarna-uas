@@ -57,6 +57,10 @@ $postActions = [
     'layanan.update'        => ['class' => 'Layanan',      'method' => 'update'],
     'pemeriksaan'           => ['class' => 'Pemeriksaan',  'method' => 'create'],
     'pemeriksaan.update_status' => ['class' => 'Pemeriksaan',  'method' => 'updateStatus'],
+    'pasien.delete'         => ['class' => 'Pasien',       'method' => 'delete'],
+    'dokter.delete'         => ['class' => 'Dokter',       'method' => 'delete'],
+    'layanan.delete'        => ['class' => 'Layanan',      'method' => 'delete'],
+    'pemeriksaan.delete'    => ['class' => 'Pemeriksaan',  'method' => 'delete'],
 ];
 
 // ---------------------------------------------------------------------------
@@ -99,6 +103,7 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
                 'create'       => [$_POST],
                 'update'       => [$id, $_POST],
                 'updateStatus' => [$id, $newStatus],
+                'delete'       => [$id],
                 default        => [],
             };
             if (in_array($action['method'], ['update', 'updateStatus', 'delete'], true) && empty($id)) {
@@ -107,9 +112,13 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
             $result = $instance->{$action['method']}(...$args);
             // Success: redirect to the entity list page
             $entity = explode('.', $routeKey)[0];
-            $_SESSION['flash_success'] = $action['class'] === 'Pemeriksaan'
-                ? "Pemeriksaan {$result} berhasil disimpan."
-                : ucfirst($entity) . ' berhasil disimpan.';
+            if ($action['method'] === 'delete') {
+                $_SESSION['flash_success'] = ucfirst($entity) . ' berhasil dihapus.';
+            } else {
+                $_SESSION['flash_success'] = $action['class'] === 'Pemeriksaan'
+                    ? "Pemeriksaan {$result} berhasil disimpan."
+                    : ucfirst($entity) . ' berhasil disimpan.';
+            }
             header('Location: /' . ($entity ?: ''));
             exit;
         } catch (ValidationException $e) {
