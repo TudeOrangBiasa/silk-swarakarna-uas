@@ -93,6 +93,37 @@ final class PemeriksaanPresenter
     }
 
     /**
+     * Get all dashboard statistics in a single call (no N+1).
+     *
+     * @return array{
+     *   total_pasien: int,
+     *   total_dokter: int,
+     *   total_layanan: int,
+     *   pemeriksaan_hari_ini: int,
+     *   pemeriksaan_bulan_ini: int,
+     *   count_by_month: array<int, int>,
+     *   top_layanan: list<array{nama_layanan: string, n: int}>,
+     *   dokter_stats: list<array{nama_dokter: string, spesialisasi: string, n: int}>
+     * }
+     */
+    public function getDashboardStats(): array
+    {
+        $currentYear = (int) date('Y');
+        $currentMonth = (int) date('n');
+        $countByMonth = $this->query->getCountByMonth($currentYear);
+        return [
+            'total_pasien'          => $this->pasienPresenter->getCount(),
+            'total_dokter'          => $this->dokterPresenter->getCount(),
+            'total_layanan'         => $this->layananPresenter->getCount(),
+            'pemeriksaan_hari_ini'  => $this->pemeriksaan->countByDate(date('Y-m-d')),
+            'pemeriksaan_bulan_ini' => array_sum(array_slice($countByMonth, 0, $currentMonth)),
+            'count_by_month'        => $countByMonth,
+            'top_layanan'           => $this->query->getTopLayanan(),
+            'dokter_stats'          => $this->query->getDokterStats(),
+        ];
+    }
+
+    /**
      * @return list<array<string, mixed>>
      */
     public function getLatest(int $limit = 5): array

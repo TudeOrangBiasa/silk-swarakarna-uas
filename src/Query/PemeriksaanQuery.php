@@ -133,4 +133,41 @@ final class PemeriksaanQuery
         return $rows[0]['status_pemeriksaan'] ?? null;
     }
 
+    public function getCountByMonth(int $year): array
+    {
+        $rows = $this->db->query(
+            'SELECT MONTH(tanggal_periksa) AS bulan, COUNT(*) AS n
+             FROM pemeriksaan
+             WHERE YEAR(tanggal_periksa) = ?
+             GROUP BY MONTH(tanggal_periksa)',
+            [$year]
+        );
+        $byMonth = array_fill(1, 12, 0);
+        foreach ($rows as $r) $byMonth[(int) $r['bulan']] = (int) $r['n'];
+        return $byMonth;
+    }
+
+    public function getTopLayanan(int $limit = 5): array
+    {
+        return $this->db->query(
+            'SELECT l.nama_layanan, COUNT(*) AS n
+             FROM pemeriksaan p
+             JOIN layanan l ON p.id_layanan = l.id_layanan
+             GROUP BY l.id_layanan, l.nama_layanan
+             ORDER BY n DESC
+             LIMIT ?',
+            [(int) $limit]
+        );
+    }
+
+    public function getDokterStats(): array
+    {
+        return $this->db->query(
+            'SELECT d.nama_dokter, d.spesialisasi, COUNT(*) AS n
+             FROM pemeriksaan p
+             JOIN dokter d ON p.id_dokter = d.id_dokter
+             GROUP BY d.id_dokter, d.nama_dokter, d.spesialisasi
+             ORDER BY n DESC'
+        );
+    }
 }
