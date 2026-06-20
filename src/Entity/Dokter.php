@@ -40,7 +40,6 @@ final class Dokter
             'spesialisasi'     => [new MaxLength('Spesialisasi maksimal 100 karakter', self::MAX_SPESIALISASI)],
         ]);
 
-        // Default spesialisasi jika tidak ada
         if (!isset($data['spesialisasi']) || $data['spesialisasi'] === '') {
             $data['spesialisasi'] = 'THT';
         }
