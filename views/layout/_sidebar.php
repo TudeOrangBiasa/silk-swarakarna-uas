@@ -22,27 +22,33 @@ $transaksi_items = [
             <span class="sidebar-brand-text">SILK-Swarakarna</span>
         </a>
 
-        <?php
-        $label = 'Master Data';
-        $items = $master_data_items;
-        include __DIR__ . '/../partials/_sidebar_section.php';
-        ?>
+        <!-- Nav (scrollable area — scrolls if nav too long) -->
+        <div class="sidebar-nav-scroll flex-grow-1 overflow-y-auto">
+            <?php
+            $label = 'Master Data';
+            $items = $master_data_items;
+            include __DIR__ . '/../partials/_sidebar_section.php';
+            ?>
 
-        <?php
-        $label = 'Transaksi';
-        $items = $transaksi_items;
-        include __DIR__ . '/../partials/_sidebar_section.php';
-        ?>
+            <?php
+            $label = 'Transaksi';
+            $items = $transaksi_items;
+            include __DIR__ . '/../partials/_sidebar_section.php';
+            ?>
+        </div>
 
-        <!-- Profile (pushed to bottom) -->
-        <div class="mt-auto sidebar-profile p-3">
-            <div class="d-flex align-items-center">
+        <!-- Profile + Logout (sticky bottom, always visible) -->
+        <div class="sidebar-profile p-3">
+            <div class="d-flex align-items-center mb-3">
                 <div class="sidebar-avatar me-2">AD</div>
-                <div>
-                    <div class="fw-semibold text-white">Admin</div>
-                    <div class="text-light opacity-75 small">Resepsionis</div>
+                <div class="flex-grow-1 min-w-0">
+                    <div class="fw-semibold text-white text-truncate">Admin</div>
+                    <div class="text-light opacity-75 small text-truncate">Resepsionis</div>
                 </div>
             </div>
+            <a href="/logout" class="btn btn-outline-danger btn-sm w-100 sidebar-logout-btn">
+                <i class="bi bi-box-arrow-right me-2"></i><span>Keluar</span>
+            </a>
         </div>
     </div>
 </aside>
