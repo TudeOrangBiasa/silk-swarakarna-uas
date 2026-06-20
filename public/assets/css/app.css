@@ -2,3 +2,37 @@
   --bs-primary: #1e40af;
   --bs-primary-rgb: 30, 64, 175;
 }
+
+/* Touch target ≥ 44×44px for icon-only action buttons */
+.btn-touch {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Icon box sizing utilities */
+.icon-box {
+  width: 42px;
+  height: 42px;
+}
+.icon-box-sm {
+  width: 32px;
+  height: 32px;
+}
+
+/* Sidebar layout */
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+}
+.sidebar-sticky {
+  height: 100vh;
+}
+
+/* Dashboard hero card icon */
+.hero-icon {
+  font-size: 3rem;
+  opacity: 0.5;
+}

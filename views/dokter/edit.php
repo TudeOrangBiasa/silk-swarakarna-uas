@@ -30,8 +30,8 @@ $flash = flash_message();
             <input type="hidden" name="id" value="<?= (int) $row['id_dokter'] ?>">
 
             <div class="mb-3">
-                <label class="form-label">Nama Dokter <span class="text-danger">*</span></label>
-                <input type="text" name="nama_dokter" required maxlength="100"
+                <label class="form-label" for="nama_dokter">Nama Dokter <span class="text-danger">*</span></label>
+                <input type="text" id="nama_dokter" name="nama_dokter" required maxlength="100"
                        value="<?= htmlspecialchars(old_input('nama_dokter') ?: $row['nama_dokter']) ?>"
                        class="form-control<?= has_error('nama_dokter') ? ' is-invalid' : '' ?>">
                 <?php if (has_error('nama_dokter')): ?>
@@ -40,8 +40,8 @@ $flash = flash_message();
             </div>
 
             <div class="mb-3">
-                <label class="form-label">No Izin Praktik <span class="text-danger">*</span></label>
-                <input type="text" name="no_izin_praktik" required maxlength="50"
+                <label class="form-label" for="no_izin_praktik">No Izin Praktik <span class="text-danger">*</span></label>
+                <input type="text" id="no_izin_praktik" name="no_izin_praktik" required maxlength="50"
                        value="<?= htmlspecialchars(old_input('no_izin_praktik') ?: ($row['no_izin_praktik'] ?? '')) ?>"
                        class="form-control<?= has_error('no_izin_praktik') ? ' is-invalid' : '' ?>">
                 <?php if (has_error('no_izin_praktik')): ?>
@@ -50,8 +50,8 @@ $flash = flash_message();
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Spesialisasi <span class="text-danger">*</span></label>
-                <input type="text" name="spesialisasi" required maxlength="100"
+                <label class="form-label" for="spesialisasi">Spesialisasi <span class="text-danger">*</span></label>
+                <input type="text" id="spesialisasi" name="spesialisasi" required maxlength="100"
                        value="<?= htmlspecialchars(old_input('spesialisasi') ?: $row['spesialisasi']) ?>"
                        class="form-control<?= has_error('spesialisasi') ? ' is-invalid' : '' ?>">
                 <?php if (has_error('spesialisasi')): ?>
@@ -60,8 +60,8 @@ $flash = flash_message();
             </div>
 
             <div class="mb-3">
-                <label class="form-label">No HP <span class="text-danger">*</span></label>
-                <input type="text" name="no_hp" required pattern="[0-9]{10,15}"
+                <label class="form-label" for="no_hp">No HP <span class="text-danger">*</span></label>
+                <input type="text" id="no_hp" name="no_hp" required pattern="[0-9]{10,15}"
                        value="<?= htmlspecialchars(old_input('no_hp') ?: ($row['no_hp'] ?? '')) ?>"
                        class="form-control<?= has_error('no_hp') ? ' is-invalid' : '' ?>"
                        placeholder="08xxxxxxxxxx">

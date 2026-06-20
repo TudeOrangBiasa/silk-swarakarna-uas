@@ -94,18 +94,18 @@ $statusOptions = $presenter->getStatusOptions();
                                                 <input type="hidden" name="id" value="<?= htmlspecialchars($p['id_periksa']) ?>">
                                                 <input type="hidden" name="status_pemeriksaan" value="<?= htmlspecialchars($nextStatus) ?>">
                                                 <?php if ($nextStatus === 'Sedang Diperiksa'): ?>
-                                                    <button type="submit" class="btn btn-sm btn-info text-white shadow-sm" title="Mulai Periksa">
+                                                    <button type="submit" class="btn btn-sm btn-touch btn-info text-white shadow-sm" title="Mulai Periksa" aria-label="Mulai periksa <?= htmlspecialchars($p['id_periksa']) ?>">
                                                         <i class="bi bi-play-fill"></i>
                                                     </button>
                                                 <?php elseif ($nextStatus === 'Selesai'): ?>
-                                                    <button type="submit" class="btn btn-sm btn-success shadow-sm" title="Selesai">
+                                                    <button type="submit" class="btn btn-sm btn-touch btn-success shadow-sm" title="Selesai" aria-label="Selesaikan <?= htmlspecialchars($p['id_periksa']) ?>">
                                                         <i class="bi bi-check-lg"></i>
                                                     </button>
                                                 <?php endif; ?>
                                             </form>
                                         <?php endforeach; ?>
                                         <?php if ($currentStatus !== 'Selesai'): ?>
-                                            <a href="/pemeriksaan/delete?id=<?= urlencode($p['id_periksa']) ?>" class="btn btn-sm btn-light text-danger border" title="Hapus">
+                                            <a href="/pemeriksaan/delete?id=<?= urlencode($p['id_periksa']) ?>" class="btn btn-sm btn-touch btn-light text-danger border" title="Hapus" aria-label="Hapus pemeriksaan <?= htmlspecialchars($p['id_periksa']) ?>">
                                                 <i class="bi bi-trash"></i>
                                             </a>
                                         <?php endif; ?>

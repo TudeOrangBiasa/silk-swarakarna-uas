@@ -45,13 +45,13 @@ $transitions = $presenter->getAllowedTransitions($currentStatus);
         </dl>
 
         <?php if (empty($transitions)): ?>
-            <div class="alert alert-info">Tidak ada transisi status yang tersedia.</div>
+            <div class="alert alert-info" role="alert">Tidak ada transisi status yang tersedia.</div>
         <?php else: ?>
             <form method="post" action="/pemeriksaan/update_status">
                 <input type="hidden" name="id" value="<?= htmlspecialchars($row['id_periksa']) ?>">
                 <div class="mb-3">
-                    <label class="form-label">Status Baru <span class="text-danger">*</span></label>
-                    <select name="status_pemeriksaan" required class="form-select">
+                    <label class="form-label" for="status_pemeriksaan">Status Baru <span class="text-danger">*</span></label>
+                    <select id="status_pemeriksaan" name="status_pemeriksaan" required class="form-select">
                         <?php foreach ($transitions as $s): ?>
                             <option value="<?= htmlspecialchars($s) ?>"><?= htmlspecialchars($s) ?></option>
                         <?php endforeach; ?>

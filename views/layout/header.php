@@ -16,10 +16,10 @@ $current_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 <body class="bg-body">
     <div class="d-flex min-vh-100 flex-column flex-lg-row">
         <!-- Sidebar -->
-        <aside class="sidebar bg-light border-end flex-shrink-0" style="width: 260px; min-height: 100vh;">
-            <div class="p-4 position-sticky top-0 d-flex flex-column" style="height: 100vh;">
+        <aside class="sidebar bg-light border-end flex-shrink-0">
+            <div class="p-4 position-sticky top-0 d-flex flex-column sidebar-sticky">
                 <a href="<?= APP_URL ?>" class="d-flex align-items-center mb-4 text-decoration-none text-dark fw-bold fs-5">
-                    <div class="bg-dark text-white rounded p-1 me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                    <div class="bg-dark text-white rounded p-1 me-2 d-flex align-items-center justify-content-center icon-box-sm">
                         <i class="bi bi-moon-stars-fill"></i>
                     </div>
                     SILK-Swarakarna

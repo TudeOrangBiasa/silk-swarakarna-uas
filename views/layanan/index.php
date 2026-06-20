@@ -52,10 +52,10 @@ $flash = flash_message();
                                 <td class="text-end fw-medium"><?= htmlspecialchars($l['biaya_fmt']) ?></td>
                                 <td class="px-4">
                                     <div class="d-flex gap-2">
-                                        <a href="/layanan/edit?id=<?= (int) $l['id_layanan'] ?>" class="btn btn-sm btn-light text-secondary border" title="Edit">
+                                        <a href="/layanan/edit?id=<?= (int) $l['id_layanan'] ?>" class="btn btn-sm btn-touch btn-light text-secondary border" title="Edit" aria-label="Edit layanan <?= htmlspecialchars($l['nama_layanan']) ?>">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <a href="/layanan/delete?id=<?= (int) $l['id_layanan'] ?>" class="btn btn-sm btn-light text-danger border" title="Hapus">
+                                        <a href="/layanan/delete?id=<?= (int) $l['id_layanan'] ?>" class="btn btn-sm btn-touch btn-light text-danger border" title="Hapus" aria-label="Hapus layanan <?= htmlspecialchars($l['nama_layanan']) ?>">
                                             <i class="bi bi-trash"></i>
                                         </a>
                                     </div>

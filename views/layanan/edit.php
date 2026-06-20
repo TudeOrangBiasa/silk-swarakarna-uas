@@ -30,8 +30,8 @@ $flash = flash_message();
             <input type="hidden" name="id" value="<?= (int) $row['id_layanan'] ?>">
 
             <div class="mb-3">
-                <label class="form-label">Nama Layanan <span class="text-danger">*</span></label>
-                <input type="text" name="nama_layanan" required maxlength="100"
+                <label class="form-label" for="nama_layanan">Nama Layanan <span class="text-danger">*</span></label>
+                <input type="text" id="nama_layanan" name="nama_layanan" required maxlength="100"
                        value="<?= htmlspecialchars(old_input('nama_layanan') ?: $row['nama_layanan']) ?>"
                        class="form-control<?= has_error('nama_layanan') ? ' is-invalid' : '' ?>">
                 <?php if (has_error('nama_layanan')): ?>
@@ -40,8 +40,8 @@ $flash = flash_message();
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Biaya <span class="text-danger">*</span></label>
-                <input type="number" name="biaya" required min="1" step="1"
+                <label class="form-label" for="biaya">Biaya <span class="text-danger">*</span></label>
+                <input type="number" id="biaya" name="biaya" required min="1" step="1"
                        value="<?= htmlspecialchars(old_input('biaya') ?: (string) $row['biaya']) ?>"
                        class="form-control<?= has_error('biaya') ? ' is-invalid' : '' ?>">
                 <div class="form-text">Biaya dalam Rupiah (Rp), tanpa titik atau koma. Contoh: 250000</div>

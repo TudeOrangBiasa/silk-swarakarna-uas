@@ -66,10 +66,10 @@ $flash = flash_message();
                                 <td><?= htmlspecialchars($d['no_hp'] ?? '-') ?></td>
                                 <td class="px-4">
                                     <div class="d-flex gap-2">
-                                        <a href="/dokter/edit?id=<?= (int) $d['id_dokter'] ?>" class="btn btn-sm btn-light text-secondary border" title="Edit">
+                                        <a href="/dokter/edit?id=<?= (int) $d['id_dokter'] ?>" class="btn btn-sm btn-touch btn-light text-secondary border" title="Edit" aria-label="Edit dokter <?= htmlspecialchars($d['nama_dokter']) ?>">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <a href="/dokter/delete?id=<?= (int) $d['id_dokter'] ?>" class="btn btn-sm btn-light text-danger border" title="Hapus">
+                                        <a href="/dokter/delete?id=<?= (int) $d['id_dokter'] ?>" class="btn btn-sm btn-touch btn-light text-danger border" title="Hapus" aria-label="Hapus dokter <?= htmlspecialchars($d['nama_dokter']) ?>">
                                             <i class="bi bi-trash"></i>
                                         </a>
                                     </div>

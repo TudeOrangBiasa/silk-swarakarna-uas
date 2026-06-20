@@ -29,62 +29,66 @@ $latestPeriksa       = (new PemeriksaanPresenter(new Pemeriksaan()))->getLatest(
 </div>
 
 <div class="row g-4 mb-4">
-    <div class="col-12 col-md-6 col-lg-3">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
+    <div class="col-12 col-lg-6">
+        <!-- Hero card: Pasien -->
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-primary text-white">
             <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <span class="text-muted fw-medium small">Total Pasien</span>
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                        <i class="bi bi-people fs-5 text-dark"></i>
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div>
+                        <small class="text-uppercase fw-semibold opacity-75">Total Pasien</small>
+                        <div class="display-3 fw-bold"><?= $totalPasien ?></div>
                     </div>
+                    <i class="bi bi-people-fill hero-icon"></i>
                 </div>
-                <div class="display-6 fw-bold text-dark"><?= $totalPasien ?></div>
-                <a href="/pasien" class="text-decoration-none small text-primary mt-2 d-inline-block">Lihat Pasien &rarr;</a>
+                <a href="/pasien" class="text-white text-decoration-none fw-semibold">
+                    Lihat semua pasien <i class="bi bi-arrow-right"></i>
+                </a>
             </div>
         </div>
     </div>
-    
-    <div class="col-12 col-md-6 col-lg-3">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <span class="text-muted fw-medium small">Total Dokter</span>
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                        <i class="bi bi-heart-pulse fs-5 text-dark"></i>
+    <div class="col-12 col-lg-6">
+        <div class="row g-4 h-100">
+            <div class="col-12 col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="text-muted fw-medium small">Total Dokter</span>
+                            <div class="bg-light rounded-3 icon-box d-flex align-items-center justify-content-center">
+                                <i class="bi bi-heart-pulse fs-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="display-6 fw-bold text-dark"><?= $totalDokter ?></div>
+                        <a href="/dokter" class="text-decoration-none small text-primary mt-2 d-inline-block">Lihat Dokter &rarr;</a>
                     </div>
                 </div>
-                <div class="display-6 fw-bold text-dark"><?= $totalDokter ?></div>
-                <a href="/dokter" class="text-decoration-none small text-primary mt-2 d-inline-block">Lihat Dokter &rarr;</a>
             </div>
-        </div>
-    </div>
-    
-    <div class="col-12 col-md-6 col-lg-3">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <span class="text-muted fw-medium small">Total Layanan</span>
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                        <i class="bi bi-tags fs-5 text-dark"></i>
+            <div class="col-12 col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="text-muted fw-medium small">Total Layanan</span>
+                            <div class="bg-light rounded-3 icon-box d-flex align-items-center justify-content-center">
+                                <i class="bi bi-tags fs-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="display-6 fw-bold text-dark"><?= $totalLayanan ?></div>
+                        <a href="/layanan" class="text-decoration-none small text-primary mt-2 d-inline-block">Lihat Layanan &rarr;</a>
                     </div>
                 </div>
-                <div class="display-6 fw-bold text-dark"><?= $totalLayanan ?></div>
-                <a href="/layanan" class="text-decoration-none small text-primary mt-2 d-inline-block">Lihat Layanan &rarr;</a>
             </div>
-        </div>
-    </div>
-    
-    <div class="col-12 col-md-6 col-lg-3">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <span class="text-muted fw-medium small">Pemeriksaan Hari Ini</span>
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                        <i class="bi bi-journal-medical fs-5 text-dark"></i>
+            <div class="col-12 col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="text-muted fw-medium small">Pemeriksaan Hari Ini</span>
+                            <div class="bg-light rounded-3 icon-box d-flex align-items-center justify-content-center">
+                                <i class="bi bi-journal-medical fs-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="display-6 fw-bold text-dark"><?= $totalPeriksaHariIni ?></div>
+                        <a href="/pemeriksaan" class="text-decoration-none small text-primary mt-2 d-inline-block">Lihat Pemeriksaan &rarr;</a>
                     </div>
                 </div>
-                <div class="display-6 fw-bold text-dark"><?= $totalPeriksaHariIni ?></div>
-                <a href="/pemeriksaan" class="text-decoration-none small text-primary mt-2 d-inline-block">Lihat Pemeriksaan &rarr;</a>
             </div>
         </div>
     </div>

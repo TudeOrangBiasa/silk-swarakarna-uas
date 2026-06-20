@@ -13,7 +13,7 @@ $row = $id !== '' ? $presenter->getFormData($id) : [];
 $flash = flash_message();
 
 if (empty($row) || empty($row['id_periksa'])) {
-    echo '<div class="alert alert-danger">Data pemeriksaan tidak ditemukan.</div>';
+    echo '<div class="alert alert-danger" role="alert">Data pemeriksaan tidak ditemukan.</div>';
     echo '<a href="/pemeriksaan" class="btn btn-primary">Kembali</a>';
     return;
 }
@@ -31,7 +31,7 @@ if (empty($row) || empty($row['id_periksa'])) {
 </div>
 
 <?php if (($row['status_pemeriksaan'] ?? '') === 'Selesai'): ?>
-    <div class="alert alert-warning">
+    <div class="alert alert-warning" role="alert">
         <i class="bi bi-shield-exclamation"></i>
         Pemeriksaan dengan status <strong>Selesai</strong> tidak dapat dihapus karena merupakan riwayat medis (audit trail).
     </div>

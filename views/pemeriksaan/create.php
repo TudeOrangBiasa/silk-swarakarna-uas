@@ -30,8 +30,8 @@ $flash = flash_message();
     <div class="card-body p-4">
         <form method="post" action="/pemeriksaan" novalidate>
             <div class="mb-3">
-                <label class="form-label">Pasien <span class="text-danger">*</span></label>
-                <select name="id_pasien" required class="form-select<?= has_error('id_pasien') ? ' is-invalid' : '' ?>">
+                <label class="form-label" for="id_pasien">Pasien <span class="text-danger">*</span></label>
+                <select id="id_pasien" name="id_pasien" required class="form-select<?= has_error('id_pasien') ? ' is-invalid' : '' ?>">
                     <option value="">-- Pilih Pasien --</option>
                     <?php foreach ($pasienOptions as $opt): ?>
                         <option value="<?= htmlspecialchars($opt['value']) ?>" <?= (old_input('id_pasien') ?: $row['id_pasien']) === $opt['value'] ? 'selected' : '' ?>>
@@ -45,8 +45,8 @@ $flash = flash_message();
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Dokter <span class="text-danger">*</span></label>
-                <select name="id_dokter" required class="form-select<?= has_error('id_dokter') ? ' is-invalid' : '' ?>">
+                <label class="form-label" for="id_dokter">Dokter <span class="text-danger">*</span></label>
+                <select id="id_dokter" name="id_dokter" required class="form-select<?= has_error('id_dokter') ? ' is-invalid' : '' ?>">
                     <option value="">-- Pilih Dokter --</option>
                     <?php foreach ($dokterOptions as $opt): ?>
                         <option value="<?= htmlspecialchars($opt['value']) ?>" <?= (old_input('id_dokter') ?: (string) $row['id_dokter']) === $opt['value'] ? 'selected' : '' ?>>
@@ -60,8 +60,8 @@ $flash = flash_message();
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Layanan <span class="text-danger">*</span></label>
-                <select name="id_layanan" required class="form-select<?= has_error('id_layanan') ? ' is-invalid' : '' ?>">
+                <label class="form-label" for="id_layanan">Layanan <span class="text-danger">*</span></label>
+                <select id="id_layanan" name="id_layanan" required class="form-select<?= has_error('id_layanan') ? ' is-invalid' : '' ?>">
                     <option value="">-- Pilih Layanan --</option>
                     <?php foreach ($layananOptions as $opt): ?>
                         <option value="<?= htmlspecialchars($opt['value']) ?>" <?= (old_input('id_layanan') ?: (string) $row['id_layanan']) === $opt['value'] ? 'selected' : '' ?>>
@@ -75,8 +75,8 @@ $flash = flash_message();
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Tanggal Periksa <span class="text-danger">*</span></label>
-                <input type="date" name="tanggal_periksa" required
+                <label class="form-label" for="tanggal_periksa">Tanggal Periksa <span class="text-danger">*</span></label>
+                <input type="date" id="tanggal_periksa" name="tanggal_periksa" required
                        value="<?= htmlspecialchars(old_input('tanggal_periksa') ?: $row['tanggal_periksa']) ?>"
                        class="form-control<?= has_error('tanggal_periksa') ? ' is-invalid' : '' ?>">
                 <?php if (has_error('tanggal_periksa')): ?>
@@ -85,8 +85,8 @@ $flash = flash_message();
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Keluhan <span class="text-danger">*</span></label>
-                <textarea name="keluhan" required class="form-control<?= has_error('keluhan') ? ' is-invalid' : '' ?>" rows="3"
+                <label class="form-label" for="keluhan">Keluhan <span class="text-danger">*</span></label>
+                <textarea id="keluhan" name="keluhan" required class="form-control<?= has_error('keluhan') ? ' is-invalid' : '' ?>" rows="3"
                           placeholder="Tuliskan keluhan pasien..."><?= htmlspecialchars(old_input('keluhan') ?: ($row['keluhan'] ?? '')) ?></textarea>
                 <?php if (has_error('keluhan')): ?>
                     <div class="invalid-feedback d-block"><?= error_for('keluhan') ?></div>
