@@ -11,7 +11,9 @@ $current_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 </div>
 <ul class="nav flex-column px-2">
     <?php foreach ($items as $item):
-        $is_active = str_starts_with($current_uri, $item['url']);
+        $is_active = $item['url'] === '/'
+            ? $current_uri === '/'
+            : str_starts_with($current_uri, $item['url']);
     ?>
         <li class="nav-item">
             <a class="sidebar-link <?= $is_active ? 'active' : '' ?>"

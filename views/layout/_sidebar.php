@@ -1,4 +1,7 @@
 <?php
+$utama_items = [
+    ['url' => '/', 'icon' => 'bi-grid-1x2', 'label' => 'Dashboard'],
+];
 $master_data_items = [
     ['url' => '/pasien', 'icon' => 'bi-people', 'label' => 'Pasien'],
     ['url' => '/dokter', 'icon' => 'bi-heart-pulse', 'label' => 'Dokter'],
@@ -24,6 +27,12 @@ $transaksi_items = [
 
         <!-- Nav (scrollable area — scrolls if nav too long) -->
         <div class="sidebar-nav-scroll flex-grow-1 overflow-y-auto">
+            <?php
+            $label = 'Utama';
+            $items = $utama_items;
+            include __DIR__ . '/../partials/_sidebar_section.php';
+            ?>
+
             <?php
             $label = 'Master Data';
             $items = $master_data_items;
