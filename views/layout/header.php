@@ -17,10 +17,10 @@ $page_title = $page_title ?? 'SILK-Swarakarna';
         }
     </script>
 </head>
-<body class="bg-body">
+<body class="bg-body overflow-hidden">
     <a class="visually-hidden-focusable" href="#mainContent">Skip to main content</a>
     <div class="d-flex min-vh-100 flex-column flex-lg-row">
         <?php include __DIR__ . '/_sidebar.php'; ?>
         <div class="content-wrapper flex-grow-1 bg-body-tertiary d-flex flex-column w-100 overflow-hidden">
             <?php include __DIR__ . '/_topbar.php'; ?>
-            <main id="mainContent" class="container-fluid p-4 p-lg-5">
+            <main id="mainContent" class="flex-grow-1 overflow-y-auto container-fluid p-4 p-lg-5">

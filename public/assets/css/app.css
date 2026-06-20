@@ -359,3 +359,18 @@ html.sidebar-collapsed .sidebar-profile > div:first-child {
 html.sidebar-collapsed .sidebar-avatar + div {
     display: none;
 }
+
+/* Layout: only main scrolls (topbar + footer fixed) */
+body.bg-body {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.content-wrapper {
+    height: 100vh; /* fill viewport, body overflow hidden */
+    overflow: hidden;
+}
+
+.content-wrapper footer {
+    flex-shrink: 0;
+}
