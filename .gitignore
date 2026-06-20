@@ -31,6 +31,10 @@ khusus uas.md
 # DDEV (project config stays local)
 .ddev/
 
+# PHPUnit cache & coverage
+.phpunit.cache
+tests/coverage/
+
 # Logs (runtime)
 storage/logs/*.log
 

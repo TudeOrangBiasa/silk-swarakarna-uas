@@ -6,6 +6,9 @@
   "require": {
     "php": ">=8.0"
   },
+  "require-dev": {
+    "phpunit/phpunit": "^10.0"
+  },
   "autoload": {
     "psr-4": {
       "Silk\\": "src/",
@@ -18,6 +21,7 @@
   },
   "scripts": {
     "serve": "php -S localhost:8000 -t public/",
+    "test": "phpunit",
     "db:reset": "mysql -u root -p silk_swarakarna < database/silk_swarakarna.sql"
   }
 }
