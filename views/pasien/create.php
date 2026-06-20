@@ -47,19 +47,6 @@ $flash = flash_message();
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
-                <?php $jk = old_input('jenis_kelamin') ?: ($row['jenis_kelamin'] ?? ''); ?>
-                <select name="jenis_kelamin" required class="form-select<?= has_error('jenis_kelamin') ? ' is-invalid' : '' ?>">
-                    <option value="">-- Pilih --</option>
-                    <option value="L" <?= $jk === 'L' ? 'selected' : '' ?>>Laki-laki</option>
-                    <option value="P" <?= $jk === 'P' ? 'selected' : '' ?>>Perempuan</option>
-                </select>
-                <?php if (has_error('jenis_kelamin')): ?>
-                    <div class="invalid-feedback d-block"><?= error_for('jenis_kelamin') ?></div>
-                <?php endif; ?>
-            </div>
-
-            <div class="mb-3">
                 <label class="form-label">No HP <span class="text-danger">*</span></label>
                 <input type="text" name="no_hp" required pattern="[0-9]{10,15}"
                        value="<?= htmlspecialchars(old_input('no_hp') ?: ($row['no_hp'] ?? '')) ?>"

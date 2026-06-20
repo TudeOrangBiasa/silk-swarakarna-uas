@@ -7,11 +7,11 @@
 use Silk\Entity\Layanan;
 use Silk\Presenter\LayananPresenter;
 
-$rows = [
-    ['id_layanan' => 1, 'nama_layanan' => 'BERA (Brainstem Evoked Response Audiometry)', 'biaya_fmt' => 'Rp 750.000'],
-    ['id_layanan' => 2, 'nama_layanan' => 'Audiometri', 'biaya_fmt' => 'Rp 250.000'],
-    ['id_layanan' => 3, 'nama_layanan' => 'OAE (Otoacoustic Emission)', 'biaya_fmt' => 'Rp 350.000'],
-];
+$presenter = new LayananPresenter(new Layanan());
+$page = max(1, (int) query_param('page', '1'));
+$data = $presenter->getListData($page);
+$rows = $data['rows'];
+$pagination = $data['pagination'];
 $flash = flash_message();
 ?>
 
@@ -68,3 +68,8 @@ $flash = flash_message();
         </div>
     </div>
 </div>
+
+<?php
+$baseUrl = '/layanan';
+include __DIR__ . '/../partials/pagination.php';
+?>

@@ -16,11 +16,20 @@ final class LayananPresenter
     }
 
     /**
-     * @return list<array<string, mixed>>
+     * @return array{rows: list<array<string, mixed>>, pagination: array{total: int, page: int, per_page: int, total_pages: int, offset: int, has_next: bool, has_prev: bool}}
      */
-    public function getListData(): array
+    public function getListData(int $page = 1, int $perPage = 20): array
     {
-        return array_values(array_map([$this, 'formatRow'], $this->layanan->read()));
+        $perPage = max(1, min(100, $perPage));
+        $page = max(1, $page);
+        $offset = ($page - 1) * $perPage;
+        $all = $this->layanan->read();
+        $total = count($all);
+        $rows = array_slice($all, $offset, $perPage);
+        return [
+            'rows' => array_values(array_map([$this, 'formatRow'], $rows)),
+            'pagination' => paginate($total, $page, $perPage),
+        ];
     }
 
     /**

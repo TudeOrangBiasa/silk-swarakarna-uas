@@ -9,10 +9,10 @@ use Silk\Presenter\PemeriksaanPresenter;
 $presenter = new PemeriksaanPresenter(new Pemeriksaan());
 $keyword = query_param('search');
 $status = query_param('status');
-$rows = [
-    ['id_periksa' => 'TRX-2026002', 'tanggal_periksa_fmt' => '19/06/2026', 'nama_pasien' => 'Siti Aminah', 'nama_dokter' => 'dr. Budi Santoso, Sp.THT-KL', 'nama_layanan' => 'BERA (Brainstem Evoked Response Audiometry)', 'biaya_fmt' => 'Rp 750.000', 'status_pemeriksaan' => 'Sedang Diperiksa', 'status_badge_html' => '<span class="badge bg-info text-white rounded-pill px-3 py-2 border-0 shadow-sm">Sedang Diperiksa</span>'],
-    ['id_periksa' => 'TRX-2026001', 'tanggal_periksa_fmt' => '18/06/2026', 'nama_pasien' => 'Andi Pratama', 'nama_dokter' => 'dr. Sari Wijaya, Sp.THT', 'nama_layanan' => 'Audiometri', 'biaya_fmt' => 'Rp 250.000', 'status_pemeriksaan' => 'Selesai', 'status_badge_html' => '<span class="badge bg-success text-white rounded-pill px-3 py-2 border-0 shadow-sm">Selesai</span>'],
-];
+$page = max(1, (int) query_param('page', '1'));
+$data = $presenter->getListData($keyword, $status, null, null, $page);
+$rows = $data['rows'];
+$pagination = $data['pagination'];
 $flash = flash_message();
 $statusOptions = $presenter->getStatusOptions();
 ?>
@@ -119,3 +119,8 @@ $statusOptions = $presenter->getStatusOptions();
         </div>
     </div>
 </div>
+
+<?php
+$baseUrl = '/pemeriksaan';
+include __DIR__ . '/../partials/pagination.php';
+?>

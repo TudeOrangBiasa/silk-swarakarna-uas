@@ -12,7 +12,7 @@ $id = query_param('id');
 $row = $id !== '' ? $presenter->getFormData((int) $id) : [];
 $flash = flash_message();
 
-if (empty($row) || $row['id_layanan'] === '') {
+if (empty($row) || empty($row['id_layanan'])) {
     echo '<div class="alert alert-danger">Data layanan tidak ditemukan.</div>';
     echo '<a href="/layanan" class="btn btn-primary">Kembali</a>';
     return;

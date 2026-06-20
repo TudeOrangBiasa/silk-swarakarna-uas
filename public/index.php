@@ -51,15 +51,15 @@ $routes = [
 $postActions = [
     'pasien'                => ['class' => 'Pasien',       'method' => 'create'],
     'pasien.update'         => ['class' => 'Pasien',       'method' => 'update'],
-    'dokter'                => ['class' => 'Dokter',       'method' => 'create'],
-    'dokter.update'         => ['class' => 'Dokter',       'method' => 'update'],
-    'layanan'               => ['class' => 'Layanan',      'method' => 'create'],
-    'layanan.update'        => ['class' => 'Layanan',      'method' => 'update'],
+    'dokter'                => ['class' => 'Dokter',       'method' => 'create',  'id_type' => 'int'],
+    'dokter.update'         => ['class' => 'Dokter',       'method' => 'update',  'id_type' => 'int'],
+    'layanan'               => ['class' => 'Layanan',      'method' => 'create',  'id_type' => 'int'],
+    'layanan.update'        => ['class' => 'Layanan',      'method' => 'update',  'id_type' => 'int'],
     'pemeriksaan'           => ['class' => 'Pemeriksaan',  'method' => 'create'],
     'pemeriksaan.update_status' => ['class' => 'Pemeriksaan',  'method' => 'updateStatus'],
     'pasien.delete'         => ['class' => 'Pasien',       'method' => 'delete'],
-    'dokter.delete'         => ['class' => 'Dokter',       'method' => 'delete'],
-    'layanan.delete'        => ['class' => 'Layanan',      'method' => 'delete'],
+    'dokter.delete'         => ['class' => 'Dokter',       'method' => 'delete',  'id_type' => 'int'],
+    'layanan.delete'        => ['class' => 'Layanan',      'method' => 'delete',  'id_type' => 'int'],
     'pemeriksaan.delete'    => ['class' => 'Pemeriksaan',  'method' => 'delete'],
 ];
 
@@ -98,6 +98,9 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
             // id can come from POST body or GET query (forms embed hidden id;
             // some flows pass via ?id=). newStatus reads status_pemeriksaan from POST.
             $id        = $_POST['id'] ?? $_GET['id'] ?? null;
+            if (isset($action['id_type']) && $action['id_type'] === 'int' && $id !== null) {
+                $id = (int) $id;
+            }
             $newStatus = $_POST['status_pemeriksaan'] ?? null;
             $args      = match ($action['method']) {
                 'create'       => [$_POST],
@@ -112,13 +115,9 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
             $result = $instance->{$action['method']}(...$args);
             // Success: redirect to the entity list page
             $entity = explode('.', $routeKey)[0];
-            if ($action['method'] === 'delete') {
-                $_SESSION['flash_success'] = ucfirst($entity) . ' berhasil dihapus.';
-            } else {
-                $_SESSION['flash_success'] = $action['class'] === 'Pemeriksaan'
-                    ? "Pemeriksaan {$result} berhasil disimpan."
-                    : ucfirst($entity) . ' berhasil disimpan.';
-            }
+            $_SESSION['flash_success'] = $action['method'] === 'delete'
+                ? ucfirst($entity) . ' berhasil dihapus.'
+                : ucfirst($entity) . ' berhasil disimpan.';
             header('Location: /' . ($entity ?: ''));
             exit;
         } catch (ValidationException $e) {

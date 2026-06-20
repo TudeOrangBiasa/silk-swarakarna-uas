@@ -35,7 +35,9 @@ final class LayananPresenterTest extends TestCase
         $this->createLayanan();
         $result = $this->presenter->getListData();
         $this->assertIsArray($result);
-        $this->assertNotEmpty($result);
+        $this->assertArrayHasKey('rows', $result);
+        $this->assertArrayHasKey('pagination', $result);
+        $this->assertNotEmpty($result['rows']);
     }
 
     public function testGetListDataIncludesBiayaFmt(): void
@@ -45,7 +47,7 @@ final class LayananPresenterTest extends TestCase
 
         $result = $this->presenter->getListData();
         $found = null;
-        foreach ($result as $r) {
+        foreach ($result['rows'] as $r) {
             if ((int) $r['id_layanan'] === $id) {
                 $found = $r;
                 break;

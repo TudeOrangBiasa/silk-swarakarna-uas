@@ -7,11 +7,12 @@
 use Silk\Entity\Dokter;
 use Silk\Presenter\DokterPresenter;
 
+$presenter = new DokterPresenter(new Dokter());
 $keyword = query_param('search');
-$rows = [
-    ['id_dokter' => 1, 'nama_dokter' => 'dr. Budi Santoso, Sp.THT-KL', 'no_izin_praktik' => 'SIP-12345', 'spesialisasi' => 'THT', 'no_hp' => '08123456789'],
-    ['id_dokter' => 2, 'nama_dokter' => 'dr. Sari Wijaya, Sp.THT', 'no_izin_praktik' => 'SIP-67890', 'spesialisasi' => 'Audiologi', 'no_hp' => '08567890123'],
-];
+$page = max(1, (int) query_param('page', '1'));
+$data = $presenter->getListData($keyword, $page);
+$rows = $data['rows'];
+$pagination = $data['pagination'];
 $flash = flash_message();
 ?>
 
@@ -81,3 +82,8 @@ $flash = flash_message();
         </div>
     </div>
 </div>
+
+<?php
+$baseUrl = '/dokter';
+include __DIR__ . '/../partials/pagination.php';
+?>

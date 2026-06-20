@@ -40,3 +40,6 @@ storage/logs/*.log
 
 # Local issue tracker (use GitHub Issues instead)
 .scratch/
+
+# Browser QA artifacts
+qa-screenshots/

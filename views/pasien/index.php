@@ -7,12 +7,12 @@
 use Silk\Entity\Pasien;
 use Silk\Presenter\PasienPresenter;
 
+$presenter = new PasienPresenter(new Pasien());
 $keyword = query_param('search');
-$rows = [
-    ['id_pasien' => 'PS-001', 'nama_pasien' => 'Siti Aminah', 'tanggal_lahir_fmt' => '12/05/1990', 'jenis_kelamin' => 'P', 'no_hp' => '081234567890'],
-    ['id_pasien' => 'PS-002', 'nama_pasien' => 'Andi Pratama', 'tanggal_lahir_fmt' => '25/08/1985', 'jenis_kelamin' => 'L', 'no_hp' => '085678901234'],
-    ['id_pasien' => 'PS-003', 'nama_pasien' => 'Budi Santoso', 'tanggal_lahir_fmt' => '10/11/2000', 'jenis_kelamin' => 'L', 'no_hp' => '081112223333'],
-];
+$page = max(1, (int) query_param('page', '1'));
+$data = $presenter->getListData($keyword, $page);
+$rows = $data['rows'];
+$pagination = $data['pagination'];
 $flash = flash_message();
 ?>
 
@@ -49,14 +49,13 @@ $flash = flash_message();
                         <th class="fw-medium">No Rekam Medis</th>
                         <th class="fw-medium">Nama</th>
                         <th class="fw-medium">Tgl Lahir</th>
-                        <th class="fw-medium">JK</th>
                         <th class="fw-medium">No HP</th>
                         <th class="fw-medium px-4">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($rows)): ?>
-                        <tr><td colspan="7" class="text-center text-muted py-4">Belum ada data pasien.</td></tr>
+                        <tr><td colspan="6" class="text-center text-muted py-4">Belum ada data pasien.</td></tr>
                     <?php else: ?>
                         <?php foreach ($rows as $i => $p): ?>
                             <tr>
@@ -64,7 +63,6 @@ $flash = flash_message();
                                 <td><span class="badge bg-light text-dark border"><?= htmlspecialchars($p['id_pasien']) ?></span></td>
                                 <td class="fw-medium"><?= htmlspecialchars($p['nama_pasien']) ?></td>
                                 <td><?= htmlspecialchars($p['tanggal_lahir_fmt']) ?></td>
-                                <td><?= $p['jenis_kelamin'] === 'L' ? 'Laki-laki' : 'Perempuan' ?></td>
                                 <td><?= htmlspecialchars($p['no_hp'] ?? '-') ?></td>
                                 <td class="px-4">
                                     <div class="d-flex gap-2">
@@ -84,3 +82,8 @@ $flash = flash_message();
         </div>
     </div>
 </div>
+
+<?php
+$baseUrl = '/pasien';
+include __DIR__ . '/../partials/pagination.php';
+?>
