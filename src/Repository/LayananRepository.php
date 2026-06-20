@@ -27,9 +27,12 @@ final class LayananRepository
         return (int) $this->db->lastInsertId();
     }
 
-    public function findAll(): array
+    public function findAll(int $limit = 50, int $offset = 0): array
     {
-        return $this->db->query('SELECT * FROM layanan ORDER BY created_at DESC, id_layanan DESC');
+        return $this->db->query(
+            'SELECT * FROM layanan ORDER BY created_at DESC, id_layanan DESC LIMIT ? OFFSET ?',
+            [(int) $limit, (int) $offset]
+        );
     }
 
     public function findById(int $id): array

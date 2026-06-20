@@ -19,12 +19,21 @@ final class DokterQuery
      * Search by name (LIKE %keyword%). Leading wildcard means B-tree index
      * is not used; for >10k rows consider FULLTEXT index or prefix search.
      */
-    public function searchByName(string $keyword): array
+    public function searchByName(string $keyword, int $limit = 50, int $offset = 0): array
     {
         return $this->db->query(
-            'SELECT * FROM dokter WHERE nama_dokter LIKE ? ORDER BY nama_dokter ASC',
+            'SELECT * FROM dokter WHERE nama_dokter LIKE ? ORDER BY nama_dokter ASC LIMIT ? OFFSET ?',
+            ['%' . $keyword . '%', (int) $limit, (int) $offset]
+        );
+    }
+
+    public function countSearchByName(string $keyword): int
+    {
+        $rows = $this->db->query(
+            'SELECT COUNT(*) AS n FROM dokter WHERE nama_dokter LIKE ?',
             ['%' . $keyword . '%']
         );
+        return (int) $rows[0]['n'];
     }
 
     public function findDokterForOptions(): array

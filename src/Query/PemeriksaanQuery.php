@@ -33,7 +33,7 @@ final class PemeriksaanQuery
         return $prefix . str_pad((string) $next, 3, '0', STR_PAD_LEFT);
     }
 
-    public function findAllJoined(?string $keyword = null): array
+    public function findAllJoined(?string $keyword = null, int $limit = 50, int $offset = 0): array
     {
         $sql = 'SELECT p.*,
                   ps.nama_pasien,
@@ -48,8 +48,22 @@ final class PemeriksaanQuery
             $sql .= ' WHERE ps.nama_pasien LIKE ?';
             $params[] = '%' . $keyword . '%';
         }
-        $sql .= ' ORDER BY p.tanggal_periksa DESC, p.created_at DESC';
+        $sql .= ' ORDER BY p.tanggal_periksa DESC, p.created_at DESC LIMIT ? OFFSET ?';
+        $params[] = (int) $limit;
+        $params[] = (int) $offset;
         return $this->db->query($sql, $params);
+    }
+
+    public function countAllJoined(?string $keyword = null): int
+    {
+        $sql = 'SELECT COUNT(*) AS n FROM pemeriksaan p JOIN pasien ps ON p.id_pasien = ps.id_pasien';
+        $params = [];
+        if ($keyword !== null && $keyword !== '') {
+            $sql .= ' WHERE ps.nama_pasien LIKE ?';
+            $params[] = '%' . $keyword . '%';
+        }
+        $rows = $this->db->query($sql, $params);
+        return (int) $rows[0]['n'];
     }
 
     public function findByIdJoined(string $id): array

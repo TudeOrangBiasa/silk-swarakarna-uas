@@ -32,9 +32,12 @@ final class DokterRepository
         return (int) $this->db->lastInsertId();
     }
 
-    public function findAll(): array
+    public function findAll(int $limit = 50, int $offset = 0): array
     {
-        return $this->db->query('SELECT * FROM dokter ORDER BY created_at DESC, id_dokter DESC');
+        return $this->db->query(
+            'SELECT * FROM dokter ORDER BY created_at DESC, id_dokter DESC LIMIT ? OFFSET ?',
+            [(int) $limit, (int) $offset]
+        );
     }
 
     public function findById(int $id): array

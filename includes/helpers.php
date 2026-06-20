@@ -101,3 +101,28 @@ function query_param(string $key, string $default = ''): string
 {
     return (string) ($_GET[$key] ?? $default);
 }
+
+/**
+ * Calculate pagination metadata.
+ *
+ * @param int $total       Total rows matching the query
+ * @param int $currentPage Current page (1-based)
+ * @param int $perPage     Items per page (clamped 1-100)
+ * @return array{total: int, page: int, per_page: int, total_pages: int, offset: int, has_next: bool, has_prev: bool}
+ */
+function paginate(int $total, int $currentPage, int $perPage = 20): array
+{
+    $perPage = max(1, min(100, $perPage));
+    $currentPage = max(1, $currentPage);
+    $totalPages = $total === 0 ? 0 : (int) ceil($total / $perPage);
+    $offset = ($currentPage - 1) * $perPage;
+    return [
+        'total' => $total,
+        'page' => $currentPage,
+        'per_page' => $perPage,
+        'total_pages' => $totalPages,
+        'offset' => $offset,
+        'has_next' => $currentPage < $totalPages,
+        'has_prev' => $currentPage > 1,
+    ];
+}

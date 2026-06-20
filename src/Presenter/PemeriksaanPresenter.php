@@ -8,6 +8,7 @@ use Silk\Entity\Dokter;
 use Silk\Entity\Layanan;
 use Silk\Entity\Pasien;
 use Silk\Entity\Pemeriksaan;
+use Silk\Query\PemeriksaanQuery;
 
 /**
  * Presenter for Pemeriksaan views.
@@ -26,12 +27,14 @@ final class PemeriksaanPresenter
     /** Allowed status values for the form select. */
     private const STATUS_OPTIONS = ['Menunggu', 'Sedang Diperiksa', 'Selesai'];
 
+    private PemeriksaanQuery $query;
     private PasienPresenter $pasienPresenter;
     private DokterPresenter $dokterPresenter;
     private LayananPresenter $layananPresenter;
 
     public function __construct(
         private Pemeriksaan $pemeriksaan,
+        ?PemeriksaanQuery $query = null,
         ?PasienPresenter $pasienPresenter = null,
         ?DokterPresenter $dokterPresenter = null,
         ?LayananPresenter $layananPresenter = null,
@@ -39,18 +42,26 @@ final class PemeriksaanPresenter
         $pasien   = new Pasien();
         $dokter   = new Dokter();
         $layanan  = new Layanan();
-        $this->pasienPresenter  = $pasienPresenter  ?? new PasienPresenter($pasien);
-        $this->dokterPresenter  = $dokterPresenter  ?? new DokterPresenter($dokter);
-        $this->layananPresenter = $layananPresenter ?? new LayananPresenter($layanan);
+        $this->query             = $query ?? new PemeriksaanQuery();
+        $this->pasienPresenter   = $pasienPresenter  ?? new PasienPresenter($pasien);
+        $this->dokterPresenter   = $dokterPresenter  ?? new DokterPresenter($dokter);
+        $this->layananPresenter  = $layananPresenter ?? new LayananPresenter($layanan);
     }
 
     /**
-     * @return list<array<string, mixed>>
+     * @return array{rows: list<array<string, mixed>>, pagination: array{total: int, page: int, per_page: int, total_pages: int, offset: int, has_next: bool, has_prev: bool}}
      */
-    public function getListData(?string $keyword = null): array
+    public function getListData(?string $keyword = null, int $page = 1, int $perPage = 20): array
     {
-        $rows = $this->pemeriksaan->readWithJoin($keyword);
-        return array_values(array_map([$this, 'formatRow'], $rows));
+        $perPage = max(1, min(100, $perPage));
+        $page = max(1, $page);
+        $offset = ($page - 1) * $perPage;
+        $rows = $this->query->findAllJoined($keyword, $perPage, $offset);
+        $total = $this->query->countAllJoined($keyword);
+        return [
+            'rows' => array_values(array_map([$this, 'formatRow'], $rows)),
+            'pagination' => paginate($total, $page, $perPage),
+        ];
     }
 
     /**

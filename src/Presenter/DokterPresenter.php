@@ -5,25 +5,41 @@ declare(strict_types=1);
 namespace Silk\Presenter;
 
 use Silk\Entity\Dokter;
+use Silk\Query\DokterQuery;
+use Silk\Repository\DokterRepository;
 
 /**
  * Presenter for Dokter views.
  */
 final class DokterPresenter
 {
-    public function __construct(private Dokter $dokter)
-    {
+    private DokterQuery $query;
+    private DokterRepository $repo;
+
+    public function __construct(
+        private Dokter $dokter,
+        ?DokterQuery $query = null,
+        ?DokterRepository $repo = null,
+    ) {
+        $this->query = $query ?? new DokterQuery();
+        $this->repo  = $repo ?? new DokterRepository();
     }
 
     /**
-     * @return list<array<string, mixed>>
+     * @return array{rows: list<array<string, mixed>>, pagination: array{total: int, page: int, per_page: int, total_pages: int, offset: int, has_next: bool, has_prev: bool}}
      */
-    public function getListData(?string $keyword = null): array
+    public function getListData(?string $keyword = null, int $page = 1, int $perPage = 20): array
     {
-        $rows = $keyword !== null && $keyword !== ''
-            ? $this->dokter->search($keyword)
-            : $this->dokter->read();
-        return array_values(array_map([$this, 'formatRow'], $rows));
+        $perPage = max(1, min(100, $perPage));
+        $page = max(1, $page);
+        $offset = ($page - 1) * $perPage;
+        $hasKeyword = $keyword !== null && $keyword !== '';
+        $rows = $hasKeyword ? $this->query->searchByName($keyword, $perPage, $offset) : $this->repo->findAll($perPage, $offset);
+        $total = $hasKeyword ? $this->query->countSearchByName($keyword) : $this->repo->count();
+        return [
+            'rows' => array_values(array_map([$this, 'formatRow'], $rows)),
+            'pagination' => paginate($total, $page, $perPage),
+        ];
     }
 
     /**

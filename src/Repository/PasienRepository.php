@@ -27,9 +27,12 @@ final class PasienRepository
         );
     }
 
-    public function findAll(): array
+    public function findAll(int $limit = 50, int $offset = 0): array
     {
-        return $this->db->query('SELECT * FROM pasien ORDER BY created_at DESC, id_pasien DESC');
+        return $this->db->query(
+            'SELECT * FROM pasien ORDER BY created_at DESC, id_pasien DESC LIMIT ? OFFSET ?',
+            [(int) $limit, (int) $offset]
+        );
     }
 
     public function findById(string $id): array
