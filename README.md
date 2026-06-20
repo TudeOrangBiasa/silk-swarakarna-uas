@@ -122,9 +122,7 @@ silk-swarakarna-uas/
 │
 ├── docs/                               | Dokumentasi
 │   ├── architecture.md                 | Request lifecycle + class diagram + CQRS rationale
-│   ├── business-logic.md               | Flowchart per fitur (Pasien/Dokter/Layanan/Pemeriksaan)
-│   ├── agents/                         | Skill config: domain, issue tracker, triage labels
-│   └── designs/                        | Open CoDesign prompts untuk UI/UX design (system-prompt + 10 page briefs)
+│   └── business-logic.md               | Flowchart per fitur (Pasien/Dokter/Layanan/Pemeriksaan)
 │
 ├── DESIGN.md                           | Design system spec (Bootstrap 5.3, cyan-teal #0e7490, format Rupiah, status badge)
 ├── AGENTS.md                           | Agent runtime config + DESIGN.md reference
