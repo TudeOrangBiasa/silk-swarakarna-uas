@@ -62,10 +62,28 @@ final class Pemeriksaan
             throw new ValidationException($errors);
         }
 
-        $id = $this->query->generateKodeOtomatis();
-        $data['id_periksa'] = $id;
-        $this->repo->insert($data);
-        return $id;
+        $maxAttempts = 3;
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            $this->db->beginTransaction();
+            try {
+                $id = $this->query->generateKodeOtomatis();
+                $data['id_periksa'] = $id;
+                $this->repo->insert($data);
+                $this->db->commit();
+                return $id;
+            } catch (PDOException $e) {
+                $this->db->rollBack();
+                if (!self::isDuplicateKeyError($e)) throw $e;
+                if ($attempt === $maxAttempts) {
+                    throw new \RuntimeException("Gagal generate id unik setelah {$maxAttempts}x percobaan");
+                }
+            }
+        }
+    }
+
+    private static function isDuplicateKeyError(PDOException $e): bool
+    {
+        return str_contains($e->getMessage(), 'Duplicate');
     }
 
     public function read(string $id): array

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Silk\Entity;
 
 use PDOException;
+use Silk\Database;
 use Silk\Exception\ValidationException;
 use Silk\Query\PasienQuery;
 use Silk\Repository\PasienRepository;
@@ -23,11 +24,13 @@ final class Pasien
 
     private PasienRepository $repo;
     private PasienQuery $query;
+    private Database $db;
 
     public function __construct()
     {
         $this->repo  = new PasienRepository();
         $this->query = new PasienQuery();
+        $this->db    = Database::getInstance();
     }
 
     public function generateKodeOtomatis(): string
@@ -52,9 +55,27 @@ final class Pasien
             throw new ValidationException($errors);
         }
 
-        $id = $this->query->generateKodeOtomatis();
-        $this->repo->insert($id, $data);
-        return $id;
+        $maxAttempts = 3;
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            $this->db->beginTransaction();
+            try {
+                $id = $this->query->generateKodeOtomatis();
+                $this->repo->insert($id, $data);
+                $this->db->commit();
+                return $id;
+            } catch (PDOException $e) {
+                $this->db->rollBack();
+                if (!self::isDuplicateKeyError($e)) throw $e;
+                if ($attempt === $maxAttempts) {
+                    throw new \RuntimeException("Gagal generate id unik setelah {$maxAttempts}x percobaan");
+                }
+            }
+        }
+    }
+
+    private static function isDuplicateKeyError(PDOException $e): bool
+    {
+        return str_contains($e->getMessage(), 'Duplicate');
     }
 
     public function read(?string $id = null): array
