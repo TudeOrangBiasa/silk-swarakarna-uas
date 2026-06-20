@@ -10,6 +10,10 @@ use Silk\Database;
 use Silk\Exception\ValidationException;
 use Silk\Query\PemeriksaanQuery;
 use Silk\Repository\PemeriksaanRepository;
+use Silk\Validation\Rule\DateNotFuture;
+use Silk\Validation\Rule\MaxLength;
+use Silk\Validation\Rule\Required;
+use Silk\Validation\Validator;
 
 /**
  * Pemeriksaan entity (thin facade over PemeriksaanRepository).
@@ -28,7 +32,6 @@ final class Pemeriksaan
         'Selesai'          => [], // terminal
     ];
 
-    private const REQUIRED = ['id_pasien', 'id_dokter', 'id_layanan', 'tanggal_periksa', 'keluhan'];
     private const MAX_KELUHAN = 1000;
 
     private PemeriksaanRepository $repo;
@@ -52,15 +55,13 @@ final class Pemeriksaan
      */
     public function create(array $data): string
     {
-        $errors = [];
-
-        $errors += $this->validateRequired($data, self::REQUIRED);
-        $errors += $this->validateTanggalPeriksa($data['tanggal_periksa'] ?? '');
-        $errors += $this->validateMaxLength($data['keluhan'] ?? '', 'keluhan', self::MAX_KELUHAN);
-
-        if ($errors !== []) {
-            throw new ValidationException($errors);
-        }
+        (new Validator())->validate($data, [
+            'id_pasien'       => [new Required('Pasien wajib diisi')],
+            'id_dokter'       => [new Required('Dokter wajib diisi')],
+            'id_layanan'      => [new Required('Layanan wajib diisi')],
+            'tanggal_periksa' => [new Required('Tanggal periksa wajib diisi'), new DateNotFuture('Tanggal periksa tidak boleh di masa depan')],
+            'keluhan'         => [new Required('Keluhan wajib diisi'), new MaxLength('Keluhan maksimal 1000 karakter', self::MAX_KELUHAN)],
+        ]);
 
         $maxAttempts = 3;
         for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
@@ -155,36 +156,6 @@ final class Pemeriksaan
         return self::TRANSITIONS[$currentStatus] ?? [];
     }
 
-    private function validateRequired(array $data, array $fields): array
-    {
-        $errors = [];
-        foreach ($fields as $f) {
-            if (empty($data[$f])) {
-                $errors[$f] = $this->fieldLabel($f) . ' wajib diisi';
-            }
-        }
-        return $errors;
-    }
-
-    private function validateTanggalPeriksa(string $date): array
-    {
-        if ($date === '') {
-            return [];
-        }
-        if ($date > date('Y-m-d')) {
-            return ['tanggal_periksa' => 'Tanggal periksa tidak boleh di masa depan'];
-        }
-        return [];
-    }
-
-    private function validateMaxLength(string $value, string $field, int $max): array
-    {
-        if (mb_strlen($value) > $max) {
-            return [$field => $this->fieldLabel($field) . " maksimal {$max} karakter"];
-        }
-        return [];
-    }
-
     private function validateStatusTransition(string $current, string $new): array
     {
         $allowed = self::TRANSITIONS[$current] ?? [];
@@ -192,15 +163,5 @@ final class Pemeriksaan
             return ['status_pemeriksaan' => "Transisi status tidak valid: {$current} -> {$new}"];
         }
         return [];
-    }
-
-    private function fieldLabel(string $field): string
-    {
-        return match ($field) {
-            'id_pasien' => 'Pasien',
-            'id_dokter' => 'Dokter',
-            'id_layanan' => 'Layanan',
-            default => ucfirst(str_replace('_', ' ', $field)),
-        };
     }
 }

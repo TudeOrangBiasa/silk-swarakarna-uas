@@ -9,6 +9,11 @@ use Silk\Database;
 use Silk\Exception\ValidationException;
 use Silk\Query\PasienQuery;
 use Silk\Repository\PasienRepository;
+use Silk\Validation\Rule\DateNotFuture;
+use Silk\Validation\Rule\MaxLength;
+use Silk\Validation\Rule\PhoneFormat;
+use Silk\Validation\Rule\Required;
+use Silk\Validation\Validator;
 
 /**
  * Pasien entity (thin facade over PasienRepository).
@@ -18,7 +23,6 @@ use Silk\Repository\PasienRepository;
  */
 final class Pasien
 {
-    private const REQUIRED = ['nama_pasien', 'tanggal_lahir', 'no_hp', 'alamat'];
     private const MAX_NAMA  = 100;
     private const MAX_ALAMAT = 255;
 
@@ -43,17 +47,12 @@ final class Pasien
      */
     public function create(array $data): string
     {
-        $errors = [];
-
-        $errors += $this->validateRequired($data, self::REQUIRED);
-        $errors += $this->validateTanggalLahir($data['tanggal_lahir'] ?? '');
-        $errors += $this->validateNoHp($data['no_hp'] ?? '');
-        $errors += $this->validateMaxLength($data['nama_pasien'] ?? '', 'nama_pasien', self::MAX_NAMA);
-        $errors += $this->validateMaxLength($data['alamat'] ?? '', 'alamat', self::MAX_ALAMAT);
-
-        if ($errors !== []) {
-            throw new ValidationException($errors);
-        }
+        (new Validator())->validate($data, [
+            'nama_pasien'   => [new Required('Nama pasien wajib diisi'), new MaxLength('Nama pasien maksimal 100 karakter', self::MAX_NAMA)],
+            'tanggal_lahir' => [new Required('Tanggal lahir wajib diisi'), new DateNotFuture('Tanggal lahir tidak boleh di masa depan')],
+            'no_hp'         => [new Required('No HP wajib diisi'), new PhoneFormat('No HP harus 10-15 digit angka')],
+            'alamat'        => [new Required('Alamat wajib diisi'), new MaxLength('Alamat maksimal 255 karakter', self::MAX_ALAMAT)],
+        ]);
 
         $maxAttempts = 3;
         for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
@@ -85,43 +84,22 @@ final class Pasien
 
     public function update(string $id, array $data): int
     {
-        $errors = [];
+        $rules = [];
 
         if (array_key_exists('nama_pasien', $data)) {
-            if (empty($data['nama_pasien'])) {
-                $errors['nama_pasien'] = 'Nama pasien wajib diisi';
-            } else {
-                $errors += $this->validateMaxLength($data['nama_pasien'], 'nama_pasien', self::MAX_NAMA);
-            }
+            $rules['nama_pasien'] = [new Required('Nama pasien wajib diisi'), new MaxLength('Nama pasien maksimal 100 karakter', self::MAX_NAMA)];
         }
-
         if (array_key_exists('tanggal_lahir', $data)) {
-            if (empty($data['tanggal_lahir'])) {
-                $errors['tanggal_lahir'] = 'Tanggal lahir wajib diisi';
-            } else {
-                $errors += $this->validateTanggalLahir($data['tanggal_lahir']);
-            }
+            $rules['tanggal_lahir'] = [new Required('Tanggal lahir wajib diisi'), new DateNotFuture('Tanggal lahir tidak boleh di masa depan')];
         }
-
         if (array_key_exists('no_hp', $data)) {
-            if (empty($data['no_hp'])) {
-                $errors['no_hp'] = 'No HP wajib diisi';
-            } else {
-                $errors += $this->validateNoHp($data['no_hp']);
-            }
+            $rules['no_hp'] = [new Required('No HP wajib diisi'), new PhoneFormat('No HP harus 10-15 digit angka')];
         }
-
         if (array_key_exists('alamat', $data)) {
-            if (empty($data['alamat'])) {
-                $errors['alamat'] = 'Alamat wajib diisi';
-            } else {
-                $errors += $this->validateMaxLength($data['alamat'], 'alamat', self::MAX_ALAMAT);
-            }
+            $rules['alamat'] = [new Required('Alamat wajib diisi'), new MaxLength('Alamat maksimal 255 karakter', self::MAX_ALAMAT)];
         }
 
-        if ($errors !== []) {
-            throw new ValidationException($errors);
-        }
+        (new Validator())->validate($data, $rules);
 
         return $this->repo->update($id, $data);
     }
@@ -152,54 +130,5 @@ final class Pasien
     public function count(): int
     {
         return $this->repo->count();
-    }
-
-    private function validateRequired(array $data, array $fields): array
-    {
-        $errors = [];
-        foreach ($fields as $f) {
-            if (empty($data[$f])) {
-                $errors[$f] = $this->fieldLabel($f) . ' wajib diisi';
-            }
-        }
-        return $errors;
-    }
-
-    private function validateTanggalLahir(string $date): array
-    {
-        if ($date === '') {
-            return [];
-        }
-        if ($date > date('Y-m-d')) {
-            return ['tanggal_lahir' => 'Tanggal lahir tidak boleh di masa depan'];
-        }
-        return [];
-    }
-
-    private function validateNoHp(string $phone): array
-    {
-        if ($phone === '') {
-            return [];
-        }
-        if (!preg_match('/^[0-9]{10,15}$/', $phone)) {
-            return ['no_hp' => 'No HP harus 10-15 digit angka'];
-        }
-        return [];
-    }
-
-    private function validateMaxLength(string $value, string $field, int $max): array
-    {
-        if (mb_strlen($value) > $max) {
-            return [$field => $this->fieldLabel($field) . " maksimal {$max} karakter"];
-        }
-        return [];
-    }
-
-    private function fieldLabel(string $field): string
-    {
-        return match ($field) {
-            'no_hp' => 'No HP',
-            default => ucfirst(str_replace('_', ' ', $field)),
-        };
     }
 }
