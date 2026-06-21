@@ -35,14 +35,14 @@ final class DokterRepository
     public function findAll(int $limit = 50, int $offset = 0): array
     {
         return $this->db->query(
-            'SELECT * FROM dokter ORDER BY created_at DESC, id_dokter DESC LIMIT ? OFFSET ?',
+            'SELECT * FROM dokter WHERE is_deleted = 0 ORDER BY created_at DESC, id_dokter DESC LIMIT ? OFFSET ?',
             [(int) $limit, (int) $offset]
         );
     }
 
     public function findById(int $id): array
     {
-        $rows = $this->db->query('SELECT * FROM dokter WHERE id_dokter = ?', [$id]);
+        $rows = $this->db->query('SELECT * FROM dokter WHERE id_dokter = ? AND is_deleted = 0', [$id]);
         return $rows[0] ?? [];
     }
 
@@ -66,10 +66,29 @@ final class DokterRepository
 
     public function delete(int $id): void
     {
-        $this->db->execute('DELETE FROM dokter WHERE id_dokter = ?', [$id]);
+        $this->db->execute('UPDATE dokter SET is_deleted = 1 WHERE id_dokter = ?', [$id]);
+    }
+
+    public function restore(int $id): void
+    {
+        $this->db->execute('UPDATE dokter SET is_deleted = 0 WHERE id_dokter = ?', [$id]);
+    }
+
+    public function findAllIncludingDeleted(int $limit = 50, int $offset = 0): array
+    {
+        return $this->db->query(
+            'SELECT * FROM dokter ORDER BY created_at DESC, id_dokter DESC LIMIT ? OFFSET ?',
+            [(int) $limit, (int) $offset]
+        );
     }
 
     public function count(): int
+    {
+        $rows = $this->db->query('SELECT COUNT(*) AS n FROM dokter WHERE is_deleted = 0');
+        return (int) $rows[0]['n'];
+    }
+
+    public function countAllIncludingDeleted(): int
     {
         $rows = $this->db->query('SELECT COUNT(*) AS n FROM dokter');
         return (int) $rows[0]['n'];

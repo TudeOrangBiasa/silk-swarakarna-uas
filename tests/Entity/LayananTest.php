@@ -122,14 +122,35 @@ final class LayananTest extends EntityTestCase
     {
         $id = $this->layanan->create($this->validData());
         $this->createdIds[] = $id;
-        $this->assertTrue($this->layanan->delete($id));
+        $result = $this->layanan->delete($id);
+        $this->assertTrue($result);
         $this->assertEmpty($this->layanan->read($id));
+        $row = $this->db->query('SELECT is_deleted FROM layanan WHERE id_layanan = ?', [$id]);
+        $this->assertSame(1, (int) $row[0]['is_deleted']);
     }
 
-    public function testDeleteFkProtectedReturnsFalse(): void
+    public function testDeleteFkProtectedReturnsTrue(): void
     {
-        // Layanan 1 (Audiometri) referenced by TRX-2026001.
-        $this->assertFalse($this->layanan->delete(1));
+        // Layanan 1 (Audiometri) has related pemeriksaan — soft delete should succeed.
+        $result = $this->layanan->delete(1);
+        $this->assertTrue($result);
+
+        // Restore after test to keep seed data consistent
+        $this->layanan->restore(1);
+    }
+
+    public function testRestoreAfterDelete(): void
+    {
+        $id = $this->layanan->create($this->validData());
+        $this->createdIds[] = $id;
+
+        $this->layanan->delete($id);
+        $this->assertEmpty($this->layanan->read($id));
+
+        $this->layanan->restore($id);
+        $this->assertNotEmpty($this->layanan->read($id));
+        $row = $this->db->query('SELECT is_deleted FROM layanan WHERE id_layanan = ?', [$id]);
+        $this->assertSame(0, (int) $row[0]['is_deleted']);
     }
 
     public function testCountReturnsInt(): void

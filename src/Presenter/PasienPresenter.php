@@ -30,17 +30,23 @@ final class PasienPresenter
 
     /**
      * List data for the table view. Optionally filtered by keyword with pagination.
+     * When $showDeleted is true, includes deleted records (is_deleted=1).
      *
      * @return array{rows: list<array<string, mixed>>, pagination: array{total: int, page: int, per_page: int, total_pages: int, offset: int, has_next: bool, has_prev: bool}}
      */
-    public function getListData(?string $keyword = null, int $page = 1, int $perPage = 20): array
+    public function getListData(?string $keyword = null, int $page = 1, int $perPage = 20, bool $showDeleted = false): array
     {
         $perPage = max(1, min(100, $perPage));
         $page = max(1, $page);
         $offset = ($page - 1) * $perPage;
         $hasKeyword = $keyword !== null && $keyword !== '';
-        $rows = $hasKeyword ? $this->query->searchByName($keyword, $perPage, $offset) : $this->repo->findAll($perPage, $offset);
-        $total = $hasKeyword ? $this->query->countSearchByName($keyword) : $this->repo->count();
+        if ($showDeleted) {
+            $rows = $hasKeyword ? $this->query->searchByName($keyword, $perPage, $offset) : $this->pasien->readAllIncludingDeleted($perPage, $offset);
+            $total = $hasKeyword ? $this->query->countSearchByName($keyword) : $this->pasien->countAllIncludingDeleted();
+        } else {
+            $rows = $hasKeyword ? $this->query->searchByName($keyword, $perPage, $offset) : $this->repo->findAll($perPage, $offset);
+            $total = $hasKeyword ? $this->query->countSearchByName($keyword) : $this->repo->count();
+        }
         return [
             'rows' => array_values(array_map([$this, 'formatRow'], $rows)),
             'pagination' => paginate($total, $page, $perPage),
@@ -75,9 +81,9 @@ final class PasienPresenter
         ], $rows);
     }
 
-    public function getCount(): int
+    public function getCount(bool $showDeleted = false): int
     {
-        return $this->pasien->count();
+        return $showDeleted ? $this->pasien->countAllIncludingDeleted() : $this->pasien->count();
     }
 
     /**

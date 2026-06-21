@@ -30,14 +30,14 @@ final class LayananRepository
     public function findAll(int $limit = 50, int $offset = 0): array
     {
         return $this->db->query(
-            'SELECT * FROM layanan ORDER BY created_at DESC, id_layanan DESC LIMIT ? OFFSET ?',
+            'SELECT * FROM layanan WHERE is_deleted = 0 ORDER BY created_at DESC, id_layanan DESC LIMIT ? OFFSET ?',
             [(int) $limit, (int) $offset]
         );
     }
 
     public function findById(int $id): array
     {
-        $rows = $this->db->query('SELECT * FROM layanan WHERE id_layanan = ?', [$id]);
+        $rows = $this->db->query('SELECT * FROM layanan WHERE id_layanan = ? AND is_deleted = 0', [$id]);
         return $rows[0] ?? [];
     }
 
@@ -61,10 +61,29 @@ final class LayananRepository
 
     public function delete(int $id): void
     {
-        $this->db->execute('DELETE FROM layanan WHERE id_layanan = ?', [$id]);
+        $this->db->execute('UPDATE layanan SET is_deleted = 1 WHERE id_layanan = ?', [$id]);
+    }
+
+    public function restore(int $id): void
+    {
+        $this->db->execute('UPDATE layanan SET is_deleted = 0 WHERE id_layanan = ?', [$id]);
+    }
+
+    public function findAllIncludingDeleted(int $limit = 50, int $offset = 0): array
+    {
+        return $this->db->query(
+            'SELECT * FROM layanan ORDER BY created_at DESC, id_layanan DESC LIMIT ? OFFSET ?',
+            [(int) $limit, (int) $offset]
+        );
     }
 
     public function count(): int
+    {
+        $rows = $this->db->query('SELECT COUNT(*) AS n FROM layanan WHERE is_deleted = 0');
+        return (int) $rows[0]['n'];
+    }
+
+    public function countAllIncludingDeleted(): int
     {
         $rows = $this->db->query('SELECT COUNT(*) AS n FROM layanan');
         return (int) $rows[0]['n'];

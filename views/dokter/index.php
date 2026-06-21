@@ -10,7 +10,8 @@ use Silk\Presenter\DokterPresenter;
 $presenter = new DokterPresenter(new Dokter());
 $keyword = query_param('search');
 $page = max(1, (int) query_param('page', '1'));
-$data = $presenter->getListData($keyword, $page);
+$showDeleted = query_param('show_deleted') === '1';
+$data = $presenter->getListData($keyword, $page, showDeleted: $showDeleted);
 $rows = $data['rows'];
 $pagination = $data['pagination'];
 ?>
@@ -32,6 +33,10 @@ $pagination = $data['pagination'];
                 <input type="search" name="search" class="form-control border-start-0 ps-0 fs-6" placeholder="Cari nama dokter..." value="<?= htmlspecialchars($keyword) ?>">
                 <button type="submit" class="btn btn-primary px-4 fs-6">Cari</button>
             </div>
+            <div class="form-check mt-2">
+                <input type="checkbox" name="show_deleted" value="1" class="form-check-input" id="showDeleted" <?= $showDeleted ? 'checked' : '' ?> onchange="this.form.submit()">
+                <label class="form-check-label text-muted small" for="showDeleted">Tampilkan data dihapus</label>
+            </div>
         </form>
     </div>
     <div class="card-body p-0">
@@ -52,20 +57,33 @@ $pagination = $data['pagination'];
                         <tr><td colspan="6" class="text-center text-muted py-4">Belum ada data dokter.</td></tr>
                     <?php else: ?>
                         <?php foreach ($rows as $i => $d): ?>
-                            <tr>
+                            <tr class="<?= !empty($d['is_deleted']) ? 'text-decoration-line-through text-muted' : '' ?>">
                                 <td class="px-4 text-muted"><?= $i + 1 ?></td>
-                                <td class="fw-medium"><?= htmlspecialchars($d['nama_dokter']) ?></td>
+                                <td class="fw-medium">
+                                    <?= htmlspecialchars($d['nama_dokter']) ?>
+                                    <?php if (!empty($d['is_deleted'])): ?><span class="badge bg-danger ms-1">Dihapus</span><?php endif; ?>
+                                </td>
                                 <td><span class="badge bg-light text-dark border"><?= htmlspecialchars($d['no_izin_praktik'] ?? '-') ?></span></td>
                                 <td><?= htmlspecialchars($d['spesialisasi']) ?></td>
                                 <td><?= htmlspecialchars($d['no_hp'] ?? '-') ?></td>
                                 <td class="px-4">
                                     <div class="d-flex gap-2">
-                                        <a href="/dokter/edit?id=<?= (int) $d['id_dokter'] ?>" class="btn btn-sm btn-touch btn-light text-secondary border" title="Edit" aria-label="Edit dokter <?= htmlspecialchars($d['nama_dokter']) ?>">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a href="/dokter/delete?id=<?= (int) $d['id_dokter'] ?>" class="btn btn-sm btn-touch btn-light text-danger border" title="Hapus" aria-label="Hapus dokter <?= htmlspecialchars($d['nama_dokter']) ?>">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
+                                        <?php if (!empty($d['is_deleted'])): ?>
+                                            <form method="post" action="/dokter/restore" class="d-inline">
+                                                <?= csrf_field() ?>
+                                                <input type="hidden" name="id" value="<?= (int) $d['id_dokter'] ?>">
+                                                <button type="submit" class="btn btn-sm btn-touch btn-light text-success border" title="Pulihkan" aria-label="Pulihkan dokter <?= htmlspecialchars($d['nama_dokter']) ?>">
+                                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                                </button>
+                                            </form>
+                                        <?php else: ?>
+                                            <a href="/dokter/edit?id=<?= (int) $d['id_dokter'] ?>" class="btn btn-sm btn-touch btn-light text-secondary border" title="Edit" aria-label="Edit dokter <?= htmlspecialchars($d['nama_dokter']) ?>">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="/dokter/delete?id=<?= (int) $d['id_dokter'] ?>" class="btn btn-sm btn-touch btn-light text-danger border" title="Hapus" aria-label="Hapus dokter <?= htmlspecialchars($d['nama_dokter']) ?>">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>

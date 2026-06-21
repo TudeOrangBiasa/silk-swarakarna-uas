@@ -9,7 +9,8 @@ use Silk\Presenter\LayananPresenter;
 
 $presenter = new LayananPresenter(new Layanan());
 $page = max(1, (int) query_param('page', '1'));
-$data = $presenter->getListData($page);
+$showDeleted = query_param('show_deleted') === '1';
+$data = $presenter->getListData($page, showDeleted: $showDeleted);
 $rows = $data['rows'];
 $pagination = $data['pagination'];
 ?>
@@ -21,6 +22,15 @@ $pagination = $data['pagination'];
     <a href="/layanan/create" class="btn btn-primary">
         <i class="bi bi-plus-lg"></i> Tambah Layanan
     </a>
+</div>
+
+<div class="d-flex justify-content-start mb-3">
+    <form method="get" class="mb-0">
+        <div class="form-check">
+            <input type="checkbox" name="show_deleted" value="1" class="form-check-input" id="showDeleted" <?= $showDeleted ? 'checked' : '' ?> onchange="this.form.submit()">
+            <label class="form-check-label text-muted small" for="showDeleted">Tampilkan data dihapus</label>
+        </div>
+    </form>
 </div>
 
 <div class="card border-0 shadow-sm rounded-4">
@@ -40,18 +50,31 @@ $pagination = $data['pagination'];
                         <tr><td colspan="4" class="text-center text-muted py-4">Belum ada data layanan.</td></tr>
                     <?php else: ?>
                         <?php foreach ($rows as $i => $l): ?>
-                            <tr>
+                            <tr class="<?= !empty($l['is_deleted']) ? 'text-decoration-line-through text-muted' : '' ?>">
                                 <td class="px-4 text-muted"><?= $i + 1 ?></td>
-                                <td class="fw-medium"><?= htmlspecialchars($l['nama_layanan']) ?></td>
+                                <td class="fw-medium">
+                                    <?= htmlspecialchars($l['nama_layanan']) ?>
+                                    <?php if (!empty($l['is_deleted'])): ?><span class="badge bg-danger ms-1">Dihapus</span><?php endif; ?>
+                                </td>
                                 <td class="text-end fw-medium"><?= htmlspecialchars($l['biaya_fmt']) ?></td>
                                 <td class="px-4">
                                     <div class="d-flex gap-2">
-                                        <a href="/layanan/edit?id=<?= (int) $l['id_layanan'] ?>" class="btn btn-sm btn-touch btn-light text-secondary border" title="Edit" aria-label="Edit layanan <?= htmlspecialchars($l['nama_layanan']) ?>">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a href="/layanan/delete?id=<?= (int) $l['id_layanan'] ?>" class="btn btn-sm btn-touch btn-light text-danger border" title="Hapus" aria-label="Hapus layanan <?= htmlspecialchars($l['nama_layanan']) ?>">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
+                                        <?php if (!empty($l['is_deleted'])): ?>
+                                            <form method="post" action="/layanan/restore" class="d-inline">
+                                                <?= csrf_field() ?>
+                                                <input type="hidden" name="id" value="<?= (int) $l['id_layanan'] ?>">
+                                                <button type="submit" class="btn btn-sm btn-touch btn-light text-success border" title="Pulihkan" aria-label="Pulihkan layanan <?= htmlspecialchars($l['nama_layanan']) ?>">
+                                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                                </button>
+                                            </form>
+                                        <?php else: ?>
+                                            <a href="/layanan/edit?id=<?= (int) $l['id_layanan'] ?>" class="btn btn-sm btn-touch btn-light text-secondary border" title="Edit" aria-label="Edit layanan <?= htmlspecialchars($l['nama_layanan']) ?>">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="/layanan/delete?id=<?= (int) $l['id_layanan'] ?>" class="btn btn-sm btn-touch btn-light text-danger border" title="Hapus" aria-label="Hapus layanan <?= htmlspecialchars($l['nama_layanan']) ?>">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>

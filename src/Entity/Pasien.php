@@ -222,21 +222,24 @@ final class Pasien
 
     public function delete(string $id): bool
     {
-        // Read existing foto before delete so we can unlink after DB success
-        $existing = $this->repo->findById($id);
-        $foto = ($existing !== [] && ($existing['foto'] ?? null) !== null) ? $existing['foto'] : null;
-        try {
-            $this->repo->delete($id);
-            if ($foto !== null) {
-                $this->unlinkOldFoto($foto);
-            }
-            return true;
-        } catch (PDOException $e) {
-            if ($e->getCode() === '23000' || str_contains($e->getMessage(), 'foreign key')) {
-                return false;
-            }
-            throw $e;
-        }
+        // Soft delete: set is_deleted=1. Foto tetap dipertahankan.
+        $this->repo->delete($id);
+        return true;
+    }
+
+    public function restore(string $id): void
+    {
+        $this->repo->restore($id);
+    }
+
+    public function readAllIncludingDeleted(int $limit = 50, int $offset = 0): array
+    {
+        return $this->repo->findAllIncludingDeleted($limit, $offset);
+    }
+
+    public function countAllIncludingDeleted(): int
+    {
+        return $this->repo->countAllIncludingDeleted();
     }
 
     public function search(string $keyword): array

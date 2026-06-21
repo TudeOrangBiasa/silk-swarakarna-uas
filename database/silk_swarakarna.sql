@@ -39,6 +39,8 @@ CREATE TABLE IF NOT EXISTS pasien (
   alamat TEXT NOT NULL,
   foto VARCHAR(255) NULL
     COMMENT 'Path foto pasien (relatif: assets/uploads/pasien/<hash>.<ext>)',
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0
+    COMMENT 'Soft delete flag: 0=active, 1=deleted',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_pasien),
@@ -84,6 +86,8 @@ CREATE TABLE IF NOT EXISTS dokter (
     COMMENT 'Surat Izin Praktik, UNIQUE',
   no_hp VARCHAR(20) NULL
     COMMENT 'optional',
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0
+    COMMENT 'Soft delete flag: 0=active, 1=deleted',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_dokter),
@@ -102,6 +106,8 @@ CREATE TABLE IF NOT EXISTS layanan (
   nama_layanan VARCHAR(100) NOT NULL,
   biaya INT UNSIGNED NOT NULL
     COMMENT 'Harga dalam IDR (integer, no fractional rupiah)',
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0
+    COMMENT 'Soft delete flag: 0=active, 1=deleted',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_layanan),

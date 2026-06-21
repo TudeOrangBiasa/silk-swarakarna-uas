@@ -22,7 +22,7 @@ final class DokterQuery
     public function searchByName(string $keyword, int $limit = 50, int $offset = 0): array
     {
         return $this->db->query(
-            'SELECT * FROM dokter WHERE nama_dokter LIKE ? ORDER BY nama_dokter ASC LIMIT ? OFFSET ?',
+            'SELECT * FROM dokter WHERE is_deleted = 0 AND nama_dokter LIKE ? ORDER BY nama_dokter ASC LIMIT ? OFFSET ?',
             ['%' . $keyword . '%', (int) $limit, (int) $offset]
         );
     }
@@ -30,7 +30,7 @@ final class DokterQuery
     public function countSearchByName(string $keyword): int
     {
         $rows = $this->db->query(
-            'SELECT COUNT(*) AS n FROM dokter WHERE nama_dokter LIKE ?',
+            'SELECT COUNT(*) AS n FROM dokter WHERE is_deleted = 0 AND nama_dokter LIKE ?',
             ['%' . $keyword . '%']
         );
         return (int) $rows[0]['n'];
@@ -38,6 +38,6 @@ final class DokterQuery
 
     public function findDokterForOptions(): array
     {
-        return $this->db->query('SELECT id_dokter, nama_dokter, spesialisasi FROM dokter ORDER BY nama_dokter ASC');
+        return $this->db->query('SELECT id_dokter, nama_dokter, spesialisasi FROM dokter WHERE is_deleted = 0 ORDER BY nama_dokter ASC');
     }
 }

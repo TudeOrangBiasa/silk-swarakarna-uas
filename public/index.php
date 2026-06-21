@@ -50,6 +50,9 @@ $routes = [
     'layanan.create'     => 'layanan/create',
     'layanan.edit'       => 'layanan/edit',
     'layanan.delete'     => 'layanan/delete',
+    'pasien.restore'     => 'pasien/index',
+    'dokter.restore'     => 'dokter/index',
+    'layanan.restore'    => 'layanan/index',
     'pemeriksaan'             => 'pemeriksaan/index',
     'pemeriksaan.create'      => 'pemeriksaan/create',
     'pemeriksaan.update_status' => 'pemeriksaan/update_status',
@@ -70,6 +73,9 @@ $postActions = [
     'pasien.delete'         => ['class' => 'Pasien',       'method' => 'delete'],
     'dokter.delete'         => ['class' => 'Dokter',       'method' => 'delete',  'id_type' => 'int'],
     'layanan.delete'        => ['class' => 'Layanan',      'method' => 'delete',  'id_type' => 'int'],
+    'pasien.restore'        => ['class' => 'Pasien',       'method' => 'restore'],
+    'dokter.restore'        => ['class' => 'Dokter',       'method' => 'restore',  'id_type' => 'int'],
+    'layanan.restore'       => ['class' => 'Layanan',      'method' => 'restore',  'id_type' => 'int'],
     'pemeriksaan.delete'    => ['class' => 'Pemeriksaan',  'method' => 'delete'],
 ];
 
@@ -124,9 +130,10 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
                 'update'       => [$id, $_POST],
                 'updateStatus' => [$id, $newStatus],
                 'delete'       => [$id],
+                'restore'      => [$id],
                 default        => [],
             };
-            if (in_array($action['method'], ['update', 'updateStatus', 'delete'], true) && empty($id)) {
+            if (in_array($action['method'], ['update', 'updateStatus', 'delete', 'restore'], true) && empty($id)) {
                 redirectBackWithError('ID tidak valid');
             }
             $result = $instance->{$action['method']}(...$args);
@@ -140,9 +147,11 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
                     . '. Data ini masih digunakan di transaksi lain (terikat relasi).'
                 );
             }
-            $_SESSION['flash_success'] = $action['method'] === 'delete'
-                ? ucfirst($entity) . ' berhasil dihapus.'
-                : ucfirst($entity) . ' berhasil disimpan.';
+            $_SESSION['flash_success'] = match ($action['method']) {
+                'delete'  => ucfirst($entity) . ' berhasil dihapus.',
+                'restore' => ucfirst($entity) . ' berhasil dipulihkan.',
+                default   => ucfirst($entity) . ' berhasil disimpan.',
+            };
             header('Location: /' . ($entity ?: ''));
             exit;
         } catch (ValidationException $e) {

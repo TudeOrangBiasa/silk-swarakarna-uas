@@ -67,6 +67,7 @@ final class Layanan
 
     public function delete(int $id): bool
     {
+        // Soft delete: set is_deleted=1. FK safety net kept for insurance.
         try {
             $this->repo->delete($id);
             return true;
@@ -76,6 +77,21 @@ final class Layanan
             }
             throw $e;
         }
+    }
+
+    public function restore(int $id): void
+    {
+        $this->repo->restore($id);
+    }
+
+    public function readAllIncludingDeleted(int $limit = 50, int $offset = 0): array
+    {
+        return $this->repo->findAllIncludingDeleted($limit, $offset);
+    }
+
+    public function countAllIncludingDeleted(): int
+    {
+        return $this->repo->countAllIncludingDeleted();
     }
 
     public function count(): int

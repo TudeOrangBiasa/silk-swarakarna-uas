@@ -17,6 +17,6 @@ final class LayananQuery
 
     public function findLayananForOptions(): array
     {
-        return $this->db->query('SELECT id_layanan, nama_layanan, biaya FROM layanan ORDER BY nama_layanan ASC');
+        return $this->db->query('SELECT id_layanan, nama_layanan, biaya FROM layanan WHERE is_deleted = 0 ORDER BY nama_layanan ASC');
     }
 }

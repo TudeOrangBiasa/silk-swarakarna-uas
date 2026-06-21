@@ -26,7 +26,7 @@ final class PasienQuery
     public function searchByName(string $keyword, int $limit = 50, int $offset = 0): array
     {
         return $this->db->query(
-            'SELECT * FROM pasien WHERE nama_pasien LIKE ? ORDER BY nama_pasien ASC LIMIT ? OFFSET ?',
+            'SELECT * FROM pasien WHERE is_deleted = 0 AND nama_pasien LIKE ? ORDER BY nama_pasien ASC LIMIT ? OFFSET ?',
             ['%' . $keyword . '%', (int) $limit, (int) $offset]
         );
     }
@@ -34,7 +34,7 @@ final class PasienQuery
     public function countSearchByName(string $keyword): int
     {
         $rows = $this->db->query(
-            'SELECT COUNT(*) AS n FROM pasien WHERE nama_pasien LIKE ?',
+            'SELECT COUNT(*) AS n FROM pasien WHERE is_deleted = 0 AND nama_pasien LIKE ?',
             ['%' . $keyword . '%']
         );
         return (int) $rows[0]['n'];
@@ -42,7 +42,7 @@ final class PasienQuery
 
     public function findPasienForOptions(): array
     {
-        return $this->db->query('SELECT id_pasien, nama_pasien FROM pasien ORDER BY id_pasien ASC');
+        return $this->db->query('SELECT id_pasien, nama_pasien FROM pasien WHERE is_deleted = 0 ORDER BY id_pasien ASC');
     }
 
     public function generateKodeOtomatis(): string

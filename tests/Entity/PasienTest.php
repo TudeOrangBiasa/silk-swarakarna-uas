@@ -278,19 +278,36 @@ final class PasienTest extends EntityTestCase
         $result = $this->pasien->delete($id);
         $this->assertTrue($result);
 
-        // Confirm the record is gone
+        // Soft delete: hidden from normal read, is_deleted=1 in DB
         $this->assertEmpty($this->pasien->read($id));
+        $row = $this->db->query('SELECT is_deleted FROM pasien WHERE id_pasien = ?', [$id]);
+        $this->assertSame(1, (int) $row[0]['is_deleted']);
     }
 
-    public function testDeleteFkProtectedReturnsFalse(): void
+    public function testDeleteFkProtectedReturnsTrue(): void
     {
-        // RM-001 is referenced by seed pemeriksaan TRX-2026001 via FK ON DELETE RESTRICT.
+        // RM-001 has related pemeriksaan — soft delete should succeed (no FK error).
         $result = $this->pasien->delete('RM-001');
-        $this->assertFalse($result);
+        $this->assertTrue($result);
 
-        // Confirm record still exists
-        $data = $this->pasien->read('RM-001');
-        $this->assertSame('RM-001', $data['id_pasien']);
+        // Restore after test to keep seed data consistent
+        $this->pasien->restore('RM-001');
+    }
+
+    public function testRestoreAfterDelete(): void
+    {
+        $data = $this->validData();
+        $id   = $this->pasien->create($data);
+        $this->createdIds[] = $id;
+
+        $this->pasien->delete($id);
+        $this->assertEmpty($this->pasien->read($id));
+
+        $this->pasien->restore($id);
+        $saved = $this->pasien->read($id);
+        $this->assertSame($data['nama_pasien'], $saved['nama_pasien']);
+        $row = $this->db->query('SELECT is_deleted FROM pasien WHERE id_pasien = ?', [$id]);
+        $this->assertSame(0, (int) $row[0]['is_deleted']);
     }
 
     // ---------------------------------------------------------------
