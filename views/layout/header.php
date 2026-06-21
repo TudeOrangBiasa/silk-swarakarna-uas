@@ -10,7 +10,7 @@ $page_title = $page_title ?? 'SILK-Swarakarna';
     <title><?= htmlspecialchars($page_title) ?></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/app.css">
+    <link rel="stylesheet" href="/assets/css/app.css?v=<?= time() ?>">
     <script>
         if (localStorage.getItem('sidebar-collapsed') === '1') {
             document.documentElement.classList.add('sidebar-collapsed');
@@ -19,7 +19,7 @@ $page_title = $page_title ?? 'SILK-Swarakarna';
 </head>
 <body class="bg-body overflow-hidden">
     <a class="visually-hidden-focusable" href="#mainContent">Skip to main content</a>
-    <div class="d-flex min-vh-100 flex-column flex-lg-row">
+    <div class="d-flex vh-100 flex-column flex-lg-row">
         <?php include __DIR__ . '/_sidebar.php'; ?>
         <div class="content-wrapper flex-grow-1 bg-body-tertiary d-flex flex-column w-100 overflow-hidden">
             <?php include __DIR__ . '/_topbar.php'; ?>
