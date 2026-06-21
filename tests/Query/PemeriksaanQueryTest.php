@@ -147,6 +147,56 @@ final class PemeriksaanQueryTest extends TestCase
         $this->assertSame(count($rows), $count);
     }
 
+    public function testFindAllJoinedWithDoctorNameKeyword(): void
+    {
+        $suffix = bin2hex(random_bytes(4));
+
+        $pasien = new Pasien();
+        $pasienId = $pasien->create([
+            'nama_pasien'   => 'Query DocTest Pasien ' . $suffix,
+            'tanggal_lahir' => '1990-01-01',
+            'jenis_kelamin' => 'L',
+            'no_hp'         => '081234567890',
+            'alamat'        => 'Jl Test',
+        ]);
+        $this->createdPasienIds[] = $pasienId;
+
+        $uniqueDokterName = 'dr. Query DocTest ' . $suffix;
+        $dokter = new Dokter();
+        $dokterId = $dokter->create([
+            'nama_dokter'     => $uniqueDokterName,
+            'no_izin_praktik' => 'SIP-' . bin2hex(random_bytes(4)),
+            'spesialisasi'    => 'THT',
+            'no_hp'           => '081234567891',
+        ]);
+        $this->createdDokterIds[] = $dokterId;
+
+        $layanan = new Layanan();
+        $layananId = $layanan->create([
+            'nama_layanan' => 'Query DocTest ' . $suffix,
+            'biaya'        => 100000,
+        ]);
+        $this->createdLayananIds[] = $layananId;
+
+        $pemeriksaan = new Pemeriksaan();
+        $id = $pemeriksaan->create([
+            'id_pasien'       => $pasienId,
+            'id_dokter'       => $dokterId,
+            'id_layanan'      => $layananId,
+            'tanggal_periksa' => date('Y-m-d'),
+            'keluhan'         => 'Test doctor search',
+        ]);
+        $this->createdPemeriksaanIds[] = $id;
+
+        $rows = $this->query->findAllJoined($uniqueDokterName, null, null, null, 50, 0);
+        $this->assertNotEmpty($rows);
+        $ids = array_column($rows, 'id_periksa');
+        $this->assertContains($id, $ids);
+
+        $count = $this->query->countAllJoined($uniqueDokterName, null, null, null);
+        $this->assertGreaterThanOrEqual(1, $count);
+    }
+
     public function testFindByIdJoinedReturnsFullRow(): void
     {
         $id = $this->createPemeriksaan();
