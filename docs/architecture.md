@@ -51,7 +51,8 @@ silk-swarakarna/
 ├── public/
 │   ├── index.php                   | Front controller + router + CSRF + auth gate
 │   ├── .htaccess
-│   └── assets/css/app.css          | Design system, 342 baris
+│   ├── assets/css/app.css          | Design system, 346 baris
+│   └── assets/uploads/             | User uploads (gitignored) -- e.g. pasien foto
 │
 ├── views/                          | Bootstrap 5.3 template
 │   ├── layout/
@@ -70,7 +71,7 @@ silk-swarakarna/
 │   ├── pasien/                     | CRUD views (index, create, edit, delete)
 │   ├── dokter/                     | CRUD views (index, create, edit, delete)
 │   ├── layanan/                    | CRUD views (index, create, edit, delete)
-│   ├── pemeriksaan/                | Index, create, delete, update_status
+│   ├── pemeriksaan/                | Index, create, delete, update_status, cetak (print-friendly)
 │   ├── errors/404.php
 │   └── _placeholder.php
 │
@@ -201,7 +202,7 @@ Query = Read. Methods:
 - `findStatusForUpdate($id)` (row-level lock `FOR UPDATE`)
 - `generateKodeOtomatis()` (computation: MAX + increment)
 - `findPasienForOptions()`, `findDokterForOptions()`, `findLayananForOptions()` (dropdown data)
-- `countByDate()`, `getCountByMonth()`, `getTopLayanan()`, `getDokterStats()` (date/grouped aggregates)
+- `countByDate()`, `getCountByMonth()`, `getTopLayanan()`, `getDokterStats()`, `getDateRangeTotal()` (date/grouped aggregates + revenue)
 
 Boundary rule: simple read (single table, no JOIN) goes in Repository. JOIN, LIKE, computed values, row locks, code generation go in Query.
 
@@ -292,7 +293,7 @@ Selesai          -> [] (terminal)
 | Class | Responsibility | Methods |
 |---|---|---|
 | `Database` | PDO singleton, one shared connection | `getInstance()`, `query(sql, params)`, `execute(sql, params)`, `lastInsertId()`, `beginTransaction()`, `commit()`, `rollBack()`, `pdo()` |
-| `Entity\Pasien` | Validasi + CRUD + race-safe RM-XXX generation | `generateKodeOtomatis()`, `create(data)`, `read(id?)`, `update(id, data)`, `delete(id)`, `search(keyword)`, `readForOptions()`, `count()` |
+| `Entity\Pasien` | Validasi + CRUD + race-safe RM-XXX generation + foto upload | `generateKodeOtomatis()`, `create(data)`, `read(id?)`, `update(id, data)`, `delete(id)`, `search(keyword)`, `readForOptions()`, `count()` |
 | `Entity\Dokter` | Validasi + CRUD (INT auto-increment) | `create(data)`, `read(id?)`, `update(id, data)`, `delete(id)`, `search(keyword)`, `readForOptions()`, `count()` |
 | `Entity\Layanan` | Validasi + CRUD (INT auto-increment) | `readForOptions()`, `create(data)`, `read(id?)`, `update(id, data)`, `delete(id)`, `count()` |
 | `Entity\Pemeriksaan` | State machine + race-safe code gen + FOR UPDATE | `generateKodeOtomatis()`, `create(data)`, `read(id)`, `readWithJoin(keyword?)`, `getById(id)`, `readLatest(limit)`, `updateStatus(id, newStatus)`, `delete(id)`, `count()`, `countByDate(date)`, `getAllowedTransitions(currentStatus)` |
@@ -303,11 +304,11 @@ Selesai          -> [] (terminal)
 | `Query\Pasien` | Complex reads Pasien | `searchByName(keyword, limit, offset)`, `countSearchByName(keyword)`, `findPasienForOptions()`, `generateKodeOtomatis()` |
 | `Query\Dokter` | Complex reads Dokter | `searchByName(keyword, limit, offset)`, `countSearchByName(keyword)`, `findDokterForOptions()` |
 | `Query\Layanan` | Complex reads Layanan | `findLayananForOptions()` |
-| `Query\Pemeriksaan` | Complex reads Pemeriksaan | `generateKodeOtomatis()`, `findAllJoined(keyword?, limit, offset)`, `countAllJoined(keyword?)`, `findByIdJoined(id)`, `findLatest(limit)`, `findStatusForUpdate(id)`, `getCountByMonth(year)`, `getTopLayanan(limit)`, `getDokterStats()` |
+| `Query\Pemeriksaan` | Complex reads Pemeriksaan | `generateKodeOtomatis()`, `findAllJoined(keyword?, status, startDate, endDate, limit, offset)`, `countAllJoined(keyword?, status, startDate, endDate)`, `findByIdJoined(id)`, `findLatest(limit)`, `findStatusForUpdate(id)`, `getCountByMonth(year)`, `getTopLayanan(limit)`, `getDokterStats()`, `getDateRangeTotal(startDate, endDate, status?, keyword?)` |
 | `Presenter\Pasien` | Format data Pasien for view | `getListData(keyword?, page, perPage)`, `getFormData(id?)`, `getOptions()`, `getCount()` |
 | `Presenter\Dokter` | Format data Dokter for view | `getListData(keyword?, page, perPage)`, `getFormData(id?)`, `getOptions()`, `getCount()` |
 | `Presenter\Layanan` | Format data Layanan for view | `getListData(page, perPage)`, `getFormData(id?)`, `getOptions()`, `getCount()` |
-| `Presenter\Pemeriksaan` | Format data Pemeriksaan for view + dashboard | `getListData(keyword?, page, perPage)`, `getFormData(id?)`, `getCount()`, `getCountByDate(date)`, `getDashboardStats()`, `getLatest(limit)`, `getPasienOptions()`, `getDokterOptions()`, `getLayananOptions()`, `getStatusOptions()`, `getAllowedTransitions(currentStatus)` |
+| `Presenter\Pemeriksaan` | Format data Pemeriksaan for view + dashboard + cetak | `getListData(keyword?, status, startDate, endDate, page, perPage)`, `getFormData(id?)`, `getCount()`, `getCountByDate(date)`, `getDashboardStats()`, `getLatest(limit)`, `getPasienOptions()`, `getDokterOptions()`, `getLayananOptions()`, `getStatusOptions()`, `getAllowedTransitions(currentStatus)`, `getCetakData(keyword?, status, startDate, endDate)`, `getMonthlyRevenue(year, month)` |
 | `Validator` | Run rules, throw first-error-per-field | `validate(data, rules)` |
 | `Rule\Rule` | Interface | `validate(value): ?string` |
 | `Rule\Required` | Field must not be empty | `validate(value)` |

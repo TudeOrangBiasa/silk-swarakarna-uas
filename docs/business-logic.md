@@ -45,11 +45,12 @@ flowchart TD
     B --> H[PemeriksaanQuery::getTopLayanan]
     B --> I[PemeriksaanQuery::getDokterStats]
     B --> J[PemeriksaanPresenter::getLatest limit 5]
-    C & D & E & F & G & H & I & J --> K[Render views/dashboard.php]
-    K --> L[Tampil: hero card pasien gradient + 3 small card + tabel 5 pemeriksaan terbaru]
+    B --> K2[PemeriksaanPresenter::getMonthlyRevenue tahun, bulan ini]
+    C & D & E & F & G & H & I & J & K2 --> M[Render views/dashboard.php]
+    M --> N[Tampil: hero card pasien gradient + 4 small card (termasuk Pendapatan Bulan Ini) + tabel 5 pemeriksaan terbaru]
 ```
 
-`getDashboardStats` aggregates 8 sumber data dalam 1 call (no N+1). `pemeriksaan_bulan_ini` = sum `count_by_month[1..currentMonth]`. Hero card pasien: gradient teal + sparkline + trend badge + 2 CTA buttons.
+`getDashboardStats` aggregates 9 sumber data dalam 1 call (no N+1). `pemeriksaan_bulan_ini` = sum `count_by_month[1..currentMonth]`. `pendapatan_bulan_ini` = `SUM(l.biaya)` di current month via `getDateRangeTotal`. Hero card pasien: gradient teal + sparkline + trend badge + 2 CTA buttons. Card "Pendapatan Bulan Ini" format `format_rupiah()`, link "Lihat Laporan" ke `/pemeriksaan/cetak`.
 
 ## 3. CRUD Pasien
 
@@ -484,3 +485,53 @@ Pemeriksaan punya extra check: jika `status_pemeriksaan === 'Selesai'`, confirma
 FK violation (Pasien/Dokter/Layanan dipakai di pemeriksaan): entity catch `PDOException` code 23000, return false. Router check return value (since commit `aa12f07`): if `delete` and `result === false`, `redirectBackWithError("Gagal menghapus {Entity}. Data ini masih digunakan di transaksi lain (terikat relasi).")`. Data tidak terhapus, user lihat error flash yang jelas. Flash error di-set via `$_SESSION['flash_error']` lalu redirect back ke referer (delete confirmation page).
 
 Order penting: `$entity = explode('.', $routeKey)[0];` di-define SEBELUM FK check block, karena dipakai di error message.
+
+## 13. Cetak Laporan
+
+```mermaid
+flowchart TD
+    Start([Menu Pemeriksaan]) --> Link[Klik 'Cetak Laporan' button]
+    Link --> OpenTab[GET /pemeriksaan/cetak<br/>target=_blank]
+    OpenTab --> Pres[PemeriksaanPresenter::getCetakData<br/>keyword, status, startDate, endDate]
+    Pres --> Q[PemeriksaanQuery::findAllJoined<br/>same filters]
+    Pres --> T[PemeriksaanQuery::getDateRangeTotal<br/>SUM l.biaya + same filters]
+    Q --> Render[views/pemeriksaan/cetak.php<br/>standalone HTML]
+    T --> Render
+    Render --> Table[Tabel: TRX, tanggal, pasien, dokter, layanan, biaya, status]
+    Render --> Footer[Footer: Total Pendapatan Rp XXX]
+    Render --> Btn[Tombol 'Cetak' onclick=window.print]
+    Btn --> Print[Browser print dialog<br/>Save as PDF / print to paper]
+```
+
+`getCetakData` reuse `findAllJoined` + tambah `getDateRangeTotal`. View standalone (no header/sidebar), inline CSS dengan `@media print` rules hide filter form + tombol. User bisa print langsung atau "Save as PDF" via browser native. Filter form di top: date range, status, search. PerPage default 100 (no pagination).
+
+## 14. Upload Foto Pasien
+
+```mermaid
+flowchart TD
+    Start([Pasien Create/Edit]) --> Form[Form enctype=multipart/form-data]
+    Form --> Submit[POST /pasien or /pasien.update]
+    Submit --> Validate[Validator check data]
+    Validate -->|Error| ErrBack[Flash error + old input]
+    Validate -->|OK| HandleUp[Pasien::handleFileUpload]
+    HandleUp --> CheckFile{_FILES foto uploaded?}
+    CheckFile -->|Tidak| InsertNoFoto[INSERT tanpa foto]
+    CheckFile -->|Ya| Mime[mime check via getimagesize<br/>jpeg/png/webp]
+    Mime -->|Invalid| InsertNoFoto
+    Mime -->|OK| Size[Size check max 2MB]
+    Size -->|Over| InsertNoFoto
+    Size -->|OK| Move[move_uploaded_file ke<br/>public/assets/uploads/pasien/]
+    Move --> RandomName[Filename: bin2hex 16 byte.ext]
+    RandomName --> SetPath[Set data.foto = assets/uploads/pasien/hash.ext]
+    SetPath --> Insert[INSERT/UPDATE dengan foto]
+    InsertNoFoto --> Insert
+    Insert --> OldUnlink[Update: unlink foto lama jika ada]
+    OldUnlink --> Redirect[Flash success + redirect list]
+    ListView[List view] --> Thumb{Tampilkan foto?}
+    Thumb -->|Ada| Img[img src=...uploads/pasien/hash.ext<br/>32x32 rounded circle]
+    Thumb -->|Tidak| Initial[Inisial nama di circle placeholder]
+```
+
+`handleFileUpload` private method di `Pasien` entity. Validasi optional: file kosong -> skip upload, lanjut insert tanpa foto. Invalid mime/over size -> skip upload (silent, tidak fail create). Valid -> simpan. `unlinkOldFoto` di update: jika ada foto baru uploaded + foto lama exist, hapus file lama dari disk.
+
+Path store di DB: `assets/uploads/pasien/<32-hex>.<ext>`. Folder `public/assets/uploads/` di-`.gitignore`. Web-accessible dari `/assets/uploads/...`.
