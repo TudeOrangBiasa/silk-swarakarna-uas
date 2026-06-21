@@ -48,5 +48,7 @@ public/assets/uploads/
 # Browser QA artifacts
 qa-screenshots/
 qa-evidence/
+test-evidence/
 evidence-*.png
 verify-*.png
+fix*-*.png
