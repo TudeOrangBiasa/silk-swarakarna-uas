@@ -88,8 +88,6 @@ silk-swarakarna/
 │
 ├── docs/                           | Dokumentasi
 ├── composer.json                   | PSR-4 autoload
-├── AGENTS.md                       | Agent runtime config
-├── CONTEXT.md                      | Domain glossary
 ├── .env.example
 └── .gitignore
 ```
