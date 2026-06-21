@@ -37,6 +37,8 @@ CREATE TABLE IF NOT EXISTS pasien (
   no_hp VARCHAR(20) NOT NULL
     COMMENT 'Nomor HP, format 08xxxxxxxxxx',
   alamat TEXT NOT NULL,
+  foto VARCHAR(255) NULL
+    COMMENT 'Path foto pasien (relatif: assets/uploads/pasien/<hash>.<ext>)',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_pasien),

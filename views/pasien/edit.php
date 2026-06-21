@@ -20,7 +20,7 @@ $row = $presenter->getFormData($id !== '' ? $id : null);
 
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-4">
-        <form method="post" action="/pasien/update" novalidate>
+        <form method="post" action="/pasien/update" enctype="multipart/form-data" novalidate>
             <?= csrf_field() ?>
             <input type="hidden" name="id" value="<?= htmlspecialchars($row['id_pasien']) ?>">
 
@@ -106,6 +106,21 @@ $row = $presenter->getFormData($id !== '' ? $id : null);
                 <?php if (has_error('alamat')): ?>
                     <div class="invalid-feedback d-block"><?= error_for('alamat') ?></div>
                 <?php endif; ?>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="foto">Foto Pasien</label>
+                <?php if (!empty($row['foto'])): ?>
+                    <div class="mb-2">
+                        <img src="/<?= htmlspecialchars($row['foto']) ?>"
+                             alt="Foto pasien saat ini"
+                             class="rounded-3 border"
+                             style="max-width: 150px; max-height: 150px; object-fit: cover;">
+                        <div class="small text-muted mt-1">Foto saat ini. Upload file baru untuk mengganti.</div>
+                    </div>
+                <?php endif; ?>
+                <input type="file" id="foto" name="foto" accept="image/*" class="form-control">
+                <div class="form-text">Format: JPG, PNG, atau WebP. Maksimal 2 MB.</div>
             </div>
 
             <div class="mb-3">

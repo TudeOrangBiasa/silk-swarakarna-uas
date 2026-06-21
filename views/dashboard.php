@@ -19,6 +19,7 @@ $totalLayanan        = (new LayananPresenter(new Layanan()))->getCount();
 $today               = date('Y-m-d');
 $totalPeriksaHariIni = (new PemeriksaanPresenter(new Pemeriksaan()))->getCountByDate($today);
 $latestPeriksa       = (new PemeriksaanPresenter(new Pemeriksaan()))->getLatest(5);
+$pendapatanBulanIni  = (new PemeriksaanPresenter(new Pemeriksaan()))->getMonthlyRevenue((int) date('Y'), (int) date('n'));
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -112,6 +113,23 @@ $latestPeriksa       = (new PemeriksaanPresenter(new Pemeriksaan()))->getLatest(
                         <a href="/pemeriksaan" class="text-decoration-none small text-primary mt-2 d-inline-block">Lihat Pemeriksaan &rarr;</a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-12 col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="text-muted fw-medium small">Pendapatan Bulan Ini</span>
+                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center icon-box">
+                        <i class="bi bi-cash-stack fs-5 text-primary"></i>
+                    </div>
+                </div>
+                <div class="display-6 fw-bold text-dark"><?= format_rupiah($pendapatanBulanIni) ?></div>
+                <a href="/pemeriksaan/cetak" class="text-decoration-none small text-primary mt-2 d-inline-block">Lihat Laporan &rarr;</a>
             </div>
         </div>
     </div>

@@ -53,6 +53,7 @@ $routes = [
     'pemeriksaan'             => 'pemeriksaan/index',
     'pemeriksaan.create'      => 'pemeriksaan/create',
     'pemeriksaan.update_status' => 'pemeriksaan/update_status',
+    'pemeriksaan.cetak'       => 'pemeriksaan/cetak',
     'pemeriksaan.delete'      => 'pemeriksaan/delete',
 ];
 

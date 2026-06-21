@@ -71,6 +71,25 @@ final class PemeriksaanPresenter
     }
 
     /**
+     * @return array{rows: list<array<string, mixed>>, total: int, filters: array{keyword: ?string, status: ?string, startDate: ?string, endDate: ?string}}
+     */
+    public function getCetakData(?string $keyword, ?string $status, ?string $startDate, ?string $endDate, int $perPage = 100): array
+    {
+        $rows = $this->query->findAllJoined($keyword, $status, $startDate, $endDate, $perPage, 0);
+        $total = $this->query->getDateRangeTotal($startDate, $endDate, $status, $keyword);
+        return [
+            'rows' => array_values(array_map([$this, 'formatRow'], $rows)),
+            'total' => $total,
+            'filters' => [
+                'keyword' => $keyword,
+                'status' => $status,
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function getFormData(?string $id = null): array
@@ -92,6 +111,13 @@ final class PemeriksaanPresenter
         return $this->pemeriksaan->countByDate($date);
     }
 
+    public function getMonthlyRevenue(int $year, int $month): int
+    {
+        $startDate = sprintf('%04d-%02d-01', $year, $month);
+        $endDate = date('Y-m-t', strtotime($startDate));
+        return $this->query->getDateRangeTotal($startDate, $endDate);
+    }
+
     /**
      * Get all dashboard statistics in a single call (no N+1).
      *
@@ -101,6 +127,7 @@ final class PemeriksaanPresenter
      *   total_layanan: int,
      *   pemeriksaan_hari_ini: int,
      *   pemeriksaan_bulan_ini: int,
+     *   pendapatan_bulan_ini: int,
      *   count_by_month: array<int, int>,
      *   top_layanan: list<array{nama_layanan: string, n: int}>,
      *   dokter_stats: list<array{nama_dokter: string, spesialisasi: string, n: int}>
@@ -117,6 +144,7 @@ final class PemeriksaanPresenter
             'total_layanan'         => $this->layananPresenter->getCount(),
             'pemeriksaan_hari_ini'  => $this->pemeriksaan->countByDate(date('Y-m-d')),
             'pemeriksaan_bulan_ini' => array_sum(array_slice($countByMonth, 0, $currentMonth)),
+            'pendapatan_bulan_ini'  => $this->getMonthlyRevenue($currentYear, $currentMonth),
             'count_by_month'        => $countByMonth,
             'top_layanan'           => $this->query->getTopLayanan(),
             'dokter_stats'          => $this->query->getDokterStats(),

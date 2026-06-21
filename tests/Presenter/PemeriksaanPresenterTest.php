@@ -91,6 +91,8 @@ final class PemeriksaanPresenterTest extends TestCase
         $this->assertArrayHasKey('total_layanan', $stats);
         $this->assertArrayHasKey('pemeriksaan_hari_ini', $stats);
         $this->assertArrayHasKey('pemeriksaan_bulan_ini', $stats);
+        $this->assertArrayHasKey('pendapatan_bulan_ini', $stats);
+        $this->assertIsInt($stats['pendapatan_bulan_ini']);
         $this->assertArrayHasKey('count_by_month', $stats);
         $this->assertArrayHasKey('top_layanan', $stats);
         $this->assertArrayHasKey('dokter_stats', $stats);
@@ -107,6 +109,29 @@ final class PemeriksaanPresenterTest extends TestCase
     {
         $stats = $this->presenter->getDashboardStats();
         $this->assertCount(12, $stats['count_by_month']);
+    }
+
+    public function testGetCetakDataReturnsRowsAndTotal(): void
+    {
+        $this->createPemeriksaan();
+        $result = $this->presenter->getCetakData(null, null, null, null);
+        $this->assertArrayHasKey('rows', $result);
+        $this->assertArrayHasKey('total', $result);
+        $this->assertArrayHasKey('filters', $result);
+        $this->assertIsArray($result['rows']);
+        $this->assertIsInt($result['total']);
+        $this->assertGreaterThanOrEqual(0, $result['total']);
+    }
+
+    public function testGetCetakDataTotalMatchesRowsSum(): void
+    {
+        $id = $this->createPemeriksaan(); // biaya = 100000
+        $this->createdPemeriksaanIds[] = $id;
+        $id2 = $this->createPemeriksaan(); // biaya = 100000
+        $this->createdPemeriksaanIds[] = $id2;
+
+        $result = $this->presenter->getCetakData(null, null, date('Y-m-d'), date('Y-m-d'));
+        $this->assertGreaterThanOrEqual(200000, $result['total']);
     }
 
     public function testGetPasienOptionsReturnsArray(): void

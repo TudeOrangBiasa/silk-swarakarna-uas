@@ -56,7 +56,14 @@ $pagination = $data['pagination'];
                             <tr>
                                 <td class="px-4 text-muted"><?= $i + 1 ?></td>
                                 <td><span class="badge bg-light text-dark border"><?= htmlspecialchars($p['id_pasien']) ?></span></td>
-                                <td class="fw-medium"><?= htmlspecialchars($p['nama_pasien']) ?></td>
+                                <td class="fw-medium">
+                                    <?php if (!empty($p['foto'])): ?>
+                                        <img src="/<?= htmlspecialchars($p['foto']) ?>" class="avatar-sm rounded-circle me-2" width="32" height="32" alt="">
+                                    <?php else: ?>
+                                        <span class="avatar-sm rounded-circle me-2 d-inline-flex align-items-center justify-content-center bg-secondary bg-opacity-10 text-secondary" style="width:32px;height:32px;font-size:0.75rem;font-weight:600;"><?= strtoupper(substr($p['nama_pasien'], 0, 1)) ?></span>
+                                    <?php endif; ?>
+                                    <?= htmlspecialchars($p['nama_pasien']) ?>
+                                </td>
                                 <td><?= htmlspecialchars($p['tanggal_lahir_fmt']) ?></td>
                                 <td><?= $p['jenis_kelamin'] === 'L' ? 'Laki-laki' : 'Perempuan' ?></td>
                                 <td><?= htmlspecialchars($p['no_hp'] ?? '-') ?></td>

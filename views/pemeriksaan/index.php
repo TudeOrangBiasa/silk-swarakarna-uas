@@ -18,11 +18,16 @@ $statusOptions = $presenter->getStatusOptions();
 
 <?php include __DIR__ . '/../partials/_flash.php'; ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <h1 class="h3 fw-semibold mb-0">Data Pemeriksaan</h1>
-    <a href="/pemeriksaan/create" class="btn btn-primary">
-        <i class="bi bi-plus-lg"></i> Tambah Pemeriksaan
-    </a>
+    <div class="d-flex gap-2">
+        <a href="/pemeriksaan/cetak?startDate=&amp;endDate=&amp;status=<?= urlencode($status) ?>&amp;search=<?= urlencode($keyword) ?>" target="_blank" class="btn btn-outline-secondary">
+            <i class="bi bi-printer"></i> Cetak Laporan
+        </a>
+        <a href="/pemeriksaan/create" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Tambah Pemeriksaan
+        </a>
+    </div>
 </div>
 
 <div class="card border-0 shadow-sm rounded-4">

@@ -327,6 +327,21 @@ final class PasienTest extends EntityTestCase
     }
 
     // ---------------------------------------------------------------
+    // foto (optional file upload)
+    // ---------------------------------------------------------------
+
+    public function testCreateWithoutFotoSetsNull(): void
+    {
+        // No $_FILES['foto'] in CLI — entity handleFileUpload returns null.
+        $data = $this->validData();
+        $id   = $this->pasien->create($data);
+        $this->createdIds[] = $id;
+
+        $saved = $this->pasien->read($id);
+        $this->assertNull($saved['foto']);
+    }
+
+    // ---------------------------------------------------------------
     // Helpers
     // ---------------------------------------------------------------
 
