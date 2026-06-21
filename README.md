@@ -102,10 +102,10 @@ silk-swarakarna-uas/
 ├── src/                             | Domain layer, arsitektur CQRS (25+ class)
 │   ├── Database.php                 | PDO singleton: getInstance, query, execute, transaction
 │   ├── Entity/                      | Facade: validasi + business rules, delegasi ke Repo/Query
-│   │   ├── Pasien.php               | CRUD + generate RM-XXX + 5 field demografis + foto upload + FK-safe delete
-│   │   ├── Dokter.php               | CRUD + search + FK-safe delete
-│   │   ├── Layanan.php              | CRUD + FK-safe delete + biaya validation
-│   │   └── Pemeriksaan.php          | CRUD + state machine + FOR UPDATE race-safe + race-safe TRX code gen
+│   │   ├── Pasien.php               | CRUD + generate RM-XXX + 5 field demografis + foto upload + soft delete/restore
+│   │   ├── Dokter.php               | CRUD + search + soft delete/restore
+│   │   ├── Layanan.php              | CRUD + soft delete/restore + biaya validation
+│   │   └── Pemeriksaan.php          | CRUD + state machine + FOR UPDATE race-safe + race-safe TRX code gen + hard delete (Selesai guard)
 │   ├── Repository/                  | Command side: CUD + simple reads per table
 │   │   └── {Pasien,Dokter,Layanan,Pemeriksaan}Repository.php
 │   ├── Query/                       | Query side: complex reads, JOINs, search, kode generator
@@ -146,14 +146,14 @@ silk-swarakarna-uas/
 │   ├── auth/
 │   │   └── login.php                | Login form standalone
 │   ├── dashboard.php                | Hero card + 4 stat card (termasuk Pendapatan Bulan Ini) + tabel pemeriksaan terbaru
-│   ├── pasien/                      | CRUD: index (search + pagination + thumbnail foto), create, edit, delete (confirm + cleanup foto)
-│   ├── dokter/                      | CRUD: index, create, edit, delete
-│   ├── layanan/                     | CRUD: index, create, edit, delete
+│   ├── pasien/                      | CRUD: index (search + pagination + thumbnail + show-deleted toggle), create, edit, delete (soft, confirm), restore
+│   ├── dokter/                      | CRUD: index (search + pagination + show-deleted toggle), create, edit, delete (soft), restore
+│   ├── layanan/                     | CRUD: index (search + pagination + show-deleted toggle), create, edit, delete (soft), restore
 │   ├── pemeriksaan/                 | Index (search, filter status, quick action), create, delete, update_status, cetak (print-friendly)
 │   ├── errors/404.php               | 404 page
 │   └── _placeholder.php
 │
-├── tests/                           | PHPUnit 10.5 (186 test, 328 assertion)
+├── tests/                           | PHPUnit 10.5 (202 test, 361 assertion)
 │   ├── bootstrap.php                | Autoload, DB reset, fixtures
 │   ├── EntityTestCase.php           | Base: createdIds tracking + tearDown cleanup
 │   ├── Auth/                        | Auth flow: login, logout, CSRF, session
@@ -186,7 +186,7 @@ Detail di [docs/architecture.md](docs/architecture.md).
 
 3 master data (Pasien, Dokter, Layanan) + 1 transaksi (Pemeriksaan). Status pemeriksaan: Menunggu -> Sedang Diperiksa -> Selesai. Bisa skip langsung ke Selesai atau revert ke Menunggu.
 
-Fitur tambahan: upload foto Pasien, cetak laporan pemeriksaan (browser print), hitung total otomatis per periode, dashboard dengan stat card.
+Fitur tambahan: upload foto Pasien, cetak laporan pemeriksaan (browser print), hitung total otomatis per periode, dashboard dengan stat card, soft delete + restore untuk master data (FK-protected).
 
 Detail di [docs/business-logic.md](docs/business-logic.md).
 
@@ -204,11 +204,11 @@ ddev exec vendor/bin/phpunit
 vendor/bin/phpunit
 ```
 
-186 test, 328 assertion. Semua test pakai DB asli (bukan mock). Cleanup otomatis per test via EntityTestCase. Waktu eksekusi ~0.5 detik.
+202 test, 361 assertion. Semua test pakai DB asli (bukan mock). Cleanup otomatis per test via EntityTestCase. Waktu eksekusi ~0.5 detik.
 
 Coverage:
-- Entity (4): CRUD, validasi, race protection FOR UPDATE, foto upload
-- Repository (4): insert, findAll, findById, update, delete, count
+- Entity (4): CRUD, validasi, race protection FOR UPDATE, foto upload, soft delete + restore
+- Repository (4): insert, findAll, findAllIncludingDeleted, findById, update, delete (soft), restore, count
 - Query (4): search, filter, JOIN, kode generator, date-range total
 - Presenter (4): formatRow, pagination, getDashboardStats, getOptions, getCetakData, getMonthlyRevenue
 - Auth (1): login, logout, CSRF, session
