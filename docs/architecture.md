@@ -294,21 +294,21 @@ Selesai          -> [] (terminal)
 | Class | Responsibility | Methods |
 |---|---|---|
 | `Database` | PDO singleton, one shared connection | `getInstance()`, `query(sql, params)`, `execute(sql, params)`, `lastInsertId()`, `beginTransaction()`, `commit()`, `rollBack()`, `pdo()` |
-| `Entity\Pasien` | Validasi + CRUD + race-safe RM-XXX generation + foto upload | `generateKodeOtomatis()`, `create(data)`, `read(id?)`, `update(id, data)`, `delete(id)`, `search(keyword)`, `readForOptions()`, `count()` |
-| `Entity\Dokter` | Validasi + CRUD (INT auto-increment) | `create(data)`, `read(id?)`, `update(id, data)`, `delete(id)`, `search(keyword)`, `readForOptions()`, `count()` |
-| `Entity\Layanan` | Validasi + CRUD (INT auto-increment) | `readForOptions()`, `create(data)`, `read(id?)`, `update(id, data)`, `delete(id)`, `count()` |
+| `Entity\Pasien` | Validasi + CRUD + race-safe RM-XXX generation + foto upload + soft delete/restore | `generateKodeOtomatis()`, `create(data)`, `read(id?)`, `update(id, data)`, `delete(id)` (soft), `restore(id)`, `search(keyword)`, `readForOptions()`, `readAllIncludingDeleted(limit, offset, keyword)`, `countAllIncludingDeleted(keyword)`, `count()` |
+| `Entity\Dokter` | Validasi + CRUD (INT auto-increment) + soft delete/restore | `create(data)`, `read(id?)`, `update(id, data)`, `delete(id)` (soft), `restore(id)`, `search(keyword)`, `readForOptions()`, `readAllIncludingDeleted(limit, offset, keyword)`, `countAllIncludingDeleted(keyword)`, `count()` |
+| `Entity\Layanan` | Validasi + CRUD (INT auto-increment) + soft delete/restore | `readForOptions()`, `create(data)`, `read(id?)`, `update(id, data)`, `delete(id)` (soft), `restore(id)`, `readAllIncludingDeleted(limit, offset, keyword)`, `countAllIncludingDeleted(keyword)`, `count()` |
 | `Entity\Pemeriksaan` | State machine + race-safe code gen + FOR UPDATE | `generateKodeOtomatis()`, `create(data)`, `read(id)`, `readWithJoin(keyword?)`, `getById(id)`, `readLatest(limit)`, `updateStatus(id, newStatus)`, `delete(id)`, `count()`, `countByDate(date)`, `getAllowedTransitions(currentStatus)` |
-| `Repository\Pasien` | SQL data access Pasien | `insert(id, data)`, `findAll(limit, offset)`, `findById(id)`, `update(id, data)`, `delete(id)`, `count()` |
-| `Repository\Dokter` | SQL data access Dokter | `insert(data)`, `findAll(limit, offset)`, `findById(id)`, `update(id, data)`, `delete(id)`, `count()` |
-| `Repository\Layanan` | SQL data access Layanan | `insert(data)`, `findAll(limit, offset)`, `findById(id)`, `update(id, data)`, `delete(id)`, `count()` |
+| `Repository\Pasien` | SQL data access Pasien (soft delete) | `insert(id, data)`, `findAll(limit, offset)`, `findById(id)`, `update(id, data)`, `delete(id)` (UPDATE is_deleted=1), `restore(id)`, `findAllIncludingDeleted(limit, offset)`, `countAllIncludingDeleted()`, `count()` |
+| `Repository\Dokter` | SQL data access Dokter (soft delete) | `insert(data)`, `findAll(limit, offset)`, `findById(id)`, `update(id, data)`, `delete(id)` (UPDATE is_deleted=1), `restore(id)`, `findAllIncludingDeleted(limit, offset)`, `countAllIncludingDeleted()`, `count()` |
+| `Repository\Layanan` | SQL data access Layanan (soft delete) | `insert(data)`, `findAll(limit, offset)`, `findById(id)`, `update(id, data)`, `delete(id)` (UPDATE is_deleted=1), `restore(id)`, `findAllIncludingDeleted(limit, offset)`, `countAllIncludingDeleted()`, `count()` |
 | `Repository\Pemeriksaan` | SQL specialized Pemeriksaan | `insert(data)`, `findRaw(id)`, `updateStatus(id, status)`, `deleteIfNotSelesai(id)`, `count()`, `countByDate(date)` |
-| `Query\Pasien` | Complex reads Pasien | `searchByName(keyword, limit, offset)`, `countSearchByName(keyword)`, `findPasienForOptions()`, `generateKodeOtomatis()` |
-| `Query\Dokter` | Complex reads Dokter | `searchByName(keyword, limit, offset)`, `countSearchByName(keyword)`, `findDokterForOptions()` |
-| `Query\Layanan` | Complex reads Layanan | `findLayananForOptions()` |
+| `Query\Pasien` | Complex reads Pasien (filter is_deleted=0) | `searchByName(keyword, limit, offset)`, `countSearchByName(keyword)`, `findPasienForOptions()`, `generateKodeOtomatis()` |
+| `Query\Dokter` | Complex reads Dokter (filter is_deleted=0) | `searchByName(keyword, limit, offset)`, `countSearchByName(keyword)`, `findDokterForOptions()` |
+| `Query\Layanan` | Complex reads Layanan (filter is_deleted=0) | `findLayananForOptions()` |
 | `Query\Pemeriksaan` | Complex reads Pemeriksaan | `generateKodeOtomatis()`, `findAllJoined(keyword?, status, startDate, endDate, limit, offset)`, `countAllJoined(keyword?, status, startDate, endDate)`, `findByIdJoined(id)`, `findLatest(limit)`, `findStatusForUpdate(id)`, `getCountByMonth(year)`, `getTopLayanan(limit)`, `getDokterStats()`, `getDateRangeTotal(startDate, endDate, status?, keyword?)` |
-| `Presenter\Pasien` | Format data Pasien for view | `getListData(keyword?, page, perPage)`, `getFormData(id?)`, `getOptions()`, `getCount()` |
-| `Presenter\Dokter` | Format data Dokter for view | `getListData(keyword?, page, perPage)`, `getFormData(id?)`, `getOptions()`, `getCount()` |
-| `Presenter\Layanan` | Format data Layanan for view | `getListData(page, perPage)`, `getFormData(id?)`, `getOptions()`, `getCount()` |
+| `Presenter\Pasien` | Format data Pasien for view | `getListData(keyword?, page, perPage, showDeleted?)`, `getFormData(id?)`, `getOptions()`, `getCount(showDeleted?)` |
+| `Presenter\Dokter` | Format data Dokter for view | `getListData(keyword?, page, perPage, showDeleted?)`, `getFormData(id?)`, `getOptions()`, `getCount(showDeleted?)` |
+| `Presenter\Layanan` | Format data Layanan for view | `getListData(page, perPage, showDeleted?)`, `getFormData(id?)`, `getOptions()`, `getCount(showDeleted?)` |
 | `Presenter\Pemeriksaan` | Format data Pemeriksaan for view + dashboard + cetak | `getListData(keyword?, status, startDate, endDate, page, perPage)`, `getFormData(id?)`, `getCount()`, `getCountByDate(date)`, `getDashboardStats()`, `getLatest(limit)`, `getPasienOptions()`, `getDokterOptions()`, `getLayananOptions()`, `getStatusOptions()`, `getAllowedTransitions(currentStatus)`, `getCetakData(keyword?, status, startDate, endDate)`, `getMonthlyRevenue(year, month)` |
 | `Validator` | Run rules, throw first-error-per-field | `validate(data, rules)` |
 | `Rule\Rule` | Interface | `validate(value): ?string` |

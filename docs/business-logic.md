@@ -475,16 +475,21 @@ flowchart TD
 
 ## 12. Delete flow summary
 
-Semua entity (Pasien, Dokter, Layanan, Pemeriksaan) pakai 2-step delete:
+Master data (Pasien, Dokter, Layanan) pakai soft delete (set `is_deleted=1`). Pemeriksaan pakai hard delete (row removed).
 
-1. **GET confirmation view**: klik icon trash di list/table -> link ke `/<entity>/delete?id=<id>` -> render confirmation card (icon warning + entity name + form POST).
-2. **POST execute**: klik tombol "Hapus" di confirmation card -> form submit ke `/<entity>/delete` dengan CSRF + hidden id -> router dispatch ke entity method -> repo delete -> flash success + redirect list page.
+### 12.1 Master data: soft delete
 
-Pemeriksaan punya extra check: jika `status_pemeriksaan === 'Selesai'`, confirmation view skip form, tampilkan alert "tidak dapat dihapus karena merupakan riwayat medis" + tombol kembali. Force POST ke `/pemeriksaan/delete` (bypassing confirmation view) tetap masuk `repo::deleteIfNotSelesai` yang punya `WHERE status_pemeriksaan != 'Selesai'`, return 0 rows affected. Entity return false, tapi router tetap set flash success (router tidak check return value untuk method `delete`).
+1. **GET confirmation view**: klik icon trash di list/table -> link ke `/<entity>/delete?id=<id>` -> render confirmation card (icon warning + entity name + form POST). Copy: "Data ini akan disembunyikan dari daftar. Riwayat pemeriksaan tetap aman."
+2. **POST execute**: klik "Hapus" di confirmation -> form submit ke `/<entity>/delete` dengan CSRF + hidden id -> router dispatch ke entity method -> `repo->delete($id)` eksekusi `UPDATE ... SET is_deleted=1` -> flash success + redirect list page. Row hilang dari list dan dropdown tapi tetap ada di DB (FK ke Pemeriksaan intact).
+3. **Restore (kalau perlu)**: buka index, centang "Tampilkan data dihapus" toggle -> deleted rows muncul dengan strikethrough + "Dihapus" badge + tombol "Pulihkan" -> klik -> POST ke `/{entity}/restore` -> `repo->restore($id)` eksekusi `UPDATE ... SET is_deleted=0` -> flash success "berhasil dipulihkan" -> row visible lagi.
 
-FK violation (Pasien/Dokter/Layanan dipakai di pemeriksaan): entity catch `PDOException` code 23000, return false. Router check return value (since commit `aa12f07`): if `delete` and `result === false`, `redirectBackWithError("Gagal menghapus {Entity}. Data ini masih digunakan di transaksi lain (terikat relasi).")`. Data tidak terhapus, user lihat error flash yang jelas. Flash error di-set via `$_SESSION['flash_error']` lalu redirect back ke referer (delete confirmation page).
+Alasan soft delete: master data yang punya riwayat Pemeriksaan tidak bisa di-`DELETE` karena FK RESTRICT. Soft delete solves: data "hilang" dari UX perspective, history Pemeriksaan tetap aman, restoreable kalau salah hapus.
 
-Order penting: `$entity = explode('.', $routeKey)[0];` di-define SEBELUM FK check block, karena dipakai di error message.
+### 12.2 Pemeriksaan: hard delete dengan guard
+
+Pemeriksaan punya extra check: jika `status_pemeriksaan === 'Selesai'`, confirmation view skip form, tampilkan alert "tidak dapat dihapus karena merupakan riwayat medis" + tombol kembali. Force POST ke `/pemeriksaan/delete` (bypassing confirmation view) tetap masuk `repo::deleteIfNotSelesai` yang punya `WHERE status_pemeriksaan != 'Selesai'`, return 0 rows affected.
+
+Router order penting: `$entity = explode('.', $routeKey)[0];` di-define SEBELUM delete dispatch, karena dipakai di flash message.
 
 ## 13. Cetak Laporan
 
@@ -535,3 +540,29 @@ flowchart TD
 `handleFileUpload` private method di `Pasien` entity. Validasi: file kosong -> skip upload (return null), lanjut insert tanpa foto. File present tapi invalid (bad mime via `getimagesize()`, oversize > 2MB, `move_uploaded_file` fail) -> throw `ValidationException` dengan field `foto` agar user lihat error. Valid -> simpan ke `public/assets/uploads/pasien/<bin2hex>.<ext>`, simpan path relatif di DB. `unlinkOldFoto` di update: reorder save new -> DB -> unlink old (hanya jika DB success). Delete entity: read foto dulu, repo delete, unlink old jika repo delete return true.
 
 Path store di DB: `assets/uploads/pasien/<32-hex>.<ext>`. Folder `public/assets/uploads/` di-`.gitignore`. Web-accessible dari `/assets/uploads/...`.
+
+## 15. Soft Delete Pattern
+
+```mermaid
+flowchart TD
+    Start([Master data delete request]) --> Soft[Repository::delete = UPDATE is_deleted=1]
+    Soft --> Filter[All SELECTs add WHERE is_deleted=0]
+    Filter --> List[List view: deleted rows hidden]
+    Filter --> Drop[Dropdown options: deleted hidden]
+    List --> Toggle{Show deleted toggle?}
+    Toggle -->|Off| Normal[Normal list, no deleted]
+    Toggle -->|On| All[All rows + strikethrough + 'Dihapus' badge + Restore btn]
+    All --> Restore[POST /entity/restore]
+    Restore --> SetBack[UPDATE is_deleted=0]
+    SetBack --> Flash[Flash: berhasil dipulihkan]
+    Soft --> FK[Foreign key ke pemeriksaan tetap intact]
+    FK --> History[Riwayat pemeriksaan safe]
+```
+
+DB migration: `ALTER TABLE pasien/dokter/layanan ADD COLUMN is_deleted TINYINT(1) NOT NULL DEFAULT 0`. Default 0 (aktif). 1 = soft deleted. Column NOT part of Pemeriksaan table (Pemeriksaan rows = audit trail, never soft deleted).
+
+Filter rule: `WHERE is_deleted = 0` di setiap SELECT (Repository + Query). Lupa 1 = bug data bocor. For dropdown options, filter wajib (deleted master tidak boleh dipilih untuk transaksi baru). For show-deleted UI, query khusus tanpa filter.
+
+Restore: `UPDATE ... SET is_deleted = 0 WHERE id = ?`. Tidak ada undo history — kalau restore, balik seperti semula. Kalau perlu audit trail "siapa hapus kapan", perlu kolom tambahan `deleted_at TIMESTAMP NULL` + `deleted_by INT NULL`. Ponytail: skip audit columns untuk UAS, tambahkan kalau production.
+
+Pattern reusable: di masa depan, kalau perlu soft delete di tabel lain, copy pattern ini. Tambah column + filter semua SELECT + repo methods.
