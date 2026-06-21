@@ -168,6 +168,7 @@ Urutan eksekusi di `public/index.php`:
 8. `/logout` POST → `logout()` + redirect `/login`. GET no-op.
 9. `/login` GET/POST → handle login atau render form.
 10. Route resolution → render view file via layout (output-buffered, `old_input` & `errors` unset setelah render).
+11. **Standalone views**: kalau `$viewPath` ada di `$standaloneViews` (saat ini `['pemeriksaan/cetak']`), render langsung tanpa layout wrapper. Dipakai untuk print-friendly HTML yang tidak butuh sidebar/topbar.
 
 ## 3. Layered architecture
 
