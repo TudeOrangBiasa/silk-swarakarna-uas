@@ -503,7 +503,7 @@ flowchart TD
     Btn --> Print[Browser print dialog<br/>Save as PDF / print to paper]
 ```
 
-`getCetakData` reuse `findAllJoined` + tambah `getDateRangeTotal`. View standalone (no header/sidebar), inline CSS dengan `@media print` rules hide filter form + tombol. User bisa print langsung atau "Save as PDF" via browser native. Filter form di top: date range, status, search. PerPage default 100 (no pagination).
+`getCetakData` reuse `findAllJoined` + tambah `getDateRangeTotal`. View standalone (no header/sidebar), inline CSS dengan `@media print` rules hide filter form + tombol. User bisa print langsung atau "Save as PDF" via browser native. Filter form di top: date range, status, search. PerPage default 10000 (no pagination, cetak report selalu full).
 
 ## 14. Upload Foto Pasien
 
@@ -532,6 +532,6 @@ flowchart TD
     Thumb -->|Tidak| Initial[Inisial nama di circle placeholder]
 ```
 
-`handleFileUpload` private method di `Pasien` entity. Validasi optional: file kosong -> skip upload, lanjut insert tanpa foto. Invalid mime/over size -> skip upload (silent, tidak fail create). Valid -> simpan. `unlinkOldFoto` di update: jika ada foto baru uploaded + foto lama exist, hapus file lama dari disk.
+`handleFileUpload` private method di `Pasien` entity. Validasi: file kosong -> skip upload (return null), lanjut insert tanpa foto. File present tapi invalid (bad mime via `getimagesize()`, oversize > 2MB, `move_uploaded_file` fail) -> throw `ValidationException` dengan field `foto` agar user lihat error. Valid -> simpan ke `public/assets/uploads/pasien/<bin2hex>.<ext>`, simpan path relatif di DB. `unlinkOldFoto` di update: reorder save new -> DB -> unlink old (hanya jika DB success). Delete entity: read foto dulu, repo delete, unlink old jika repo delete return true.
 
 Path store di DB: `assets/uploads/pasien/<32-hex>.<ext>`. Folder `public/assets/uploads/` di-`.gitignore`. Web-accessible dari `/assets/uploads/...`.

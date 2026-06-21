@@ -97,15 +97,15 @@ silk-swarakarna-uas/
 ├── public/                          | Document root (web entry)
 │   ├── index.php                    | Front controller: route table, POST dispatch, auth gate, CSRF
 │   ├── .htaccess                    | Apache rewrite: semua URI ke index.php?url=...
-│   └── assets/css/app.css           | Design system: teal #0e7490, sidebar dark slate-900, 342 baris
+│   └── assets/css/app.css           | Design system: teal #0e7490, sidebar dark slate-900, 346 baris
 │
 ├── src/                             | Domain layer, arsitektur CQRS (25+ class)
 │   ├── Database.php                 | PDO singleton: getInstance, query, execute, transaction
 │   ├── Entity/                      | Facade: validasi + business rules, delegasi ke Repo/Query
-│   │   ├── Pasien.php               | CRUD + generate RM-XXX + 5 field demografis + FK-safe delete
+│   │   ├── Pasien.php               | CRUD + generate RM-XXX + 5 field demografis + foto upload + FK-safe delete
 │   │   ├── Dokter.php               | CRUD + search + FK-safe delete
 │   │   ├── Layanan.php              | CRUD + FK-safe delete + biaya validation
-│   │   └── Pemeriksaan.php          | CRUD + state machine + FOR UPDATE race-safe
+│   │   └── Pemeriksaan.php          | CRUD + state machine + FOR UPDATE race-safe + race-safe TRX code gen
 │   ├── Repository/                  | Command side: CUD + simple reads per table
 │   │   └── {Pasien,Dokter,Layanan,Pemeriksaan}Repository.php
 │   ├── Query/                       | Query side: complex reads, JOINs, search, kode generator
@@ -126,7 +126,7 @@ silk-swarakarna-uas/
 │           └── PositiveNumber.php   | Bilangan positif
 │
 ├── includes/
-│   ├── bootstrap.php                | session_start, CSP + XCTO + Referrer-Policy, autoload, base_path
+│   ├── bootstrap.php                | session_start, CSP (style-src + script-src = * 'unsafe-inline') + XCTO + Referrer-Policy, autoload, base_path
 │   ├── config.php                   | .env parser: DB_HOST, DB_NAME, DB_USER, DB_PASS, APP_URL
 │   ├── helpers.php                  | format_tanggal, format_rupiah, old_input, flash_message, paginate
 │   ├── auth.php                     | login/logout, is_logged_in, csrf_token/field/verify, hash_equals
@@ -145,15 +145,15 @@ silk-swarakarna-uas/
 │   │   └── pagination.php           | Bootstrap 5 pagination + info text
 │   ├── auth/
 │   │   └── login.php                | Login form standalone
-│   ├── dashboard.php                | 4 widget + tabel pemeriksaan terbaru
-│   ├── pasien/                      | CRUD: index (search + pagination), create, edit, delete (confirm)
+│   ├── dashboard.php                | Hero card + 4 stat card (termasuk Pendapatan Bulan Ini) + tabel pemeriksaan terbaru
+│   ├── pasien/                      | CRUD: index (search + pagination + thumbnail foto), create, edit, delete (confirm + cleanup foto)
 │   ├── dokter/                      | CRUD: index, create, edit, delete
 │   ├── layanan/                     | CRUD: index, create, edit, delete
-│   ├── pemeriksaan/                 | Index (search, filter status, quick action), create, delete, update_status
+│   ├── pemeriksaan/                 | Index (search, filter status, quick action), create, delete, update_status, cetak (print-friendly)
 │   ├── errors/404.php               | 404 page
 │   └── _placeholder.php
 │
-├── tests/                           | PHPUnit 10.5 (176 test, 303 assertion)
+├── tests/                           | PHPUnit 10.5 (186 test, 328 assertion)
 │   ├── bootstrap.php                | Autoload, DB reset, fixtures
 │   ├── EntityTestCase.php           | Base: createdIds tracking + tearDown cleanup
 │   ├── Auth/                        | Auth flow: login, logout, CSRF, session
@@ -186,6 +186,8 @@ Detail di [docs/architecture.md](docs/architecture.md).
 
 3 master data (Pasien, Dokter, Layanan) + 1 transaksi (Pemeriksaan). Status pemeriksaan: Menunggu -> Sedang Diperiksa -> Selesai. Bisa skip langsung ke Selesai atau revert ke Menunggu.
 
+Fitur tambahan: upload foto Pasien, cetak laporan pemeriksaan (browser print), hitung total otomatis per periode, dashboard dengan stat card.
+
 Detail di [docs/business-logic.md](docs/business-logic.md).
 
 ## Demo
@@ -202,13 +204,13 @@ ddev exec vendor/bin/phpunit
 vendor/bin/phpunit
 ```
 
-176 test, 303 assertion. Semua test pakai DB asli (bukan mock). Cleanup otomatis per test via EntityTestCase. Waktu eksekusi ~0.5 detik.
+186 test, 328 assertion. Semua test pakai DB asli (bukan mock). Cleanup otomatis per test via EntityTestCase. Waktu eksekusi ~0.5 detik.
 
 Coverage:
-- Entity (4): CRUD, validasi, race protection FOR UPDATE
+- Entity (4): CRUD, validasi, race protection FOR UPDATE, foto upload
 - Repository (4): insert, findAll, findById, update, delete, count
-- Query (3): search, filter, JOIN, kode generator
-- Presenter (4): formatRow, pagination, getDashboardStats, getOptions
+- Query (4): search, filter, JOIN, kode generator, date-range total
+- Presenter (4): formatRow, pagination, getDashboardStats, getOptions, getCetakData, getMonthlyRevenue
 - Auth (1): login, logout, CSRF, session
 
 ## Demo credentials
