@@ -213,6 +213,17 @@ if (!isset($page_title)) {
 }
 
 // ---------------------------------------------------------------------------
+// Standalone views: rendered without layout wrapper (header/footer).
+// ---------------------------------------------------------------------------
+$standaloneViews = ['pemeriksaan/cetak'];
+if (in_array($viewPath, $standaloneViews, true)) {
+    require $viewFile;
+    // Clear session flash for standalone views too.
+    unset($_SESSION['old_input'], $_SESSION['errors']);
+    exit;
+}
+
+// ---------------------------------------------------------------------------
 // Render layout + view (output-buffered so we can clear session after render)
 // ---------------------------------------------------------------------------
 ob_start();

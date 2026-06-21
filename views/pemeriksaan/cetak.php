@@ -1,10 +1,7 @@
 <?php
 /**
- * Standalone print-friendly report.
- * Discards layout buffer to avoid sidebar/header/footer wrapping.
+ * Standalone print-friendly report (no layout wrapper).
  */
-ob_end_clean();
-
 use Silk\Entity\Pemeriksaan;
 use Silk\Presenter\PemeriksaanPresenter;
 
@@ -17,8 +14,6 @@ $presenter = new PemeriksaanPresenter(new Pemeriksaan());
 $data      = $presenter->getCetakData($keyword, $status, $startDate, $endDate);
 $rows      = $data['rows'];
 $total     = $data['total'];
-
-$hasFilters = $keyword !== '' || $status !== '' || $startDate !== '' || $endDate !== '';
 ?>
 <!DOCTYPE html>
 <html lang="id">

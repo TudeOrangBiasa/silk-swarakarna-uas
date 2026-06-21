@@ -112,17 +112,22 @@ final class Pasien
 
         (new Validator())->validate($data, $rules);
 
-        // Handle file upload: if new foto uploaded, unlink old foto first
+        // Handle file upload: save new → update DB → unlink old only after DB success
         $fotoPath = $this->handleFileUpload();
+        $oldFoto = null;
         if ($fotoPath !== null) {
             $existing = $this->repo->findById($id);
             if ($existing !== [] && ($existing['foto'] ?? null) !== null) {
-                $this->unlinkOldFoto($existing['foto']);
+                $oldFoto = $existing['foto'];
             }
             $data['foto'] = $fotoPath;
         }
 
-        return $this->repo->update($id, $data);
+        $affected = $this->repo->update($id, $data);
+        if ($affected > 0 && $oldFoto !== null) {
+            $this->unlinkOldFoto($oldFoto);
+        }
+        return $affected;
     }
 
     private static function isDuplicateKeyError(PDOException $e): bool
@@ -133,30 +138,43 @@ final class Pasien
     /**
      * Handle file upload from $_FILES['foto'].
      * Validates mime type (jpeg/png/webp), max 2MB, saves to upload dir.
-     * Returns relative path string, or null if no file uploaded / error.
+     * Returns relative path string, or null if no file uploaded.
+     *
+     * @throws ValidationException on invalid mime, oversize, or move failure
      */
     private function handleFileUpload(): ?string
     {
-        if (!isset($_FILES['foto']) || $_FILES['foto']['error'] !== UPLOAD_ERR_OK) {
+        if (!isset($_FILES['foto'])) {
             return null;
+        }
+
+        $error = $_FILES['foto']['error'] ?? UPLOAD_ERR_NO_FILE;
+
+        if ($error === UPLOAD_ERR_NO_FILE) {
+            return null;
+        }
+
+        // Any other upload error from PHP
+        if ($error !== UPLOAD_ERR_OK) {
+            throw new ValidationException(['foto' => 'Gagal mengunggah foto. Coba lagi.']);
         }
 
         $file = $_FILES['foto'];
 
         // Size check: 2MB
         if ($file['size'] > 2 * 1024 * 1024) {
-            return null;
+            throw new ValidationException(['foto' => 'Ukuran foto maksimal 2MB.']);
         }
 
         // Mime check via getimagesize (stdlib, reads actual image header)
         $info = @getimagesize($file['tmp_name']);
         if ($info === false) {
-            return null;
+            throw new ValidationException(['foto' => 'File harus berupa gambar (JPG/PNG/WebP).']);
         }
 
         $allowed = ['image/jpeg', 'image/png', 'image/webp'];
         if (!in_array($info['mime'], $allowed, true)) {
-            return null;
+            throw new ValidationException(['foto' => 'Format foto harus JPG, PNG, atau WebP.']);
         }
 
         // Extension from mime
@@ -164,6 +182,7 @@ final class Pasien
             'image/jpeg' => 'jpg',
             'image/png'  => 'png',
             'image/webp' => 'webp',
+            default      => throw new \LogicException('Unreachable: unhandled mime ' . $info['mime']),
         };
 
         // Random filename
@@ -182,7 +201,7 @@ final class Pasien
             return $relativePath;
         }
 
-        return null;
+        throw new ValidationException(['foto' => 'Gagal menyimpan foto. Coba lagi.']);
     }
 
     /**
@@ -203,8 +222,14 @@ final class Pasien
 
     public function delete(string $id): bool
     {
+        // Read existing foto before delete so we can unlink after DB success
+        $existing = $this->repo->findById($id);
+        $foto = ($existing !== [] && ($existing['foto'] ?? null) !== null) ? $existing['foto'] : null;
         try {
             $this->repo->delete($id);
+            if ($foto !== null) {
+                $this->unlinkOldFoto($foto);
+            }
             return true;
         } catch (PDOException $e) {
             if ($e->getCode() === '23000' || str_contains($e->getMessage(), 'foreign key')) {

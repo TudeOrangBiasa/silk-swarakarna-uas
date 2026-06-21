@@ -4,22 +4,17 @@
  * Issue #38 — 4 widget summary + 5 pemeriksaan terbaru
  */
 
-use Silk\Entity\Pasien;
-use Silk\Entity\Dokter;
-use Silk\Entity\Layanan;
 use Silk\Entity\Pemeriksaan;
-use Silk\Presenter\PasienPresenter;
-use Silk\Presenter\DokterPresenter;
-use Silk\Presenter\LayananPresenter;
 use Silk\Presenter\PemeriksaanPresenter;
 
-$totalPasien         = (new PasienPresenter(new Pasien()))->getCount();
-$totalDokter         = (new DokterPresenter(new Dokter()))->getCount();
-$totalLayanan        = (new LayananPresenter(new Layanan()))->getCount();
-$today               = date('Y-m-d');
-$totalPeriksaHariIni = (new PemeriksaanPresenter(new Pemeriksaan()))->getCountByDate($today);
-$latestPeriksa       = (new PemeriksaanPresenter(new Pemeriksaan()))->getLatest(5);
-$pendapatanBulanIni  = (new PemeriksaanPresenter(new Pemeriksaan()))->getMonthlyRevenue((int) date('Y'), (int) date('n'));
+$presenter         = new PemeriksaanPresenter(new Pemeriksaan());
+$stats             = $presenter->getDashboardStats();
+$totalPasien         = $stats['total_pasien'];
+$totalDokter         = $stats['total_dokter'];
+$totalLayanan        = $stats['total_layanan'];
+$totalPeriksaHariIni = $stats['pemeriksaan_hari_ini'];
+$pendapatanBulanIni  = $stats['pendapatan_bulan_ini'];
+$latestPeriksa       = $presenter->getLatest(5);
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
