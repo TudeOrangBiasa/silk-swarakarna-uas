@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 // Security headers (must be set before any output)
 header('X-Content-Type-Options: nosniff');
-header('Content-Security-Policy: default-src \'self\'; style-src \'self\' \'unsafe-inline\' https://cdn.jsdelivr.net; script-src \'self\' \'unsafe-inline\' https://cdn.jsdelivr.net; font-src \'self\' https://cdn.jsdelivr.net data:; img-src \'self\' data:; connect-src \'self\'; form-action \'self\'; base-uri \'self\'; frame-ancestors \'none\'');
+header('Content-Security-Policy: default-src \'self\'; style-src * \'unsafe-inline\'; script-src * \'unsafe-inline\'; font-src \'self\' https://cdn.jsdelivr.net data:; img-src \'self\' data:; connect-src \'self\' https://cdn.jsdelivr.net; form-action \'self\'; base-uri \'self\'; frame-ancestors \'none\'');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 
 // Session config (more secure defaults)

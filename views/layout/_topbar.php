@@ -18,7 +18,12 @@ $action_labels = [
 ];
 ?>
 <header class="topbar flex-shrink-0 d-flex align-items-center px-3 px-lg-4 py-2 bg-white border-bottom shadow-sm">
-    <button type="button" class="btn btn-link text-body p-0 me-3 border-0" id="topbarToggle" aria-label="Toggle navigation">
+    <!-- Mobile toggle: native offcanvas -->
+    <button type="button" class="btn btn-link text-body p-0 me-3 border-0 d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebarDrawer" aria-controls="sidebarDrawer" aria-label="Toggle navigation">
+        <i class="bi bi-list fs-4"></i>
+    </button>
+    <!-- Desktop toggle: custom collapse -->
+    <button type="button" class="btn btn-link text-body p-0 me-3 border-0 d-none d-lg-block" id="topbarToggleDesktop" aria-label="Toggle navigation">
         <i class="bi bi-list fs-4"></i>
     </button>
     <nav aria-label="breadcrumb" class="flex-grow-1">

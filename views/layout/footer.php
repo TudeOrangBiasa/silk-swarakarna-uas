@@ -9,15 +9,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
     <script>
-        // Topbar toggle: drawer on mobile (<992px), collapse on desktop
-        document.getElementById('topbarToggle')?.addEventListener('click', () => {
-            if (window.innerWidth < 992) {
-                bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('sidebarDrawer')).show();
-            } else {
+        // Topbar toggle: collapse on desktop
+        const topbarToggleDesktop = document.getElementById('topbarToggleDesktop');
+        if (topbarToggleDesktop) {
+            topbarToggleDesktop.addEventListener('click', () => {
                 const isCollapsed = document.documentElement.classList.toggle('sidebar-collapsed');
                 localStorage.setItem('sidebar-collapsed', isCollapsed ? '1' : '0');
-            }
-        });
+            });
+        }
     </script>
 </body>
 </html>
