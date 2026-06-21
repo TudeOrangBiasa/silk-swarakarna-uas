@@ -148,6 +148,14 @@ final class PemeriksaanQuery
         return $byMonth;
     }
 
+    public function getDateRangeTotal(?string $startDate = null, ?string $endDate = null, ?string $status = null, ?string $keyword = null): int
+    {
+        [$where, $params] = $this->buildFilter($keyword, $status, $startDate, $endDate);
+        $sql = 'SELECT COALESCE(SUM(l.biaya), 0) AS total FROM pemeriksaan p JOIN layanan l ON p.id_layanan = l.id_layanan' . $where;
+        $rows = $this->db->query($sql, $params);
+        return (int) $rows[0]['total'];
+    }
+
     public function getTopLayanan(int $limit = 5): array
     {
         return $this->db->query(

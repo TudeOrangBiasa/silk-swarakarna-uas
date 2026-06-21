@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Repository;
 
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 use Silk\Database;
 use Silk\Repository\PasienRepository;
@@ -158,6 +159,62 @@ final class PasienRepositoryTest extends TestCase
     public function testCountReturnsInt(): void
     {
         $this->assertIsInt($this->repo->count());
+    }
+
+    // ---------------------------------------------------------------
+    // foto field
+    // ---------------------------------------------------------------
+
+    public function testInsertWithFoto(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $data = $this->data('WithFoto');
+        $data['foto'] = 'assets/uploads/pasien/abc123.jpg';
+
+        $this->repo->insert($id, $data);
+        $row = $this->repo->findById($id);
+
+        $this->assertSame('assets/uploads/pasien/abc123.jpg', $row['foto']);
+    }
+
+    public function testInsertWithoutFotoStoresNull(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $this->repo->insert($id, $this->data('NoFoto'));
+
+        $row = $this->repo->findById($id);
+        $this->assertNull($row['foto']);
+    }
+
+    public function testUpdateWithFoto(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $this->repo->insert($id, $this->data('Orig'));
+
+        $affected = $this->repo->update($id, ['foto' => 'assets/uploads/pasien/update.jpg']);
+        $this->assertSame(1, $affected);
+
+        $row = $this->repo->findById($id);
+        $this->assertSame('assets/uploads/pasien/update.jpg', $row['foto']);
+    }
+
+    public function testUpdateWithoutFotoPreservesExisting(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $data = $this->data('Preserve');
+        $data['foto'] = 'assets/uploads/pasien/existing.jpg';
+        $this->repo->insert($id, $data);
+
+        // Update another field — foto should remain unchanged
+        $this->repo->update($id, ['alamat' => 'Updated Alamat']);
+        $row = $this->repo->findById($id);
+
+        $this->assertSame('assets/uploads/pasien/existing.jpg', $row['foto']);
+        $this->assertSame('Updated Alamat', $row['alamat']);
     }
 
     private function makeId(): string

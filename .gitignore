@@ -26,6 +26,7 @@ public/assets/css/tailwind.css
 
 # Project-local (not needed in repo)
 khusus uas.md
+soaluas.md
 *.pdf
 
 # DDEV (project config stays local)
@@ -37,6 +38,9 @@ tests/coverage/
 
 # Logs (runtime)
 storage/logs/*.log
+
+# Uploaded files
+public/assets/uploads/
 
 # Local issue tracker (use GitHub Issues instead)
 .scratch/

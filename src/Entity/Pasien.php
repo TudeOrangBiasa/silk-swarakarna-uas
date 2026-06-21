@@ -61,6 +61,11 @@ final class Pasien
             'alamat'           => [new Required('Alamat wajib diisi'),          new MaxLength('Alamat maksimal 255 karakter', self::MAX_ALAMAT)],
         ]);
 
+        $fotoPath = $this->handleFileUpload();
+        if ($fotoPath !== null) {
+            $data['foto'] = $fotoPath;
+        }
+
         $maxAttempts = 3;
         for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
             $this->db->beginTransaction();
@@ -77,16 +82,6 @@ final class Pasien
                 }
             }
         }
-    }
-
-    private static function isDuplicateKeyError(PDOException $e): bool
-    {
-        return str_contains($e->getMessage(), 'Duplicate');
-    }
-
-    public function read(?string $id = null): array
-    {
-        return $id !== null ? $this->repo->findById($id) : $this->repo->findAll();
     }
 
     public function update(string $id, array $data): int
@@ -117,7 +112,93 @@ final class Pasien
 
         (new Validator())->validate($data, $rules);
 
+        // Handle file upload: if new foto uploaded, unlink old foto first
+        $fotoPath = $this->handleFileUpload();
+        if ($fotoPath !== null) {
+            $existing = $this->repo->findById($id);
+            if ($existing !== [] && ($existing['foto'] ?? null) !== null) {
+                $this->unlinkOldFoto($existing['foto']);
+            }
+            $data['foto'] = $fotoPath;
+        }
+
         return $this->repo->update($id, $data);
+    }
+
+    private static function isDuplicateKeyError(PDOException $e): bool
+    {
+        return str_contains($e->getMessage(), 'Duplicate');
+    }
+
+    /**
+     * Handle file upload from $_FILES['foto'].
+     * Validates mime type (jpeg/png/webp), max 2MB, saves to upload dir.
+     * Returns relative path string, or null if no file uploaded / error.
+     */
+    private function handleFileUpload(): ?string
+    {
+        if (!isset($_FILES['foto']) || $_FILES['foto']['error'] !== UPLOAD_ERR_OK) {
+            return null;
+        }
+
+        $file = $_FILES['foto'];
+
+        // Size check: 2MB
+        if ($file['size'] > 2 * 1024 * 1024) {
+            return null;
+        }
+
+        // Mime check via getimagesize (stdlib, reads actual image header)
+        $info = @getimagesize($file['tmp_name']);
+        if ($info === false) {
+            return null;
+        }
+
+        $allowed = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!in_array($info['mime'], $allowed, true)) {
+            return null;
+        }
+
+        // Extension from mime
+        $ext = match ($info['mime']) {
+            'image/jpeg' => 'jpg',
+            'image/png'  => 'png',
+            'image/webp' => 'webp',
+        };
+
+        // Random filename
+        $hash = bin2hex(random_bytes(16));
+        $filename = "{$hash}.{$ext}";
+        $relativePath = "assets/uploads/pasien/{$filename}";
+
+        // Ensure upload dir exists
+        $uploadDir = __DIR__ . '/../../public/assets/uploads/pasien';
+        if (!is_dir($uploadDir)) {
+            @mkdir($uploadDir, 0755, true);
+        }
+
+        $destPath = "{$uploadDir}/{$filename}";
+        if (@move_uploaded_file($file['tmp_name'], $destPath)) {
+            return $relativePath;
+        }
+
+        return null;
+    }
+
+    /**
+     * Delete old foto file from disk.
+     */
+    private function unlinkOldFoto(string $relativePath): void
+    {
+        $absPath = __DIR__ . '/../../public/' . ltrim($relativePath, '/');
+        if (file_exists($absPath)) {
+            @unlink($absPath);
+        }
+    }
+
+    public function read(?string $id = null): array
+    {
+        return $id !== null ? $this->repo->findById($id) : $this->repo->findAll();
     }
 
     public function delete(string $id): bool

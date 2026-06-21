@@ -14,7 +14,7 @@ final class PasienRepository
 {
     private Database $db;
 
-    private const NULLABLE_COLS = ['pekerjaan', 'golongan_darah', 'riwayat_penyakit', 'alergi'];
+    private const NULLABLE_COLS = ['pekerjaan', 'golongan_darah', 'riwayat_penyakit', 'alergi', 'foto'];
 
     public function __construct()
     {
@@ -36,7 +36,7 @@ final class PasienRepository
     public function insert(string $id, array $data): void
     {
         $this->db->execute(
-            'INSERT INTO pasien (id_pasien, nama_pasien, tanggal_lahir, jenis_kelamin, pekerjaan, golongan_darah, riwayat_penyakit, alergi, no_hp, alamat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO pasien (id_pasien, nama_pasien, tanggal_lahir, jenis_kelamin, pekerjaan, golongan_darah, riwayat_penyakit, alergi, no_hp, alamat, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [
                 $id,
                 $data['nama_pasien'],
@@ -48,6 +48,7 @@ final class PasienRepository
                 $this->nullIfEmpty($data['alergi'] ?? null),
                 $data['no_hp'],
                 $data['alamat'],
+                $this->nullIfEmpty($data['foto'] ?? null),
             ]
         );
     }
@@ -70,7 +71,7 @@ final class PasienRepository
     {
         $fields = [];
         $params = [];
-        foreach (['nama_pasien', 'tanggal_lahir', 'jenis_kelamin', 'pekerjaan', 'golongan_darah', 'riwayat_penyakit', 'alergi', 'no_hp', 'alamat'] as $col) {
+        foreach (['nama_pasien', 'tanggal_lahir', 'jenis_kelamin', 'pekerjaan', 'golongan_darah', 'riwayat_penyakit', 'alergi', 'no_hp', 'alamat', 'foto'] as $col) {
             if (array_key_exists($col, $data)) {
                 $fields[] = "{$col} = ?";
                 $params[] = in_array($col, self::NULLABLE_COLS, true)

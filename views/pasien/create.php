@@ -19,7 +19,7 @@ $row = $presenter->getFormData(null);
 
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-4">
-        <form method="post" action="/pasien" novalidate>
+        <form method="post" action="/pasien" enctype="multipart/form-data" novalidate>
             <?= csrf_field() ?>
             <div class="mb-3">
                 <label class="form-label" for="nama_pasien">Nama Pasien <span class="text-danger">*</span></label>
@@ -98,6 +98,12 @@ $row = $presenter->getFormData(null);
                 <?php if (has_error('alamat')): ?>
                     <div class="invalid-feedback d-block"><?= error_for('alamat') ?></div>
                 <?php endif; ?>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="foto">Foto Pasien</label>
+                <input type="file" id="foto" name="foto" accept="image/*" class="form-control">
+                <div class="form-text">Format: JPG, PNG, atau WebP. Maksimal 2 MB.</div>
             </div>
 
             <div class="mb-3">

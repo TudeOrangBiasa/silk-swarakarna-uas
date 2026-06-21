@@ -223,6 +223,8 @@
     height: 32px;
 }
 
+.avatar-sm { object-fit: cover; }
+
 .hero-icon {
     font-size: 3rem;
     opacity: 0.5;

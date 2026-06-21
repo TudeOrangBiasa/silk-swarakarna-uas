@@ -147,6 +147,21 @@ final class PemeriksaanQueryTest extends TestCase
         $this->assertSame(count($rows), $count);
     }
 
+    public function testGetDateRangeTotalReturnsSum(): void
+    {
+        $id = $this->createPemeriksaan(); // biaya = 100000
+        $this->createdPemeriksaanIds[] = $id;
+
+        $total = $this->query->getDateRangeTotal(date('Y-m-d'), date('Y-m-d'));
+        $this->assertGreaterThanOrEqual(100000, $total);
+    }
+
+    public function testGetDateRangeTotalWithNoDataReturnsZero(): void
+    {
+        $total = $this->query->getDateRangeTotal('2020-01-01', '2020-01-01');
+        $this->assertSame(0, $total);
+    }
+
     public function testFindAllJoinedWithDoctorNameKeyword(): void
     {
         $suffix = bin2hex(random_bytes(4));
