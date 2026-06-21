@@ -13,21 +13,24 @@ flowchart TD
     ValidLogin -->|Ya| Session[Session regenerate ID<br/>redirect ke /]
     ValidLogin -->|Tidak| LoginForm
     Session --> Index[index.php load]
-    Index --> Boot[bootstrap.php:<br/>security headers + session + autoload + config]
-    Boot --> AuthGate{is_logged_in?}
-    AuthGate -->|Tidak| RedirectLogin[Redirect /login]
-    AuthGate -->|Ya| CSRF{method = POST?}
+    Index --> Boot[bootstrap.php:<br/>security headers + session + autoload + config + timezone]
+    Boot --> Auth[auth.php load:<br/>fungsi login/logout/CSRF available]
+    Auth --> CSRF{method = POST?}
     CSRF -->|POST| CSRFCheck[csrf_verify<br/>hash_equals]
     CSRFCheck -->|Gagal| CSRFErr[HTTP 403 + flash error<br/>redirect /]
-    CSRFCheck -->|OK| Route{Route?}
-    CSRF -->|GET| Route
+    CSRFCheck -->|OK| AuthGate
+    CSRF -->|GET| AuthGate{is_logged_in?}
+    AuthGate -->|Tidak| RedirectLogin[Redirect /login]
+    AuthGate -->|Ya| Route{Route?}
     Route -->|default| Dash[Dashboard]
     Route -->|pasien.*| PasienMenu
     Route -->|dokter.*| DokterMenu
     Route -->|layanan.*| LayananMenu
     Route -->|pemeriksaan.*| PeriksaMenu
-    Route -->|logout POST| Logout[Session destroy<br/>redirect /login]
+    Route -->|logout POST| Logout[Session destroy + cookie clear<br/>redirect /login]
 ```
+
+Urutan eksekusi: `bootstrap.php` → `auth.php` → CSRF check (POST only) → auth gate → route resolution → action/view.
 
 ## 2. Dashboard
 
@@ -37,14 +40,16 @@ flowchart TD
     B --> C[PasienPresenter::getCount]
     B --> D[DokterPresenter::getCount]
     B --> E[LayananPresenter::getCount]
-    B --> F[PemeriksaanPresenter::getCountByDate hari ini]
-    B --> G[PemeriksaanQuery::getCountByMonth]
+    B --> F[Pemeriksaan::countByDate hari ini]
+    B --> G[PemeriksaanQuery::getCountByMonth tahun ini]
     B --> H[PemeriksaanQuery::getTopLayanan]
     B --> I[PemeriksaanQuery::getDokterStats]
     B --> J[PemeriksaanPresenter::getLatest limit 5]
     C & D & E & F & G & H & I & J --> K[Render views/dashboard.php]
-    K --> L[Tampil: hero card pasien + 3 small card + tabel 5 pemeriksaan terbaru]
+    K --> L[Tampil: hero card pasien gradient + 3 small card + tabel 5 pemeriksaan terbaru]
 ```
+
+`getDashboardStats` aggregates 8 sumber data dalam 1 call (no N+1). `pemeriksaan_bulan_ini` = sum `count_by_month[1..currentMonth]`. Hero card pasien: gradient teal + sparkline + trend badge + 2 CTA buttons.
 
 ## 3. CRUD Pasien
 
@@ -52,35 +57,40 @@ flowchart TD
 flowchart TD
     Start([Menu Pasien]) --> List[GET /pasien]
     List --> Search{Search?}
-    Search -->|Ya| Filter[WHERE nama_pasien LIKE %q%]
-    Search -->|Tidak| All[Tampil semua]
-    Filter --> ListView
-    All --> ListView[views/pasien/index.php<br/>+ pagination + flash message]
+    Search -->|Ya| Filter[PasienQuery::searchByName<br/>WHERE nama_pasien LIKE %q%]
+    Search -->|Tidak| All[PasienRepository::findAll]
+    Filter & All --> ListView[views/pasien/index.php<br/>+ pagination + flash message]
     ListView --> Action{User action}
 
     Action -->|Tambah| FormCreate[views/pasien/create.php]
     Action -->|Edit| FormEdit[views/pasien/edit.php?id=]
-    Action -->|Hapus| Del[DELETE pasien by id]
+    Action -->|Hapus link| DelConfirm[GET /pasien/delete?id=]
 
-    FormCreate --> Submit[POST handler]
-    FormEdit --> Submit
-    Submit --> Validate[Validator::validate dengan 6 rule ]
+    FormCreate --> Submit[POST /pasien]
+    FormEdit --> SubmitEdit[POST /pasien.update]
+    Submit & SubmitEdit --> Validate[Validator::validate<br/>7 field x 6 Rule class]
     Validate -->|Error| Err[ValidationException:<br/>flash + old input + error per field]
-    Err --> FormCreate
-    Validate -->|OK| GenCode[generateKodeOtomatis<br/>MAX id_pasien + increment<br/>format RM-XXX]
+    Err --> FormBack[Redirect back ke form]
+    Validate -->|OK| GenCode[PasienQuery::generateKodeOtomatis<br/>MAX numeric part + 1<br/>format RM-XXX zero-pad 3]
     GenCode --> TryInsert[Transaction: INSERT INTO pasien]
     TryInsert --> Dup{Duplicate key?}
-    Dup -->|Ya, retry| GenCode
-    Dup -->|Tidak| Insert[Commit]
+    Dup -->|Ya, retry max 3x| GenCode
+    Dup -->|Tidak| Insert[Commit + return new id]
     Insert --> Redirect[Redirect to /pasien<br/>flash success]
     Redirect --> List
 
-    Del --> DelCheck{Catch PDOException<br/>FK violation?}
-    DelCheck -->|Ya| DelErr[Flash error: punya riwayat]
-    DelCheck -->|Tidak| DelOK[Flash success]
-    DelErr --> List
-    DelOK --> List
+    DelConfirm --> DelView[views/pasien/delete.php<br/>confirmation card]
+    DelView --> DelSubmit[POST /pasien.delete<br/>CSRF + hidden id]
+    DelSubmit --> DelEntity[Pasien::delete id]
+    DelEntity --> DelTry{Try repo::delete}
+    DelTry -->|PDOException 23000<br/>FK violation| DelFK[Entity return false<br/>data not deleted]
+    DelTry -->|Success| DelOK[Entity return true]
+    DelFK --> Flash[Router: flash success<br/>berhasil dihapus]
+    DelOK --> Flash
+    Flash --> List
 ```
+
+Note: router ignores entity return value untuk delete method, selalu set flash success. Pasien dengan riwayat pemeriksaan tidak benar-benar terhapus (FK violation ditahan entity), tapi user melihat pesan "berhasil dihapus". Pemeriksaan FK ada di `pemeriksaan.id_pasien`.
 
 ### Fields dan validasi Pasien
 
@@ -93,62 +103,82 @@ flowchart TD
 | `golongan_darah` | Enum(['A', 'B', 'AB', 'O']) | Opsional |
 | `riwayat_penyakit` | - | Opsional (text) |
 | `alergi` | - | Opsional (text) |
-| `no_hp` | Required + PhoneFormat | 10-15 digit |
+| `no_hp` | Required + PhoneFormat | 10-15 digit angka |
 | `alamat` | Required + MaxLength(255) | Alamat lengkap |
+
+7 field divalidasi menggunakan 6 Rule class (Required, MaxLength, DateNotFuture, PhoneFormat, Enum, PositiveNumber -- PositiveNumber tidak dipakai Pasien).
 
 ## 4. CRUD Dokter
 
 ```mermaid
 flowchart TD
     Start([Menu Dokter]) --> List[GET /dokter]
-    List --> Action{User action}
+    List --> Search{Search?}
+    Search -->|Ya| Filter[DokterQuery::searchByName]
+    Search -->|Tidak| All[DokterRepository::findAll]
+    Filter & All --> ListView[views/dokter/index.php<br/>+ pagination]
+    ListView --> Action{User action}
 
     Action -->|Tambah| Form[views/dokter/create.php]
     Action -->|Edit| FormEdit[views/dokter/edit.php?id=]
-    Action -->|Hapus| Del[DELETE dokter by id]
+    Action -->|Hapus link| DelConfirm[GET /dokter/delete?id=]
 
-    Form --> Submit[POST handler]
-    FormEdit --> Submit
-    Submit --> Validate[Validator: Required + MaxLength + PhoneFormat]
+    Form --> Submit[POST /dokter<br/>id auto-increment INT]
+    FormEdit --> SubmitEdit[POST /dokter.update]
+    Submit & SubmitEdit --> Validate[Validator: Required + MaxLength + PhoneFormat<br/>4 field]
     Validate -->|Error| Err[Flash error + old input]
-    Err --> Form
+    Err --> FormBack
     Validate -->|OK| Insert[INSERT INTO dokter<br/>id auto-increment]
-    Insert --> Redirect[Redirect /dokter]
+    Insert --> Redirect[Redirect /dokter + flash]
     Redirect --> List
 
-    Del --> DelCheck{Cek FK di pemeriksaan?}
-    DelCheck -->|Dipakai| DelErr[Gagal]
-    DelCheck -->|Bebas| DelExec[DELETE FROM dokter]
-    DelErr --> List
-    DelExec --> List
+    DelConfirm --> DelView[views/dokter/delete.php]
+    DelView --> DelSubmit[POST /dokter.delete<br/>CSRF + hidden id]
+    DelSubmit --> DelEntity[Dokter::delete id]
+    DelEntity --> DelTry{Try repo::delete}
+    DelTry -->|PDOException 23000| DelFK[Entity return false]
+    DelTry -->|Success| DelOK[Entity return true]
+    DelFK --> Flash[Flash success]
+    DelOK --> Flash
+    Flash --> List
 ```
+
+Default value: `spesialisasi` kosong/empty → diset `'THT'` oleh entity sebelum insert.
 
 ## 5. CRUD Layanan
 
 ```mermaid
 flowchart TD
     Start([Menu Layanan]) --> List[GET /layanan]
-    List --> Action{User action}
+    List --> All[LayananRepository::findAll<br/>no search]
+    All --> ListView[views/layanan/index.php<br/>+ pagination]
+    ListView --> Action{User action}
 
     Action -->|Tambah| Form[views/layanan/create.php]
     Action -->|Edit| FormEdit[views/layanan/edit.php?id=]
-    Action -->|Hapus| Del[DELETE layanan by id]
+    Action -->|Hapus link| DelConfirm[GET /layanan/delete?id=]
 
-    Form --> Submit[POST handler]
-    FormEdit --> Submit
-    Submit --> Validate[Validator: Required + MaxLength + PositiveNumber]
+    Form --> Submit[POST /layanan]
+    FormEdit --> SubmitEdit[POST /layanan.update]
+    Submit & SubmitEdit --> Validate[Validator: Required + MaxLength + PositiveNumber<br/>2 field]
     Validate -->|Error| Err[Flash error + old input]
-    Err --> Form
-    Validate -->|OK| Insert[INSERT INTO layanan]
-    Insert --> Redirect[Redirect /layanan]
+    Err --> FormBack
+    Validate -->|OK| Insert[INSERT INTO layanan<br/>id auto-increment INT]
+    Insert --> Redirect[Redirect /layanan + flash]
     Redirect --> List
 
-    Del --> DelCheck{Cek FK di pemeriksaan?}
-    DelCheck -->|Dipakai| DelErr[Gagal]
-    DelCheck -->|Bebas| DelExec[DELETE FROM layanan]
-    DelErr --> List
-    DelExec --> List
+    DelConfirm --> DelView[views/layanan/delete.php]
+    DelView --> DelSubmit[POST /layanan.delete<br/>CSRF + hidden id]
+    DelSubmit --> DelEntity[Layanan::delete id]
+    DelEntity --> DelTry{Try repo::delete}
+    DelTry -->|PDOException 23000| DelFK[Entity return false]
+    DelTry -->|Success| DelOK[Entity return true]
+    DelFK --> Flash[Flash success]
+    DelOK --> Flash
+    Flash --> List
 ```
+
+Tidak ada search di Layanan. Biaya: `format_rupiah()` di presenter (Rp 250.000, separator titik).
 
 ## 6. Transaksi Pemeriksaan
 
@@ -157,119 +187,148 @@ flowchart TD
 ```mermaid
 flowchart TD
     Start([Pemeriksaan -> Tambah]) --> Form[views/pemeriksaan/create.php]
-    Form --> Load[Load 3 dropdown:<br/>PasienPresenter::getOptions<br/>DokterPresenter::getOptions<br/>LayananPresenter::getOptions]
-    Load --> Show[Tampil form dengan dropdown + keluhan + tanggal]
-    Show --> Submit[POST handler]
-    Submit --> Validate[Validator: Required + DateNotFuture + MaxLength]
-    Validate -->|Error| Err[Flash error + retain input]
+    Form --> Load[PemeriksaanPresenter::getPasienOptions<br/>-> PasienPresenter::getOptions]
+    Form --> Load2[PemeriksaanPresenter::getDokterOptions<br/>-> DokterPresenter::getOptions]
+    Form --> Load3[PemeriksaanPresenter::getLayananOptions<br/>-> LayananPresenter::getOptions]
+    Load & Load2 & Load3 --> Show[Tampil form: 3 dropdown FK + tanggal + keluhan]
+    Show --> Submit[POST /pemeriksaan]
+    Submit --> Validate[Validator: 5 field<br/>id_pasien+id_dokter+id_layanan: Required<br/>tanggal_periksa: Required+DateNotFuture<br/>keluhan: Required+MaxLength 1000]
+    Validate -->|Error| Err[Flash error + old input]
     Err --> Form
-    Validate -->|OK| GenCode[generateKodeOtomatis<br/>TRX-YYYYNNN<br/>by current year + increment]
+    Validate -->|OK| GenCode[PemeriksaanQuery::generateKodeOtomatis<br/>MAX numeric part + 1<br/>format TRX-YYYYNNN<br/>zero-pad 3, total 11 char]
     GenCode --> TryInsert[Transaction: INSERT]
     TryInsert --> Dup{Duplicate?}
-    Dup -->|Ya, retry| GenCode
-    Dup -->|Tidak| Insert[Commit, status = Menunggu]
+    Dup -->|Ya, retry max 3x| GenCode
+    Dup -->|Tidak| Insert[Commit, status default = Menunggu]
     Insert --> Redirect[Redirect /pemeriksaan]
     Redirect --> List
 ```
 
-### 6.2 List with JOIN
+`PemeriksaanPresenter` punya referensi ke 3 presenter lain (Pasien, Dokter, Layanan) lewat constructor injection. Method `getPasienOptions/getDokterOptions/getLayananOptions` delegate ke presenter masing-masing. View cukup instantiate `PemeriksaanPresenter` saja.
+
+### 6.2 List with JOIN + filter
 
 ```mermaid
 flowchart TD
-    Start([Menu Pemeriksaan]) --> List[GET /pemeriksaan]
-    List --> Search{Search + filter?}
-    Search -->|Ya| Filter[JOIN + WHERE + status + date range]
-    Search -->|Tidak| All[All rows JOIN]
-    Filter --> P["PemeriksaanQuery::findAllJoined<br/>(keyword, status, startDate, endDate, page, perPage)"]
-    All --> P
-    P --> Render[views/pemeriksaan/index.php<br/>+ badge warna status<br/>+ tombol quick action]
+    Start([Menu Pemeriksaan]) --> List[GET /pemeriksaan?search=&status=&page=]
+    List --> GetList[PemeriksaanPresenter::getListData<br/>keyword, status, null, null, page, perPage]
+    GetList --> Q[PemeriksaanQuery::findAllJoined<br/>keyword, status, startDate, endDate, limit, offset]
+    GetList --> C[PemeriksaanQuery::countAllJoined<br/>same filters]
+    Q --> Render[views/pemeriksaan/index.php<br/>JOIN 4 table: p + ps + d + l]
+    C --> Pagination[generate pagination metadata]
     Render --> Action{User action}
 
-    Action -->|Mulai| Mulai[POST updateStatus<br/>Menunggu -> Sedang Diperiksa]
-    Action -->|Selesai| Selesai[POST updateStatus<br/>Sedang Diperiksa -> Selesai]
-    Action -->|Update Status| US[views/pemeriksaan/update_status.php]
-    Action -->|Hapus| Del[DELETE if not Selesai]
-    Action -->|Search| Search
+    Action -->|Filter submit| List
+    Action -->|Mulai / Selesai button| Quick[POST /pemeriksaan/update_status<br/>id + status_pemeriksaan + CSRF]
+    Action -->|Update Status page| USPage[GET /pemeriksaan/update_status?id=]
+    Action -->|Hapus link| DelConfirm[GET /pemeriksaan/delete?id=]
 
-    Mulai & Selesai --> USPost
-    USPost[POST updateStatus] --> USValidate[State machine check<br/>allowed transition?]
-    USValidate -->|Tidak valid| Err[Flash error]
-    USValidate -->|OK| USUpdate[Transaction:<br/>SELECT FOR UPDATE + UPDATE]
-    USUpdate --> List
-    Del --> DelExec[DELETE FROM pemeriksaan<br/>only if status != Selesai]
-    DelExec --> List
+    Quick --> Update[Pemeriksaan::updateStatus id, newStatus]
+    Update --> Txn[Transaction begin]
+    Txn --> Lock[Query::findStatusForUpdate id<br/>SELECT ... FOR UPDATE]
+    Lock --> Found{Found?}
+    Found -->|Tidak| NotFound[RuntimeException]
+    Found -->|Ya| Validate[validateStatusTransition<br/>cek TRANSITIONS map]
+    Validate -->|Invalid| VErr[ValidationException]
+    Validate -->|OK| Apply[Repo::updateStatus]
+    Apply --> Commit[Commit + redirect /pemeriksaan]
+    NotFound --> Commit
+    VErr --> Commit
+
+    USPage --> USView[views/pemeriksaan/update_status.php<br/>show form select status]
+    USView --> USSubmit[POST /pemeriksaan/update_status]
+    USSubmit --> Update
+
+    DelConfirm --> DelCheck{Status Selesai?}
+    DelCheck -->|Ya| DelBlock[Alert: tidak bisa hapus<br/>audit trail]
+    DelCheck -->|Tidak| DelForm[Form POST /pemeriksaan.delete]
+    DelBlock --> List
+    DelForm --> DelSubmit2[POST /pemeriksaan.delete<br/>CSRF + hidden id]
+    DelSubmit2 --> DelEnt[Pemeriksaan::delete id<br/>-> repo::deleteIfNotSelesai<br/>WHERE status != Selesai]
+    DelEnt --> Flash[Flash success + redirect]
+    Flash --> List
 ```
+
+`findAllJoined` signature di Query: `(?string $keyword, ?string $status, ?string $startDate, ?string $endDate, int $limit, int $offset)`. Presenter `getListData` accepts `(keyword, status, startDate, endDate, page, perPage)` dan convert ke `(keyword, status, startDate, endDate, perPage, offset)`. View saat ini hanya pass 2 filter (search, status), startDate/endDate hardcoded null.
 
 ### 6.3 Status state machine
 
 ```mermaid
 stateDiagram-v2
     [*] --> Menunggu: INSERT baru
-    Menunggu --> SedangDiperiksa: Quick action "Mulai"
-    SedangDiperiksa --> Selesai: Quick action "Selesai"
-    Menunggu --> Selesai: Skip (direct)
-    SedangDiperiksa --> Menunggu: Revert (admin)
+    Menunggu --> SedangDiperiksa: Quick action "Mulai" (bi-play-fill, btn-info)
+    SedangDiperiksa --> Selesai: Quick action "Selesai" (bi-check-lg, btn-success)
+    Menunggu --> Selesai: Skip, direct (allowed)
+    SedangDiperiksa --> Menunggu: Revert (allowed)
     Selesai --> [*]: Terminal (no edit, no delete)
 ```
 
-Transitions matrix:
+TRANSITIONS matrix (di `Pemeriksaan::TRANSITIONS`):
 
-| From | To | Method |
-|---|---|---|
-| Menunggu | Sedang Diperiksa | POST button "Mulai" |
-| Menunggu | Selesai | Skip, direct |
-| Sedang Diperiksa | Menunggu | Revert |
-| Sedang Diperiksa | Selesai | POST button "Selesai" |
-| Selesai | - | Terminal |
+| From | To | Trigger | Color |
+|---|---|---|---|
+| Menunggu | Sedang Diperiksa | Quick button "Mulai" | btn-info + bi-play-fill |
+| Menunggu | Selesai | Quick button "Selesai" | btn-success + bi-check-lg |
+| Sedang Diperiksa | Menunggu | Update Status form | - |
+| Sedang Diperiksa | Selesai | Quick button "Selesai" | btn-success + bi-check-lg |
+| Selesai | - | Terminal (no transition) | - |
 
-Race protection: `updateStatus` wraps in transaction with `SELECT ... FOR UPDATE`. Two concurrent clicks cannot race.
+Race protection: `updateStatus` wraps in transaction dengan `SELECT ... FOR UPDATE`. Dua request konkuren tidak bisa race. State transition divalidasi di dalam lock. View baca allowed transitions via `Pemeriksaan::getAllowedTransitions(currentStatus)` → render button untuk masing-masing next status. Selesai = terminal, tidak ada button, tidak ada delete form (alert "audit trail").
 
 ## 7. Kode otomatis logic
 
 ```mermaid
 flowchart TD
-    Trigger([Trigger: insert pasien / periksa]) --> Query["SELECT MAX numeric part<br/>FROM table<br/>WHERE prefix match"]
+    Trigger([Trigger: insert pasien / periksa]) --> Query["SELECT MAX(CAST(SUBSTRING(id, prefix_len) AS UNSIGNED))<br/>FROM table<br/>WHERE id LIKE prefix%"]
     Query --> Check{Ada row?}
-    Check -->|Tidak| First["Return prefix-001<br/>mis. RM-001 atau TRX-2026001"]
-    Check -->|Ya| Inc["Increment +1<br/>zero-pad<br/>3 digit (pasien)<br/>7 digit dgn tahun (periksa)"]
+    Check -->|Tidak| First["Return prefix-001<br/>mis. RM-001 atau TRX-{YEAR}001"]
+    Check -->|Ya| Inc["Increment +1<br/>zero-pad sesuai format"]
     Inc --> Return[Return new code]
     First --> Return
     Return --> Try[Transaction + INSERT]
     Try --> Dup{Duplicate key?}
-    Dup -->|Ya| Retry[Repeat generate]
+    Dup -->|Ya| Retry[Repeat generate, max 3x]
     Retry --> Query
-    Dup -->|Tidak| Done[Commit]
+    Dup -->|Tidak| Done[Commit + return id]
 ```
 
 Format:
-- Pasien: `RM-001` -> `RM-002` (zero-pad 3 digit)
-- Pemeriksaan: `TRX-2026001` -> `TRX-2026002` (reset tiap tahun, total 10 char)
+
+| Entity | Prefix | Format | Total char | Reset |
+|---|---|---|---|---|
+| Pasien | `RM-` | `RM-{NNN}` | 6 (RM- + 3 digit) | Tidak |
+| Pemeriksaan | `TRX-{YEAR}-` | `TRX-{YYYY}{NNN}` | 11 (TRX- + 4 year + 3 digit) | Ya, per tahun |
+
+Pemeriksaan MAX query: `MAX(CAST(SUBSTRING(id_periksa, 9) AS UNSIGNED))` -- substring dari posisi 9 (start after `TRX-YYYY`), filter `id_periksa LIKE 'TRX-{YEAR}%'`. Race-safe: 3 retry pada duplicate key (PDOException dengan code 23000 atau message contains "Duplicate").
 
 ## 8. Validasi form
 
 ```mermaid
 flowchart LR
-    A[POST submit] --> B[Entity create/update method]
-    B --> C[Validator::validate<br/>data vs rules array]
-    C --> D{Rule->validate<br/>return null?}
-    D -->|Tidak (ada error)| E[ValidationException<br/>field => error map]
-    D -->|Ya (null)| F[Process to DB]
-    E --> R[Router catch: flash + old input<br/>redirect back]
-    F --> OK[Commit + redirect + flash success]
+    A[POST submit] --> B[Router: csrf_verify]
+    B -->|Gagal| Forbidden[HTTP 403 + redirect]
+    B -->|OK| C[Route to postAction]
+    C --> D[Entity create/update method]
+    D --> E[Validator::validate<br/>data vs rules array]
+    E --> F{Rule->validate<br/>return null?}
+    F -->|Tidak| G[ValidationException<br/>field => error map]
+    F -->|Ya| H[Process to DB]
+    G --> R[Router catch:<br/>flash error + errors session + old input<br/>redirect back to referer]
+    H --> OK[Commit + redirect list page + flash success]
 ```
 
 ### Rule engine
 
-Each field gets an array of Rule objects. Validator iterates, first error per field stops.
+Each field gets list of Rule objects. Validator iterates per field, first error stops. Accumulate errors, throw `ValidationException` dengan map `field => message` di akhir.
 
 | Class | validate() logic |
 |---|---|
-| `Required` | null, empty string, empty array -> error |
-| `MaxLength` | strlen > max -> error |
-| `DateNotFuture` | string date > today -> error |
-| `PhoneFormat` | not 10-15 digit numeric -> error |
-| `Enum` | not in allowed array -> error |
-| `PositiveNumber` | <= 0 -> error |
+| `Required` | null, empty string, empty array → error |
+| `MaxLength` | strlen > max → error |
+| `DateNotFuture` | string date > today → error |
+| `PhoneFormat` | bukan 10-15 digit angka → error |
+| `Enum` | tidak ada di allowed array → error |
+| `PositiveNumber` | <= 0 atau bukan numeric → error |
 
 Rule interface:
 
@@ -285,8 +344,9 @@ Validator:
 ```php
 $errors = [];
 foreach ($rules as $field => $fieldRules) {
+    $value = $data[$field] ?? null;
     foreach ($fieldRules as $rule) {
-        $error = $rule->validate($data[$field] ?? null);
+        $error = $rule->validate($value);
         if ($error !== null) {
             $errors[$field] = $error;
             break; // first error per field
@@ -298,9 +358,21 @@ if ($errors !== []) {
 }
 ```
 
-DB triggers also enforce date constraints:
-- `trg_pasien_check_tanggal_lahir_bi/bu` -- pasien tanggal_lahir must not be future
-- `trg_periksa_check_tanggal_bi/bu` -- pemeriksaan tanggal_periksa must not be > 1 year future
+Router catch:
+
+```php
+catch (ValidationException $e) {
+    redirectBackWithError('Validasi gagal, periksa input', $e->getErrors());
+}
+```
+
+`redirectBackWithError` set `$_SESSION['flash_error']`, `$_SESSION['errors']`, `$_SESSION['old_input']` lalu redirect ke `HTTP_REFERER` atau `/`. View pakai `old_input('field')`, `has_error('field')`, `error_for('field')` untuk render form. Setelah render, `unset($_SESSION['old_input'], $_SESSION['errors'])`.
+
+DB triggers juga enforce date constraints:
+- `trg_pasien_check_tanggal_lahir_bi/bu` -- pasien `tanggal_lahir` must not be future
+- `trg_periksa_check_tanggal_bi/bu` -- pemeriksaan `tanggal_periksa` must not be > 1 year future
+
+Defense in depth: PHP Validator + DB trigger.
 
 ## 9. Login + CSRF flow
 
@@ -310,33 +382,40 @@ DB triggers also enforce date constraints:
 sequenceDiagram
     participant U as User
     participant Router as index.php
+    participant View as auth/login.php
     participant Auth as auth.php
-    
-    U->>Router: GET /login
-    Router->>U: views/auth/login.php
 
-    U->>Router: POST /login (username + password)
-    Router->>Auth: login($username, $password)
-    Auth->>Auth: password_verify vs bcrypt hash
+    U->>Router: GET /login
+    Router->>View: require
+    View->>U: render form (username + password + CSRF)
+    View->>Auth: csrf_field() generate token
+
+    U->>Router: POST /login (username + password + csrf_token)
+    Router->>Auth: login(username, password)
+    Auth->>Auth: username === ADMIN_USERNAME?
+    Auth->>Auth: password_verify vs ADMIN_PASSWORD_HASH
     alt Valid
         Auth->>Auth: session_regenerate_id(true)
-        Auth->>Auth: $_SESSION['user_id'] = 1
-        Router->>U: Redirect / (flash success)
+        Auth->>Auth: $_SESSION[user_id] = 1
+        Auth->>Auth: $_SESSION[username] = username
+        Router->>U: 302 Location: / + flash success
     else Invalid
-        Router->>U: Redirect /login (flash error)
+        Router->>U: 302 Location: /login + flash error
     end
 ```
 
+Hardcoded credentials: `ADMIN_USERNAME = 'admin'`, `ADMIN_PASSWORD_HASH = bcrypt('admin123')`. Production: replace dengan users table + `password_hash` + `password_verify`. Login page standalone (tidak pakai layout/sidebar), langsung render form di tengah layar.
+
 ### CSRF
 
-All POST requests go through CSRF check. Flow:
+Semua POST melewati CSRF check. Flow:
 
-1. `csrf_token()` generates `bin2hex(random_bytes(32))`, stored in `$_SESSION['csrf_token']`.
-2. `csrf_field()` renders hidden input `<input type="hidden" name="csrf_token" value="...">`.
-3. All forms include `<?= csrf_field() ?>`.
-4. Router calls `csrf_verify()` at top of every POST.
-5. `csrf_verify()` compares `$_POST['csrf_token']` vs `$_SESSION['csrf_token']` using `hash_equals` (constant-time).
-6. On mismatch: HTTP 403 + redirect `/` + flash error.
+1. `csrf_token()` generate `bin2hex(random_bytes(32))`, store di `$_SESSION['csrf_token']` (reused untuk session lifetime).
+2. `csrf_field()` render hidden input `<input type="hidden" name="csrf_token" value="...">`.
+3. Semua form POST include `<?= csrf_field() ?>`.
+4. Router panggil `csrf_verify()` di top index.php SEBELUM dispatch ke postAction: setiap POST wajib lulus.
+5. `csrf_verify()` compare `$_POST['csrf_token']` vs `$_SESSION['csrf_token']` pakai `hash_equals` (constant-time).
+6. Gagal: HTTP 403 + set `$_SESSION['flash_error']` + redirect `/`.
 
 ```php
 // includes/auth.php
@@ -348,7 +427,7 @@ function csrf_verify(): bool
 }
 ```
 
-Logout is POST-only (prevents CSRF via `<img src="/logout">`).
+Logout POST-only. GET `/logout` no-op. Cegah CSRF via `<img src="/logout">`. Logout button di sidebar pakai POST form + CSRF field.
 
 ## 10. Sidebar collapse flow
 
@@ -356,12 +435,14 @@ Logout is POST-only (prevents CSRF via `<img src="/logout">`).
 flowchart TD
     A[Toggle button clicked] --> B{window.innerWidth < 992?}
     B -->|Ya| C[Treat as offcanvas: show drawer]
-    B -->|Tidak (desktop)| D[Toggle class sidebar-collapsed on html]
+    B -->|Tidak| D[Toggle class sidebar-collapsed on html]
     D --> E[localStorage.setItem<br/>sidebar-collapsed = 1/0]
     C --> F[Bootstrap Offcanvas.show]
 ```
 
-On page load, inline script in `<head>` reads localStorage before CSS renders (prevents FOUC):
+Toggle button di topbar (`#topbarToggle`). Inline script di `views/layout/footer.php`.
+
+Page load, inline script di `<head>` (header.php) baca localStorage sebelum CSS render, cegah FOUC:
 
 ```js
 if (localStorage.getItem('sidebar-collapsed') === '1') {
@@ -369,24 +450,35 @@ if (localStorage.getItem('sidebar-collapsed') === '1') {
 }
 ```
 
-Collapsed mode: sidebar width 280px -> 60px. All text hidden. Icons centered. Logout button circular.
+Sidebar width: 280px (default) → 60px (collapsed). CSS: `html.sidebar-collapsed .sidebar-dark { width: 60px; }`. Collapsed mode sembunyikan: brand text, link text, section label, profile name/role, logout text. Icon center, logout button jadi circular (32px square). Transition 0.2s ease-out.
 
 ## 11. Command palette flow
 
 ```mermaid
 flowchart TD
-    A[User press cmd+K / ctrl+K] --> B[Show Bootstrap modal]
-    B --> C[Input focus]
+    A[User press cmd+K / ctrl+K] --> B[Show Bootstrap modal<br/>#commandPalette]
+    B --> C[Input auto focus]
     C --> D{User type?}
     D -->|Ya| E[Filter items list<br/>by label text lowercase]
     D -->|Tidak| F[All items visible]
     E --> G{Enter pressed?}
-    G -->|Ya| H[Navigate to first visible item]
+    G -->|Ya| H[Navigate to first visible item<br/>window.location.href = url]
     G -->|Tidak| I{Esc?}
     I -->|Ya| J[Close modal]
     I -->|Tidak| D
-    H --> K[window.location.href = url]
+    H --> K[Modal hidden]
     J --> L[Modal hidden]
 ```
 
-5 items: Dashboard, Pasien, Dokter, Layanan, Pemeriksaan. Click also navigates.
+5 nav items: Dashboard, Pasien, Dokter, Layanan, Pemeriksaan. Click juga navigate. Reset on `shown.bs.modal`: input cleared, all items visible, input focus.
+
+## 12. Delete flow summary
+
+Semua entity (Pasien, Dokter, Layanan, Pemeriksaan) pakai 2-step delete:
+
+1. **GET confirmation view**: klik icon trash di list/table -> link ke `/<entity>/delete?id=<id>` -> render confirmation card (icon warning + entity name + form POST).
+2. **POST execute**: klik tombol "Hapus" di confirmation card -> form submit ke `/<entity>/delete` dengan CSRF + hidden id -> router dispatch ke entity method -> repo delete -> flash success + redirect list page.
+
+Pemeriksaan punya extra check: jika `status_pemeriksaan === 'Selesai'`, confirmation view skip form, tampilkan alert "tidak dapat dihapus karena merupakan riwayat medis" + tombol kembali. Force POST ke `/pemeriksaan/delete` (bypassing confirmation view) tetap masuk `repo::deleteIfNotSelesai` yang punya `WHERE status_pemeriksaan != 'Selesai'`, return 0 rows affected. Entity return false, tapi router tetap set flash success (router tidak check return value untuk method `delete`).
+
+FK violation (Pasien/Dokter/Layanan dipakai di pemeriksaan): entity catch `PDOException` code 23000, return false. Router tetap flash success. Data tidak terhapus, user lihat pesan misleading. Trade-off: tidak crash app, tapi user feedback kurang akurat. Untuk production, tambahkan check return value di router untuk show error flash sesuai.
