@@ -102,8 +102,12 @@ $row = $presenter->getFormData(null);
 
             <div class="mb-3">
                 <label class="form-label" for="foto">Foto Pasien</label>
-                <input type="file" id="foto" name="foto" accept="image/*" class="form-control">
+                <input type="file" id="foto" name="foto" accept="image/*"
+                       class="form-control<?= has_error('foto') ? ' is-invalid' : '' ?>">
                 <div class="form-text">Format: JPG, PNG, atau WebP. Maksimal 2 MB.</div>
+                <?php if (has_error('foto')): ?>
+                    <div class="invalid-feedback d-block"><?= error_for('foto') ?></div>
+                <?php endif; ?>
             </div>
 
             <div class="mb-3">

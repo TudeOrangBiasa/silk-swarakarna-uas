@@ -73,7 +73,7 @@ final class PemeriksaanPresenter
     /**
      * @return array{rows: list<array<string, mixed>>, total: int, filters: array{keyword: ?string, status: ?string, startDate: ?string, endDate: ?string}}
      */
-    public function getCetakData(?string $keyword, ?string $status, ?string $startDate, ?string $endDate, int $perPage = 100): array
+    public function getCetakData(?string $keyword, ?string $status, ?string $startDate, ?string $endDate, int $perPage = 10000): array
     {
         $rows = $this->query->findAllJoined($keyword, $status, $startDate, $endDate, $perPage, 0);
         $total = $this->query->getDateRangeTotal($startDate, $endDate, $status, $keyword);

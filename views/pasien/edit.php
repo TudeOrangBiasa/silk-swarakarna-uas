@@ -119,8 +119,12 @@ $row = $presenter->getFormData($id !== '' ? $id : null);
                         <div class="small text-muted mt-1">Foto saat ini. Upload file baru untuk mengganti.</div>
                     </div>
                 <?php endif; ?>
-                <input type="file" id="foto" name="foto" accept="image/*" class="form-control">
+                <input type="file" id="foto" name="foto" accept="image/*"
+                       class="form-control<?= has_error('foto') ? ' is-invalid' : '' ?>">
                 <div class="form-text">Format: JPG, PNG, atau WebP. Maksimal 2 MB.</div>
+                <?php if (has_error('foto')): ?>
+                    <div class="invalid-feedback d-block"><?= error_for('foto') ?></div>
+                <?php endif; ?>
             </div>
 
             <div class="mb-3">
