@@ -481,4 +481,6 @@ Semua entity (Pasien, Dokter, Layanan, Pemeriksaan) pakai 2-step delete:
 
 Pemeriksaan punya extra check: jika `status_pemeriksaan === 'Selesai'`, confirmation view skip form, tampilkan alert "tidak dapat dihapus karena merupakan riwayat medis" + tombol kembali. Force POST ke `/pemeriksaan/delete` (bypassing confirmation view) tetap masuk `repo::deleteIfNotSelesai` yang punya `WHERE status_pemeriksaan != 'Selesai'`, return 0 rows affected. Entity return false, tapi router tetap set flash success (router tidak check return value untuk method `delete`).
 
-FK violation (Pasien/Dokter/Layanan dipakai di pemeriksaan): entity catch `PDOException` code 23000, return false. Router tetap flash success. Data tidak terhapus, user lihat pesan misleading. Trade-off: tidak crash app, tapi user feedback kurang akurat. Untuk production, tambahkan check return value di router untuk show error flash sesuai.
+FK violation (Pasien/Dokter/Layanan dipakai di pemeriksaan): entity catch `PDOException` code 23000, return false. Router check return value (since commit `aa12f07`): if `delete` and `result === false`, `redirectBackWithError("Gagal menghapus {Entity}. Data ini masih digunakan di transaksi lain (terikat relasi).")`. Data tidak terhapus, user lihat error flash yang jelas. Flash error di-set via `$_SESSION['flash_error']` lalu redirect back ke referer (delete confirmation page).
+
+Order penting: `$entity = explode('.', $routeKey)[0];` di-define SEBELUM FK check block, karena dipakai di error message.
