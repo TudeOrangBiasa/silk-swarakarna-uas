@@ -75,7 +75,7 @@ final class DokterRepositoryTest extends TestCase
         $this->assertSame('Updated', $this->repo->findById($id)['nama_dokter']);
     }
 
-    public function testDeleteRemovesRow(): void
+    public function testDeleteSetsIsDeleted(): void
     {
         $this->repo->insert(['nama_dokter' => 'A', 'spesialisasi' => 'THT', 'no_izin_praktik' => 'SIP-A']);
         $id = (int) $this->db->lastInsertId();
@@ -83,6 +83,57 @@ final class DokterRepositoryTest extends TestCase
 
         $this->repo->delete($id);
         $this->assertEmpty($this->repo->findById($id));
+        $row = $this->db->query('SELECT is_deleted FROM dokter WHERE id_dokter = ?', [$id]);
+        $this->assertSame(1, (int) $row[0]['is_deleted']);
+    }
+
+    public function testRestoreAfterDelete(): void
+    {
+        $this->repo->insert(['nama_dokter' => 'B', 'spesialisasi' => 'THT', 'no_izin_praktik' => 'SIP-B']);
+        $id = (int) $this->db->lastInsertId();
+        $this->createdIds[] = $id;
+
+        $this->repo->delete($id);
+        $this->assertEmpty($this->repo->findById($id));
+
+        $this->repo->restore($id);
+        $this->assertNotEmpty($this->repo->findById($id));
+        $row = $this->db->query('SELECT is_deleted FROM dokter WHERE id_dokter = ?', [$id]);
+        $this->assertSame(0, (int) $row[0]['is_deleted']);
+    }
+
+    public function testFindAllExcludesDeleted(): void
+    {
+        $this->repo->insert(['nama_dokter' => 'C', 'spesialisasi' => 'THT', 'no_izin_praktik' => 'SIP-C']);
+        $id = (int) $this->db->lastInsertId();
+        $this->createdIds[] = $id;
+
+        $this->repo->delete($id);
+        $ids = array_column($this->repo->findAll(), 'id_dokter');
+        $this->assertNotContains($id, $ids);
+    }
+
+    public function testFindAllIncludingDeletedIncludesDeleted(): void
+    {
+        $this->repo->insert(['nama_dokter' => 'D', 'spesialisasi' => 'THT', 'no_izin_praktik' => 'SIP-D']);
+        $id = (int) $this->db->lastInsertId();
+        $this->createdIds[] = $id;
+
+        $this->repo->delete($id);
+        $ids = array_column($this->repo->findAllIncludingDeleted(), 'id_dokter');
+        $this->assertContains($id, $ids);
+    }
+
+    public function testCountExcludesDeleted(): void
+    {
+        $this->repo->insert(['nama_dokter' => 'E', 'spesialisasi' => 'THT', 'no_izin_praktik' => 'SIP-E']);
+        $id = (int) $this->db->lastInsertId();
+        $this->createdIds[] = $id;
+
+        $before = $this->repo->count();
+        $this->repo->delete($id);
+        $after = $this->repo->count();
+        $this->assertSame($before - 1, $after);
     }
 
     public function testCountReturnsInt(): void

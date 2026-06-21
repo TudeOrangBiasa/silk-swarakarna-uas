@@ -79,7 +79,7 @@ final class LayananRepositoryTest extends TestCase
         $this->assertSame(999999, (int) $this->repo->findById($id)['biaya']);
     }
 
-    public function testDeleteRemovesRow(): void
+    public function testDeleteSetsIsDeleted(): void
     {
         $this->repo->insert(['nama_layanan' => 'A', 'biaya' => 100000]);
         $id = (int) $this->db->lastInsertId();
@@ -87,6 +87,57 @@ final class LayananRepositoryTest extends TestCase
 
         $this->repo->delete($id);
         $this->assertEmpty($this->repo->findById($id));
+        $row = $this->db->query('SELECT is_deleted FROM layanan WHERE id_layanan = ?', [$id]);
+        $this->assertSame(1, (int) $row[0]['is_deleted']);
+    }
+
+    public function testRestoreAfterDelete(): void
+    {
+        $this->repo->insert(['nama_layanan' => 'B', 'biaya' => 200000]);
+        $id = (int) $this->db->lastInsertId();
+        $this->createdIds[] = $id;
+
+        $this->repo->delete($id);
+        $this->assertEmpty($this->repo->findById($id));
+
+        $this->repo->restore($id);
+        $this->assertNotEmpty($this->repo->findById($id));
+        $row = $this->db->query('SELECT is_deleted FROM layanan WHERE id_layanan = ?', [$id]);
+        $this->assertSame(0, (int) $row[0]['is_deleted']);
+    }
+
+    public function testFindAllExcludesDeleted(): void
+    {
+        $this->repo->insert(['nama_layanan' => 'C', 'biaya' => 300000]);
+        $id = (int) $this->db->lastInsertId();
+        $this->createdIds[] = $id;
+
+        $this->repo->delete($id);
+        $ids = array_column($this->repo->findAll(), 'id_layanan');
+        $this->assertNotContains($id, $ids);
+    }
+
+    public function testFindAllIncludingDeletedIncludesDeleted(): void
+    {
+        $this->repo->insert(['nama_layanan' => 'D', 'biaya' => 400000]);
+        $id = (int) $this->db->lastInsertId();
+        $this->createdIds[] = $id;
+
+        $this->repo->delete($id);
+        $ids = array_column($this->repo->findAllIncludingDeleted(), 'id_layanan');
+        $this->assertContains($id, $ids);
+    }
+
+    public function testCountExcludesDeleted(): void
+    {
+        $this->repo->insert(['nama_layanan' => 'E', 'biaya' => 500000]);
+        $id = (int) $this->db->lastInsertId();
+        $this->createdIds[] = $id;
+
+        $before = $this->repo->count();
+        $this->repo->delete($id);
+        $after = $this->repo->count();
+        $this->assertSame($before - 1, $after);
     }
 
     public function testCountReturnsInt(): void

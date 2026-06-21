@@ -146,14 +146,78 @@ final class PasienRepositoryTest extends TestCase
         $this->assertSame(0, $this->repo->update('RM-99999', ['nama_pasien' => 'X']));
     }
 
-    public function testDeleteRemovesRow(): void
+    public function testDeleteSetsIsDeleted(): void
     {
         $id = $this->makeId();
         $this->createdIds[] = $id;
         $this->repo->insert($id, $this->data('ToDelete'));
 
         $this->repo->delete($id);
+        // Soft delete: is_deleted should be 1, and findById filters it.
         $this->assertEmpty($this->repo->findById($id));
+        $row = $this->db->query('SELECT is_deleted FROM pasien WHERE id_pasien = ?', [$id]);
+        $this->assertSame(1, (int) $row[0]['is_deleted']);
+    }
+
+    public function testRestoreAfterDelete(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $this->repo->insert($id, $this->data('ToRestore'));
+
+        $this->repo->delete($id);
+        $this->assertEmpty($this->repo->findById($id));
+
+        $this->repo->restore($id);
+        $this->assertNotEmpty($this->repo->findById($id));
+        $row = $this->db->query('SELECT is_deleted FROM pasien WHERE id_pasien = ?', [$id]);
+        $this->assertSame(0, (int) $row[0]['is_deleted']);
+    }
+
+    public function testFindAllExcludesDeleted(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $this->repo->insert($id, $this->data('ExcludeMe'));
+
+        $this->repo->delete($id);
+        $ids = array_column($this->repo->findAll(), 'id_pasien');
+        $this->assertNotContains($id, $ids);
+    }
+
+    public function testFindAllIncludingDeletedIncludesDeleted(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $this->repo->insert($id, $this->data('IncludeMe'));
+
+        $this->repo->delete($id);
+        $ids = array_column($this->repo->findAllIncludingDeleted(), 'id_pasien');
+        $this->assertContains($id, $ids);
+    }
+
+    public function testCountExcludesDeleted(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $this->repo->insert($id, $this->data('CountMe'));
+
+        $before = $this->repo->count();
+        $this->repo->delete($id);
+        $after = $this->repo->count();
+        $this->assertSame($before - 1, $after);
+    }
+
+    public function testCountAllIncludingDeleted(): void
+    {
+        $id = $this->makeId();
+        $this->createdIds[] = $id;
+        $this->repo->insert($id, $this->data('CountAllMe'));
+
+        $before = $this->repo->countAllIncludingDeleted();
+        $this->repo->delete($id);
+        $after = $this->repo->countAllIncludingDeleted();
+        $this->assertSame($before, $after); // count including deleted should not change
     }
 
     public function testCountReturnsInt(): void

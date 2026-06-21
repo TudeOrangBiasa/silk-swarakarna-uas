@@ -33,6 +33,10 @@ if (empty($row) || empty($row['id_dokter'])) {
                 <strong><?= htmlspecialchars($row['nama_dokter']) ?></strong>
                 — <?= htmlspecialchars($row['spesialisasi']) ?>
             </p>
+            <p class="text-muted small mt-2 mb-0">
+                Data ini akan disembunyikan dari daftar. Riwayat pemeriksaan tetap aman.<br>
+                Untuk menampilkan kembali, gunakan toggle "Tampilkan data dihapus" di daftar.
+            </p>
         </div>
 
         <form method="post" action="/dokter/delete" class="d-flex gap-2 justify-content-center mt-4">

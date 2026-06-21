@@ -10,7 +10,8 @@ use Silk\Presenter\PasienPresenter;
 $presenter = new PasienPresenter(new Pasien());
 $keyword = query_param('search');
 $page = max(1, (int) query_param('page', '1'));
-$data = $presenter->getListData($keyword, $page);
+$showDeleted = query_param('show_deleted') === '1';
+$data = $presenter->getListData($keyword, $page, showDeleted: $showDeleted);
 $rows = $data['rows'];
 $pagination = $data['pagination'];
 ?>
@@ -31,6 +32,10 @@ $pagination = $data['pagination'];
                 <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
                 <input type="search" name="search" class="form-control border-start-0 ps-0 fs-6" placeholder="Cari nama pasien..." value="<?= htmlspecialchars($keyword) ?>">
                 <button type="submit" class="btn btn-primary px-4 fs-6">Cari</button>
+            </div>
+            <div class="form-check mt-2">
+                <input type="checkbox" name="show_deleted" value="1" class="form-check-input" id="showDeleted" <?= $showDeleted ? 'checked' : '' ?> onchange="this.form.submit()">
+                <label class="form-check-label text-muted small" for="showDeleted">Tampilkan data dihapus</label>
             </div>
         </form>
     </div>
@@ -53,7 +58,7 @@ $pagination = $data['pagination'];
                         <tr><td colspan="7" class="text-center text-muted py-4">Belum ada data pasien.</td></tr>
                     <?php else: ?>
                         <?php foreach ($rows as $i => $p): ?>
-                            <tr>
+                            <tr class="<?= !empty($p['is_deleted']) ? 'text-decoration-line-through text-muted' : '' ?>">
                                 <td class="px-4 text-muted"><?= $i + 1 ?></td>
                                 <td><span class="badge bg-light text-dark border"><?= htmlspecialchars($p['id_pasien']) ?></span></td>
                                 <td class="fw-medium">
@@ -63,18 +68,29 @@ $pagination = $data['pagination'];
                                         <span class="avatar-sm rounded-circle me-2 d-inline-flex align-items-center justify-content-center bg-secondary bg-opacity-10 text-secondary" style="width:32px;height:32px;font-size:0.75rem;font-weight:600;"><?= strtoupper(substr($p['nama_pasien'], 0, 1)) ?></span>
                                     <?php endif; ?>
                                     <?= htmlspecialchars($p['nama_pasien']) ?>
+                                    <?php if (!empty($p['is_deleted'])): ?><span class="badge bg-danger ms-1">Dihapus</span><?php endif; ?>
                                 </td>
                                 <td><?= htmlspecialchars($p['tanggal_lahir_fmt']) ?></td>
                                 <td><?= $p['jenis_kelamin'] === 'L' ? 'Laki-laki' : 'Perempuan' ?></td>
                                 <td><?= htmlspecialchars($p['no_hp'] ?? '-') ?></td>
                                 <td class="px-4">
                                     <div class="d-flex gap-2">
-                                        <a href="/pasien/edit?id=<?= urlencode($p['id_pasien']) ?>" class="btn btn-sm btn-touch btn-light text-secondary border" title="Edit" aria-label="Edit pasien <?= htmlspecialchars($p['nama_pasien']) ?>">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a href="/pasien/delete?id=<?= urlencode($p['id_pasien']) ?>" class="btn btn-sm btn-touch btn-light text-danger border" title="Hapus" aria-label="Hapus pasien <?= htmlspecialchars($p['nama_pasien']) ?>">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
+                                        <?php if (!empty($p['is_deleted'])): ?>
+                                            <form method="post" action="/pasien/restore" class="d-inline">
+                                                <?= csrf_field() ?>
+                                                <input type="hidden" name="id" value="<?= htmlspecialchars($p['id_pasien']) ?>">
+                                                <button type="submit" class="btn btn-sm btn-touch btn-light text-success border" title="Pulihkan" aria-label="Pulihkan pasien <?= htmlspecialchars($p['nama_pasien']) ?>">
+                                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                                </button>
+                                            </form>
+                                        <?php else: ?>
+                                            <a href="/pasien/edit?id=<?= urlencode($p['id_pasien']) ?>" class="btn btn-sm btn-touch btn-light text-secondary border" title="Edit" aria-label="Edit pasien <?= htmlspecialchars($p['nama_pasien']) ?>">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="/pasien/delete?id=<?= urlencode($p['id_pasien']) ?>" class="btn btn-sm btn-touch btn-light text-danger border" title="Hapus" aria-label="Hapus pasien <?= htmlspecialchars($p['nama_pasien']) ?>">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>
