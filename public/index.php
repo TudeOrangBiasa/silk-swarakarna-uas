@@ -129,6 +129,14 @@ if ($method === 'POST' && isset($postActions[$routeKey])) {
                 redirectBackWithError('ID tidak valid');
             }
             $result = $instance->{$action['method']}(...$args);
+            // Entity::delete() returns false on FK violation (PDOException 23000).
+            // Surface as user-visible error instead of misleading success flash.
+            if ($action['method'] === 'delete' && $result === false) {
+                redirectBackWithError(
+                    'Gagal menghapus ' . ucfirst($entity)
+                    . '. Data ini masih digunakan di transaksi lain (terikat relasi).'
+                );
+            }
             // Success: redirect to the entity list page
             $entity = explode('.', $routeKey)[0];
             $_SESSION['flash_success'] = $action['method'] === 'delete'
