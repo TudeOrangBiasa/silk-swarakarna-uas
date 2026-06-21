@@ -39,8 +39,7 @@ final class PemeriksaanQuery
         $clauses = [];
         $params = [];
         if ($keyword !== null && $keyword !== '') {
-            $clauses[] = '(ps.nama_pasien LIKE ? OR d.nama_dokter LIKE ?)';
-            $params[] = '%' . $keyword . '%';
+            $clauses[] = 'ps.nama_pasien LIKE ?';
             $params[] = '%' . $keyword . '%';
         }
         if ($status !== null && $status !== '') {
@@ -89,9 +88,7 @@ final class PemeriksaanQuery
         ?string $endDate = null
     ): int {
         [$where, $params] = $this->buildFilter($keyword, $status, $startDate, $endDate);
-        $sql = 'SELECT COUNT(*) AS n FROM pemeriksaan p 
-                JOIN pasien ps ON p.id_pasien = ps.id_pasien 
-                JOIN dokter d ON p.id_dokter = d.id_dokter' . $where;
+        $sql = 'SELECT COUNT(*) AS n FROM pemeriksaan p JOIN pasien ps ON p.id_pasien = ps.id_pasien' . $where;
         $rows = $this->db->query($sql, $params);
         return (int) $rows[0]['n'];
     }
