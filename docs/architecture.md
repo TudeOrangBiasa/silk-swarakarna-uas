@@ -43,7 +43,7 @@ silk-swarakarna/
 │
 ├── includes/
 │   ├── bootstrap.php               | Security headers, session, autoload, error handler, timezone
-│   ├── config.php                  | .env parser
+│   ├── config.php                  | Hardcoded defaults + optional .env override
 │   ├── helpers.php                 | Tanggal, Rupiah, flash, pagination, old_input, error_for
 │   ├── auth.php                    | Login/logout, CSRF token/field/verify
 │   └── logger.php                  | Error logger
