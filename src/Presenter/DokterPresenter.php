@@ -8,9 +8,7 @@ use Silk\Entity\Dokter;
 use Silk\Query\DokterQuery;
 use Silk\Repository\DokterRepository;
 
-/**
- * Presenter for Dokter views.
- */
+/** Dokter views: wraps entity, returns view-ready arrays. */
 final class DokterPresenter
 {
     private DokterQuery $query;
@@ -60,8 +58,6 @@ final class DokterPresenter
     }
 
     /**
-     * Options for <select> element: value=id_dokter, label="dr. Nama - Spesialisasi".
-     *
      * @return list<array{value: string, label: string}>
      */
     public function getOptions(): array

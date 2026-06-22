@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 /**
  * Format ISO date (Y-m-d) to Indonesian display (d/m/Y).
- *
- * @param string $iso Date in Y-m-d format
- * @return string Display in d/m/Y, or original string if parse fails
  */
 function format_tanggal(string $iso): string
 {
@@ -20,21 +17,13 @@ function format_tanggal(string $iso): string
     return $d->format('d/m/Y');
 }
 
-/**
- * Format integer rupiah to "Rp 250.000" (Indonesian thousand sep).
- *
- * @param int $n Amount in IDR
- */
+/** Format integer rupiah with Indonesian thousand sep. */
 function format_rupiah(int $n): string
 {
     return 'Rp ' . number_format($n, 0, ',', '.');
 }
 
-/**
- * Format ISO datetime (Y-m-d H:i:s) to Indonesian display (d/m/Y H:i).
- *
- * @param string $iso Datetime in Y-m-d H:i:s format
- */
+/** Format ISO datetime to Indonesian display (d/m/Y H:i). */
 function format_datetime(string $iso): string
 {
     if ($iso === '') {
@@ -48,37 +37,25 @@ function format_datetime(string $iso): string
     }
 }
 
-/**
- * Get old POST input value (for form repopulation after validation error).
- * Falls back to empty string.
- */
+/** Get old POST input value (form repopulation). */
 function old_input(string $key, string $default = ''): string
 {
     return (string) ($_SESSION['old_input'][$key] ?? $default);
 }
 
-/**
- * Check if a field has a stored error.
- */
+/** Check if a field has a stored error. */
 function has_error(string $key): bool
 {
     return isset($_SESSION['errors'][$key]);
 }
 
-/**
- * Get error message for a field (if any).
- */
+/** Get error message for a field. */
 function error_for(string $key): ?string
 {
     return $_SESSION['errors'][$key] ?? null;
 }
 
-/**
- * Consume and return the flash message (success or error).
- * Returns null if no flash. After calling, the session keys are cleared.
- *
- * @return array{type: 'success'|'error', message: string}|null
- */
+/** Consume and return flash message (success or error). Clears session keys. */
 function flash_message(): ?array
 {
     if (isset($_SESSION['flash_success'])) {
@@ -94,22 +71,13 @@ function flash_message(): ?array
     return null;
 }
 
-/**
- * Get a query string parameter with default.
- */
+/** Get a query string parameter with default. */
 function query_param(string $key, string $default = ''): string
 {
     return (string) ($_GET[$key] ?? $default);
 }
 
-/**
- * Calculate pagination metadata.
- *
- * @param int $total       Total rows matching the query
- * @param int $currentPage Current page (1-based)
- * @param int $perPage     Items per page (clamped 1-100)
- * @return array{total: int, page: int, per_page: int, total_pages: int, offset: int, has_next: bool, has_prev: bool}
- */
+/** Calculate pagination metadata. */
 function paginate(int $total, int $currentPage, int $perPage = 20): array
 {
     $perPage = max(1, min(100, $perPage));

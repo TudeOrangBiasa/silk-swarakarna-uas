@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-// Security headers (must be set before any output)
+// Security headers (before any output)
 header('X-Content-Type-Options: nosniff');
 header('Content-Security-Policy: default-src \'self\'; style-src * \'unsafe-inline\'; script-src * \'unsafe-inline\'; font-src \'self\' https://cdn.jsdelivr.net data:; img-src \'self\' data:; connect-src \'self\' https://cdn.jsdelivr.net; form-action \'self\'; base-uri \'self\'; frame-ancestors \'none\'');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 
-// Session config (more secure defaults)
+// Session config: secure defaults
 ini_set('session.cookie_httponly', '1');
 ini_set('session.cookie_samesite', 'Lax');
 ini_set('session.use_strict_mode', '1');
@@ -24,8 +24,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // Default timezone: Indonesia (WIB) per spec
 date_default_timezone_set('Asia/Jakarta');
 
-// Convert PHP errors (notices, warnings, deprecations) to ErrorException
-// so they can be caught upstream like any other exception.
+// Convert PHP errors to ErrorException (catchable upstream)
 set_error_handler(static function (int $errno, string $errstr, string $errfile, int $errline): bool {
     if ((error_reporting() & $errno) === 0) {
         return false; // respect error_reporting() level
@@ -50,9 +49,7 @@ if (file_exists($autoloadPath)) {
     die('<strong>SILK-Swarakarna:</strong> Autoloader not found. Run <code>composer install</code> to generate autoloader.');
 }
 
-/**
- * Return the absolute project root path.
- */
+/** Return the absolute project root path. */
 function base_path(string $path = ''): string
 {
     $root = dirname(__DIR__);

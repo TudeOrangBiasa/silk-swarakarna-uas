@@ -10,16 +10,11 @@ use PDOStatement;
 use RuntimeException;
 
 /**
- * PDO singleton wrapper.
- *
- * One shared connection per process. Read credentials from constants
- * defined in includes/config.php (DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS).
+ * PDO singleton. One connection per process.
  *
  * Usage:
  *   $db = Database::getInstance();
- *   $rows = $db->query('SELECT * FROM pasien WHERE id_pasien = ?', ['RM-001']);
- *   $count = $db->execute('UPDATE pasien SET nama_pasien = ? WHERE id_pasien = ?', ['X', 'RM-001']);
- *   $id = $db->lastInsertId();
+ *   $rows = $db->query('SELECT ...', ['RM-001']);
  */
 final class Database
 {
@@ -49,7 +44,7 @@ final class Database
         try {
             $this->pdo = new PDO($dsn, $user, $pass, $options);
         } catch (PDOException $e) {
-            // Convert to RuntimeException so callers can catch generic Throwable
+            // Throw as RuntimeException for Throwable catches
             throw new RuntimeException(
                 'Database connection failed: ' . $e->getMessage(),
                 (int) $e->getCode(),
@@ -58,24 +53,16 @@ final class Database
         }
     }
 
-    /**
-     * Prevent cloning of the singleton.
-     */
     private function __clone()
     {
     }
 
-    /**
-     * Prevent unserialization of the singleton.
-     */
+    /** Prevent unserialization. */
     public function __wakeup(): void
     {
         throw new RuntimeException('Cannot unserialize singleton');
     }
 
-    /**
-     * Get the singleton instance, creating it on first call.
-     */
     public static function getInstance(): self
     {
         if (self::$instance === null) {
@@ -85,11 +72,9 @@ final class Database
     }
 
     /**
-     * Execute a SELECT query and return all rows.
-     *
-     * @param string $sql    SQL with ? placeholders
-     * @param array<int|string, mixed> $params Positional or named params
-     * @return array<int, array<string, mixed>> List of associative rows
+     * SELECT query.
+     * @param array<int|string, mixed> $params
+     * @return array<int, array<string, mixed>>
      */
     public function query(string $sql, array $params = []): array
     {
@@ -99,8 +84,7 @@ final class Database
     }
 
     /**
-     * Execute a non-SELECT statement (INSERT, UPDATE, DELETE).
-     *
+     * Non-SELECT (INSERT/UPDATE/DELETE).
      * @return int Affected row count
      */
     public function execute(string $sql, array $params = []): int
@@ -110,17 +94,11 @@ final class Database
         return $stmt->rowCount();
     }
 
-    /**
-     * Return the last auto-increment ID from the most recent INSERT.
-     */
     public function lastInsertId(): string
     {
         return $this->pdo->lastInsertId();
     }
 
-    /**
-     * Begin a transaction. Returns true on success.
-     */
     public function beginTransaction(): bool
     {
         return $this->pdo->beginTransaction();

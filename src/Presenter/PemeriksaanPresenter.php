@@ -10,14 +10,10 @@ use Silk\Entity\Pasien;
 use Silk\Entity\Pemeriksaan;
 use Silk\Query\PemeriksaanQuery;
 
-/**
- * Presenter for Pemeriksaan views.
- *
- * Adds status badge HTML, formatted date and biaya (from JOIN).
- */
+/** Pemeriksaan views: status badge HTML, formatted date/biaya. */
 final class PemeriksaanPresenter
 {
-    /** Map status ke Bootstrap 5 badge class. */
+    /** Status → Bootstrap 5 badge class. */
     private const STATUS_BADGE = [
         'Menunggu'         => 'bg-warning text-dark',
         'Sedang Diperiksa' => 'bg-info text-dark',
@@ -119,8 +115,6 @@ final class PemeriksaanPresenter
     }
 
     /**
-     * Get all dashboard statistics in a single call (no N+1).
-     *
      * @return array{
      *   total_pasien: int,
      *   total_dokter: int,
@@ -160,8 +154,6 @@ final class PemeriksaanPresenter
     }
 
     /**
-     * Options for pasien <select>: value=id_pasien, label="RM-xxx - Nama Pasien".
-     *
      * @return list<array{value: string, label: string}>
      */
     public function getPasienOptions(): array
@@ -170,8 +162,6 @@ final class PemeriksaanPresenter
     }
 
     /**
-     * Options for dokter <select>: value=id_dokter, label="Nama Dokter - Spesialisasi".
-     *
      * @return list<array{value: string, label: string}>
      */
     public function getDokterOptions(): array
@@ -180,8 +170,6 @@ final class PemeriksaanPresenter
     }
 
     /**
-     * Options for layanan <select>: value=id_layanan, label="Nama Layanan (Rp Biaya)".
-     *
      * @return list<array{value: string, label: string}>
      */
     public function getLayananOptions(): array
@@ -190,8 +178,6 @@ final class PemeriksaanPresenter
     }
 
     /**
-     * Status options for the form select dropdown.
-     *
      * @return list<string>
      */
     public function getStatusOptions(): array
@@ -200,9 +186,6 @@ final class PemeriksaanPresenter
     }
 
     /**
-     * Allowed transitions for the status select. Returns the list of statuses
-     * the given current status can transition to.
-     *
      * @return list<string>
      */
     public function getAllowedTransitions(string $currentStatus): array

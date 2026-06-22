@@ -17,10 +17,7 @@ use Silk\Validation\Rule\Required;
 use Silk\Validation\Validator;
 
 /**
- * Pasien entity (thin facade over PasienRepository).
- *
- * Business rules live here: required-field validation, error translation
- * (FK violation -> false). SQL access delegated to PasienRepository.
+ * Pasien entity. Handles validation + soft delete.
  */
 final class Pasien
 {
@@ -112,7 +109,7 @@ final class Pasien
 
         (new Validator())->validate($data, $rules);
 
-        // Handle file upload: save new → update DB → unlink old only after DB success
+        // Save new, update DB, then unlink old (only if DB ok)
         $fotoPath = $this->handleFileUpload();
         $oldFoto = null;
         if ($fotoPath !== null) {
@@ -136,10 +133,7 @@ final class Pasien
     }
 
     /**
-     * Handle file upload from $_FILES['foto'].
-     * Validates mime type (jpeg/png/webp), max 2MB, saves to upload dir.
-     * Returns relative path string, or null if no file uploaded.
-     *
+     * Upload foto. Returns relative path or null.
      * @throws ValidationException on invalid mime, oversize, or move failure
      */
     private function handleFileUpload(): ?string
@@ -160,12 +154,10 @@ final class Pasien
 
         $file = $_FILES['foto'];
 
-        // Size check: 2MB
         if ($file['size'] > 2 * 1024 * 1024) {
             throw new ValidationException(['foto' => 'Ukuran foto maksimal 2MB.']);
         }
 
-        // Mime check via getimagesize (stdlib, reads actual image header)
         $info = @getimagesize($file['tmp_name']);
         if ($info === false) {
             throw new ValidationException(['foto' => 'File harus berupa gambar (JPG/PNG/WebP).']);
@@ -187,7 +179,6 @@ final class Pasien
         $filename = "{$hash}.{$ext}";
         $relativePath = "assets/uploads/pasien/{$filename}";
 
-        // Create upload dir if missing
         $uploadDir = __DIR__ . '/../../public/assets/uploads/pasien';
         if (!is_dir($uploadDir)) {
             @mkdir($uploadDir, 0755, true);
@@ -201,9 +192,6 @@ final class Pasien
         throw new ValidationException(['foto' => 'Gagal menyimpan foto. Coba lagi.']);
     }
 
-    /**
-     * Delete old foto file from disk.
-     */
     private function unlinkOldFoto(string $relativePath): void
     {
         $absPath = __DIR__ . '/../../public/' . ltrim($relativePath, '/');
@@ -219,7 +207,7 @@ final class Pasien
 
     public function delete(string $id): bool
     {
-        // Soft delete: set is_deleted=1. Foto tetap dipertahankan.
+        // Soft delete. Foto is preserved.
         $this->repo->delete($id);
         return true;
     }

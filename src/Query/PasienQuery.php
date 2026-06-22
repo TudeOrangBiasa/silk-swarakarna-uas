@@ -6,10 +6,7 @@ namespace Silk\Query;
 
 use Silk\Database;
 
-/**
- * Pasien query: search and code generation.
- * Separated from PasienRepository (CQRS: complex reads here, basic CRUD in repo).
- */
+/** Pasien query: search + code generation (CQRS split from Repository). */
 final class PasienQuery
 {
     private Database $db;

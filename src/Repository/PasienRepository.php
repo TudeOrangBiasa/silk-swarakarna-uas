@@ -6,10 +6,7 @@ namespace Silk\Repository;
 
 use Silk\Database;
 
-/**
- * Pasien data access. All SQL for the pasien table.
- * No validation, no business rules. Entity handles those.
- */
+/** Pasien data access. Entity handles validation + business rules. */
 final class PasienRepository
 {
     private Database $db;
@@ -21,10 +18,7 @@ final class PasienRepository
         $this->db = Database::getInstance();
     }
 
-    /**
-     * Normalize empty string to null for nullable columns.
-     * HTML form sends "" for unset optional fields; DB expects NULL.
-     */
+    /** Convert "" to null for nullable columns (HTML form convention). */
     private function nullIfEmpty(mixed $value): ?string
     {
         if ($value === null || $value === '') {

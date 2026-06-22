@@ -13,9 +13,7 @@ use Silk\Validation\Rule\PositiveNumber;
 use Silk\Validation\Rule\Required;
 use Silk\Validation\Validator;
 
-/**
- * Layanan entity (thin facade over LayananRepository).
- */
+/** Layanan entity. Soft delete via set is_deleted=1. */
 final class Layanan
 {
     private const MAX_NAMA = 100;
@@ -67,7 +65,7 @@ final class Layanan
 
     public function delete(int $id): bool
     {
-        // Soft delete: set is_deleted=1. FK safety net kept for insurance.
+        // Soft delete (UPDATE is_deleted=1). FK catch is safety net.
         try {
             $this->repo->delete($id);
             return true;

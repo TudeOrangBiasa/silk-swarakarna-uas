@@ -39,16 +39,12 @@ final class PasienTest extends EntityTestCase
 
     protected function tearDown(): void
     {
-        // Clean up in FK order: child rows (pemeriksaan) first, then pasien.
+        // FK teardown order
         foreach ($this->createdIds as $id) {
             $this->db->execute('DELETE FROM pemeriksaan WHERE id_pasien = ?', [$id]);
             $this->db->execute('DELETE FROM pasien WHERE id_pasien = ?', [$id]);
         }
     }
-
-    // ---------------------------------------------------------------
-    // generateKodeOtomatis()
-    // ---------------------------------------------------------------
 
     public function testGenerateKodeOtomatisReturnsRmFormat(): void
     {
@@ -69,10 +65,6 @@ final class PasienTest extends EntityTestCase
 
         $this->assertGreaterThan($firstNum, $nextNum);
     }
-
-    // ---------------------------------------------------------------
-    // create(): happy path
-    // ---------------------------------------------------------------
 
     public function testCreateReturnsId(): void
     {
@@ -97,10 +89,6 @@ final class PasienTest extends EntityTestCase
         $this->assertSame($data['no_hp'], $saved['no_hp']);
         $this->assertSame($data['alamat'], $saved['alamat']);
     }
-
-    // ---------------------------------------------------------------
-    // create(): validation errors
-    // ---------------------------------------------------------------
 
     public function testCreateMissingNamaPasienThrowsValidationException(): void
     {
@@ -143,10 +131,6 @@ final class PasienTest extends EntityTestCase
         $data['no_hp'] = '123';
         $this->expectValidationException(fn() => $this->pasien->create($data), ['no_hp']);
     }
-
-    // ---------------------------------------------------------------
-    // create(): new field validation
-    // ---------------------------------------------------------------
 
     public function testCreateWithValidJenisKelaminL(): void
     {
@@ -206,7 +190,7 @@ final class PasienTest extends EntityTestCase
     {
         $data = $this->validData();
         $data['jenis_kelamin'] = 'P';
-        // pekerjaan, golongan_darah, riwayat_penyakit, alergi omitted
+        // Optional fields omitted
         $id   = $this->pasien->create($data);
         $this->createdIds[] = $id;
 
@@ -223,10 +207,6 @@ final class PasienTest extends EntityTestCase
         $this->expectValidationException(fn() => $this->pasien->create($data), ['jenis_kelamin']);
     }
 
-    // ---------------------------------------------------------------
-    // read()
-    // ---------------------------------------------------------------
-
     public function testReadExistingReturnsData(): void
     {
         $data = $this->pasien->read('RM-001');
@@ -241,10 +221,6 @@ final class PasienTest extends EntityTestCase
         $this->assertIsArray($data);
         $this->assertEmpty($data);
     }
-
-    // ---------------------------------------------------------------
-    // update()
-    // ---------------------------------------------------------------
 
     public function testUpdateValidAffectsOne(): void
     {
@@ -265,10 +241,6 @@ final class PasienTest extends EntityTestCase
         $this->assertSame(0, $affected);
     }
 
-    // ---------------------------------------------------------------
-    // delete()
-    // ---------------------------------------------------------------
-
     public function testDeleteSuccess(): void
     {
         $data = $this->validData();
@@ -278,7 +250,7 @@ final class PasienTest extends EntityTestCase
         $result = $this->pasien->delete($id);
         $this->assertTrue($result);
 
-        // Soft delete: hidden from normal read, is_deleted=1 in DB
+        // Soft delete: is_deleted=1, hidden from read
         $this->assertEmpty($this->pasien->read($id));
         $row = $this->db->query('SELECT is_deleted FROM pasien WHERE id_pasien = ?', [$id]);
         $this->assertSame(1, (int) $row[0]['is_deleted']);
@@ -286,11 +258,11 @@ final class PasienTest extends EntityTestCase
 
     public function testDeleteFkProtectedReturnsTrue(): void
     {
-        // RM-001 has related pemeriksaan. Soft delete should succeed (no FK error).
+        // RM-001 has FK refs. Soft delete succeeds.
         $result = $this->pasien->delete('RM-001');
         $this->assertTrue($result);
 
-        // Restore after test to keep seed data consistent
+        // Restore to keep seed
         $this->pasien->restore('RM-001');
     }
 
@@ -310,10 +282,6 @@ final class PasienTest extends EntityTestCase
         $this->assertSame(0, (int) $row[0]['is_deleted']);
     }
 
-    // ---------------------------------------------------------------
-    // search()
-    // ---------------------------------------------------------------
-
     public function testSearchFindsMatch(): void
     {
         $data = $this->validData();
@@ -332,10 +300,6 @@ final class PasienTest extends EntityTestCase
         $this->assertEmpty($results);
     }
 
-    // ---------------------------------------------------------------
-    // count()
-    // ---------------------------------------------------------------
-
     public function testCountReturnsInt(): void
     {
         $count = $this->pasien->count();
@@ -343,13 +307,9 @@ final class PasienTest extends EntityTestCase
         $this->assertGreaterThanOrEqual(0, $count);
     }
 
-    // ---------------------------------------------------------------
-    // foto (optional file upload)
-    // ---------------------------------------------------------------
-
     public function testCreateWithoutFotoSetsNull(): void
     {
-        // No $_FILES['foto'] in CLI. Entity handleFileUpload returns null.
+        // CLI has no $_FILES. handleFileUpload returns null.
         $data = $this->validData();
         $id   = $this->pasien->create($data);
         $this->createdIds[] = $id;
@@ -357,10 +317,6 @@ final class PasienTest extends EntityTestCase
         $saved = $this->pasien->read($id);
         $this->assertNull($saved['foto']);
     }
-
-    // ---------------------------------------------------------------
-    // Helpers
-    // ---------------------------------------------------------------
 
     /**
      * @return array{nama_pasien: string, tanggal_lahir: string, jenis_kelamin: string, no_hp: string, alamat: string}
