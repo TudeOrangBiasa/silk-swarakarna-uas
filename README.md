@@ -127,7 +127,7 @@ silk-swarakarna-uas/
 │
 ├── includes/
 │   ├── bootstrap.php                | session_start, CSP (style-src + script-src = * 'unsafe-inline') + XCTO + Referrer-Policy, autoload, base_path
-│   ├── config.php                   | .env parser: DB_HOST, DB_NAME, DB_USER, DB_PASS, APP_URL
+│   ├── config.php                   | Hardcoded defaults + optional .env override (DB_HOST, DB_NAME, DB_USER, DB_PASS, APP_URL)
 │   ├── helpers.php                  | format_tanggal, format_rupiah, old_input, flash_message, paginate
 │   ├── auth.php                     | login/logout, is_logged_in, csrf_token/field/verify, hash_equals
 │   └── logger.php                   | Error logger (logs/error.log)
