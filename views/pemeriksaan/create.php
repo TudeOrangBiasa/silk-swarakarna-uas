@@ -1,7 +1,7 @@
 <?php
 /**
  * View Pemeriksaan Create
- * Issue #36 — 3 FK dropdowns (Pasien, Dokter, Layanan) + keluhan + tanggal
+ * Issue #36: 3 FK dropdowns (Pasien, Dokter, Layanan) + keluhan + tanggal
  */
 
 use Silk\Entity\Pemeriksaan;

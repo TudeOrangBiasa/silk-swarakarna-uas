@@ -1,7 +1,7 @@
 <?php
 /**
  * View Pasien Edit
- * Issue #31 — Pre-filled form, POST ke /pasien/update
+ * Issue #31: Pre-filled form, POST ke /pasien/update
  */
 
 use Silk\Entity\Pasien;

@@ -1,7 +1,7 @@
 <?php
 /**
  * View Pemeriksaan Delete confirmation
- * Issue #39 — Only allowed if status != Selesai
+ * Issue #39: Only allowed if status != Selesai
  */
 
 use Silk\Entity\Pemeriksaan;
@@ -38,7 +38,7 @@ if (empty($row) || empty($row['id_periksa'])) {
                 <h2 class="h5 mt-3">Yakin ingin menghapus data pemeriksaan ini?</h2>
                 <p class="text-muted mb-0">
                     <code><?= htmlspecialchars($row['id_periksa']) ?></code>
-                    — <?= htmlspecialchars($row['nama_pasien'] ?? '') ?>
+                    : <?= htmlspecialchars($row['nama_pasien'] ?? '') ?>
                     (<?= htmlspecialchars($row['nama_layanan'] ?? '') ?>)
                 </p>
             </div>

@@ -74,14 +74,14 @@ final class AuthTest extends TestCase
 
     public function testCsrfVerifyReturnsFalseWithInvalidToken(): void
     {
-        csrf_token(); // ensure token is in session
+        csrf_token(); // seed token in session
         $_POST['csrf_token'] = 'wrong-token';
         $this->assertFalse(csrf_verify());
     }
 
     public function testCsrfVerifyReturnsFalseWithMissingToken(): void
     {
-        csrf_token(); // ensure token is in session
+        csrf_token(); // seed token in session
         $_POST = [];
         $this->assertFalse(csrf_verify());
     }

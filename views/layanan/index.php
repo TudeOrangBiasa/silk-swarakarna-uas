@@ -1,7 +1,7 @@
 <?php
 /**
  * View Layanan List
- * Issue #34 — Data via LayananPresenter (no search)
+ * Issue #34: Data via LayananPresenter (no search)
  */
 
 use Silk\Entity\Layanan;

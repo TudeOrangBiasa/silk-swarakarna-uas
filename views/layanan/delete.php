@@ -31,7 +31,7 @@ if (empty($row) || empty($row['id_layanan'])) {
             <h2 class="h5 mt-3">Yakin ingin menghapus data layanan ini?</h2>
             <p class="text-muted mb-0">
                 <strong><?= htmlspecialchars($row['nama_layanan']) ?></strong>
-                — <?= htmlspecialchars($row['biaya_fmt'] ?? '') ?>
+                : <?= htmlspecialchars($row['biaya_fmt'] ?? '') ?>
             </p>
             <p class="text-muted small mt-2 mb-0">
                 Data ini akan disembunyikan dari daftar. Riwayat pemeriksaan tetap aman.<br>

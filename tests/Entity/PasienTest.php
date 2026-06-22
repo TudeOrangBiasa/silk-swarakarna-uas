@@ -71,7 +71,7 @@ final class PasienTest extends EntityTestCase
     }
 
     // ---------------------------------------------------------------
-    // create() — happy path
+    // create(): happy path
     // ---------------------------------------------------------------
 
     public function testCreateReturnsId(): void
@@ -99,7 +99,7 @@ final class PasienTest extends EntityTestCase
     }
 
     // ---------------------------------------------------------------
-    // create() — validation errors
+    // create(): validation errors
     // ---------------------------------------------------------------
 
     public function testCreateMissingNamaPasienThrowsValidationException(): void
@@ -145,7 +145,7 @@ final class PasienTest extends EntityTestCase
     }
 
     // ---------------------------------------------------------------
-    // create() — new field validation
+    // create(): new field validation
     // ---------------------------------------------------------------
 
     public function testCreateWithValidJenisKelaminL(): void
@@ -286,7 +286,7 @@ final class PasienTest extends EntityTestCase
 
     public function testDeleteFkProtectedReturnsTrue(): void
     {
-        // RM-001 has related pemeriksaan — soft delete should succeed (no FK error).
+        // RM-001 has related pemeriksaan. Soft delete should succeed (no FK error).
         $result = $this->pasien->delete('RM-001');
         $this->assertTrue($result);
 
@@ -349,7 +349,7 @@ final class PasienTest extends EntityTestCase
 
     public function testCreateWithoutFotoSetsNull(): void
     {
-        // No $_FILES['foto'] in CLI — entity handleFileUpload returns null.
+        // No $_FILES['foto'] in CLI. Entity handleFileUpload returns null.
         $data = $this->validData();
         $id   = $this->pasien->create($data);
         $this->createdIds[] = $id;

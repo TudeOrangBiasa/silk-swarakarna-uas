@@ -1,7 +1,7 @@
 <?php
 /**
  * View Layanan Edit
- * Issue #35 — Pre-filled form, POST ke /layanan/update
+ * Issue #35: Pre-filled form, POST ke /layanan/update
  */
 
 use Silk\Entity\Layanan;

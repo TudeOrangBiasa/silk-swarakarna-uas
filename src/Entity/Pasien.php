@@ -154,7 +154,6 @@ final class Pasien
             return null;
         }
 
-        // Any other upload error from PHP
         if ($error !== UPLOAD_ERR_OK) {
             throw new ValidationException(['foto' => 'Gagal mengunggah foto. Coba lagi.']);
         }
@@ -177,7 +176,6 @@ final class Pasien
             throw new ValidationException(['foto' => 'Format foto harus JPG, PNG, atau WebP.']);
         }
 
-        // Extension from mime
         $ext = match ($info['mime']) {
             'image/jpeg' => 'jpg',
             'image/png'  => 'png',
@@ -185,12 +183,11 @@ final class Pasien
             default      => throw new \LogicException('Unreachable: unhandled mime ' . $info['mime']),
         };
 
-        // Random filename
         $hash = bin2hex(random_bytes(16));
         $filename = "{$hash}.{$ext}";
         $relativePath = "assets/uploads/pasien/{$filename}";
 
-        // Ensure upload dir exists
+        // Create upload dir if missing
         $uploadDir = __DIR__ . '/../../public/assets/uploads/pasien';
         if (!is_dir($uploadDir)) {
             @mkdir($uploadDir, 0755, true);

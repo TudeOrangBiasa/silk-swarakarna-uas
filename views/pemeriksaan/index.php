@@ -1,6 +1,6 @@
 <?php
 /**
- * Issue #37 — JOINed data, status badges, quick status transitions
+ * Issue #37: JOINed data, status badges, quick status transitions
  */
 
 use Silk\Entity\Pemeriksaan;

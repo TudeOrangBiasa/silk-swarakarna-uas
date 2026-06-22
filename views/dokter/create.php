@@ -1,7 +1,7 @@
 <?php
 /**
  * View Dokter Create
- * Issue #33 — Form kosong, POST ke /dokter
+ * Issue #33: Form kosong, POST ke /dokter
  */
 
 use Silk\Entity\Dokter;

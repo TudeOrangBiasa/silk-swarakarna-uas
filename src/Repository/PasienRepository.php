@@ -8,7 +8,7 @@ use Silk\Database;
 
 /**
  * Pasien data access. All SQL for the pasien table.
- * No validation, no business rules — entity handles those.
+ * No validation, no business rules. Entity handles those.
  */
 final class PasienRepository
 {
