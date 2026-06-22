@@ -16,12 +16,7 @@ use Silk\Validation\Rule\Required;
 use Silk\Validation\Validator;
 
 /**
- * Pemeriksaan entity (thin facade over PemeriksaanRepository).
- *
- * Owns: state machine (TRANSITIONS), transaction orchestration
- * for status transitions (race-safe via SELECT FOR UPDATE), validation.
- *
- * Delegates SQL to PemeriksaanRepository.
+ * Pemeriksaan entity. State machine + race-safe status update (FOR UPDATE).
  */
 final class Pemeriksaan
 {

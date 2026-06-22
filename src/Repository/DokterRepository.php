@@ -6,9 +6,7 @@ namespace Silk\Repository;
 
 use Silk\Database;
 
-/**
- * Dokter data access. All SQL for the dokter table.
- */
+/** Dokter data access. */
 final class DokterRepository
 {
     private Database $db;

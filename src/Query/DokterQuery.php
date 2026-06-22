@@ -16,8 +16,8 @@ final class DokterQuery
     }
 
     /**
-     * Search by name (LIKE %keyword%). Leading wildcard means B-tree index
-     * is not used; for >10k rows consider FULLTEXT index or prefix search.
+     * Search by name (LIKE %keyword%). Ponytail: leading wildcard = no B-tree index.
+     * Add FULLTEXT or prefix search if >10k rows.
      */
     public function searchByName(string $keyword, int $limit = 50, int $offset = 0): array
     {

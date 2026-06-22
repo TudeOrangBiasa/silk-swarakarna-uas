@@ -13,9 +13,7 @@ use Silk\Validation\Rule\PhoneFormat;
 use Silk\Validation\Rule\Required;
 use Silk\Validation\Validator;
 
-/**
- * Dokter entity (thin facade over DokterRepository).
- */
+/** Dokter entity. Soft delete via set is_deleted=1. */
 final class Dokter
 {
     private const MAX_NAMA  = 100;
@@ -73,7 +71,7 @@ final class Dokter
 
     public function delete(int $id): bool
     {
-        // Soft delete: set is_deleted=1. FK safety net kept for insurance.
+        // Soft delete (UPDATE is_deleted=1). FK catch is safety net.
         try {
             $this->repo->delete($id);
             return true;

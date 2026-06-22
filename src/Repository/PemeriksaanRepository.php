@@ -6,10 +6,7 @@ namespace Silk\Repository;
 
 use Silk\Database;
 
-/**
- * Pemeriksaan data access. All SQL for the pemeriksaan table.
- * No state machine, no transaction. Entity handles those.
- */
+/** Pemeriksaan data access. Entity handles state machine + transactions. */
 final class PemeriksaanRepository
 {
     private Database $db;

@@ -6,9 +6,7 @@ namespace Silk\Presenter;
 
 use Silk\Entity\Layanan;
 
-/**
- * Presenter for Layanan views.
- */
+/** Layanan views: wraps entity, returns view-ready arrays. */
 final class LayananPresenter
 {
     public function __construct(private Layanan $layanan)
@@ -50,8 +48,6 @@ final class LayananPresenter
     }
 
     /**
-     * Options for <select> element: value=id_layanan, label="Nama Layanan (Rp Biaya)".
-     *
      * @return list<array{value: string, label: string}>
      */
     public function getOptions(): array

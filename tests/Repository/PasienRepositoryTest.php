@@ -153,7 +153,7 @@ final class PasienRepositoryTest extends TestCase
         $this->repo->insert($id, $this->data('ToDelete'));
 
         $this->repo->delete($id);
-        // Soft delete: is_deleted should be 1, and findById filters it.
+        // Soft delete: is_deleted=1, hidden from read
         $this->assertEmpty($this->repo->findById($id));
         $row = $this->db->query('SELECT is_deleted FROM pasien WHERE id_pasien = ?', [$id]);
         $this->assertSame(1, (int) $row[0]['is_deleted']);
@@ -225,10 +225,6 @@ final class PasienRepositoryTest extends TestCase
         $this->assertIsInt($this->repo->count());
     }
 
-    // ---------------------------------------------------------------
-    // foto field
-    // ---------------------------------------------------------------
-
     public function testInsertWithFoto(): void
     {
         $id = $this->makeId();
@@ -273,7 +269,7 @@ final class PasienRepositoryTest extends TestCase
         $data['foto'] = 'assets/uploads/pasien/existing.jpg';
         $this->repo->insert($id, $data);
 
-        // Update another field. Foto should remain unchanged
+        // Foto preserved
         $this->repo->update($id, ['alamat' => 'Updated Alamat']);
         $row = $this->repo->findById($id);
 

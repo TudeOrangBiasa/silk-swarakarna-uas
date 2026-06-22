@@ -42,7 +42,7 @@ final class DokterTest extends EntityTestCase
 
     protected function tearDown(): void
     {
-        // Clean up in FK order: child rows first.
+        // FK teardown order
         foreach ($this->createdIds as $id) {
             $this->db->execute('DELETE FROM pemeriksaan WHERE id_dokter = ?', [$id]);
             $this->db->execute('DELETE FROM dokter WHERE id_dokter = ?', [$id]);
@@ -146,11 +146,11 @@ final class DokterTest extends EntityTestCase
 
     public function testDeleteFkProtectedReturnsTrue(): void
     {
-        // Dokter 1 has related pemeriksaan. Soft delete should succeed (no FK error).
+        // Dokter 1 has FK refs. Soft delete succeeds.
         $result = $this->dokter->delete(1);
         $this->assertTrue($result);
 
-        // Restore after test to keep seed data consistent
+        // Restore to keep seed
         $this->dokter->restore(1);
     }
 

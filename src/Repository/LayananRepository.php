@@ -6,9 +6,7 @@ namespace Silk\Repository;
 
 use Silk\Database;
 
-/**
- * Layanan data access. All SQL for the layanan table.
- */
+/** Layanan data access. */
 final class LayananRepository
 {
     private Database $db;

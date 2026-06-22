@@ -122,7 +122,7 @@ final class PemeriksaanTest extends EntityTestCase
 
     public function testUpdateStatusInvalidTransitionThrows(): void
     {
-        // Seed TRX-2026001 has status Selesai; Menunggu is invalid.
+        // TRX-2026001 is Selesai; Menunggu invalid.
         $this->expectValidationException(
             fn() => $this->pemeriksaan->updateStatus('TRX-2026001', 'Menunggu'),
             ['status_pemeriksaan']
@@ -137,7 +137,7 @@ final class PemeriksaanTest extends EntityTestCase
 
     public function testDeleteNonSelesaiReturnsTrue(): void
     {
-        // Create one with status Menunggu, then delete.
+        // Create with Menunggu, then delete.
         $id = $this->pemeriksaan->create($this->validData());
         $this->createdIds[] = $id;
         $this->assertTrue($this->pemeriksaan->delete($id));
@@ -145,7 +145,7 @@ final class PemeriksaanTest extends EntityTestCase
 
     public function testDeleteSelesaiReturnsFalse(): void
     {
-        // Seed TRX-2026001 is Selesai (immutable).
+        // TRX-2026001 is Selesai (immutable).
         $this->assertFalse($this->pemeriksaan->delete('TRX-2026001'));
     }
 

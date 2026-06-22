@@ -8,25 +8,17 @@ declare(strict_types=1);
 const ADMIN_USERNAME = 'admin';
 const ADMIN_PASSWORD_HASH = '$2y$10$db.VNSG0A8soTYiwfOKwS.WZQjIJBpglirock5yHByAPTHhceZxfG';
 
-/**
- * Returns true if current session has a valid user.
- */
 function is_logged_in(): bool
 {
     return !empty($_SESSION['user_id']);
 }
 
-/**
- * Returns current username or null.
- */
 function current_user(): ?string
 {
     return $_SESSION['username'] ?? null;
 }
 
-/**
- * Verify credentials. On success, set session and regenerate ID. Returns true.
- */
+/** Verify credentials. session_regenerate_id on success. */
 function login(string $username, string $password): bool
 {
     if ($username !== ADMIN_USERNAME) {
@@ -45,9 +37,7 @@ function login(string $username, string $password): bool
     return true;
 }
 
-/**
- * Destroy session completely.
- */
+
 function logout(): void
 {
     $_SESSION = [];
@@ -78,10 +68,7 @@ function csrf_field(): string
     return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') . '">';
 }
 
-/**
- * Verify CSRF token in $_POST matches session token. Returns true if valid.
- * Use this at the top of every POST handler.
- */
+/** Verify CSRF token (hash_equals). */
 function csrf_verify(): bool
 {
     $token = $_POST['csrf_token'] ?? '';
