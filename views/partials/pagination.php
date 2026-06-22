@@ -3,8 +3,8 @@
  * Pagination partial.
  *
  * Expects:
- *   $pagination — array from paginate() helper
- *   $baseUrl    — string, base URL for the current page (e.g. '/pasien')
+ *   $pagination: array from paginate() helper
+ *   $baseUrl    : string, base URL for the current page (e.g. '/pasien')
  *
  * Renders Bootstrap 5 pagination with "Menampilkan X–Y dari Z" info.
  * Shows nothing when total_pages <= 1.

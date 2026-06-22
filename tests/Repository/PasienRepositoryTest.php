@@ -273,7 +273,7 @@ final class PasienRepositoryTest extends TestCase
         $data['foto'] = 'assets/uploads/pasien/existing.jpg';
         $this->repo->insert($id, $data);
 
-        // Update another field — foto should remain unchanged
+        // Update another field. Foto should remain unchanged
         $this->repo->update($id, ['alamat' => 'Updated Alamat']);
         $row = $this->repo->findById($id);
 

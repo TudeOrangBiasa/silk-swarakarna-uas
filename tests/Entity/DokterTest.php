@@ -146,7 +146,7 @@ final class DokterTest extends EntityTestCase
 
     public function testDeleteFkProtectedReturnsTrue(): void
     {
-        // Dokter 1 has related pemeriksaan — soft delete should succeed (no FK error).
+        // Dokter 1 has related pemeriksaan. Soft delete should succeed (no FK error).
         $result = $this->dokter->delete(1);
         $this->assertTrue($result);
 

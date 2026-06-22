@@ -25,7 +25,7 @@ $transaksi_items = [
             <span class="sidebar-brand-text">SILK-Swarakarna</span>
         </a>
 
-        <!-- Nav (scrollable area — scrolls if nav too long) -->
+        <!-- Nav (scrollable area, scrolls if nav too long) -->
         <div class="flex-grow-1 overflow-y-auto">
             <?php
             $label = 'Utama';

@@ -131,7 +131,7 @@ final class LayananTest extends EntityTestCase
 
     public function testDeleteFkProtectedReturnsTrue(): void
     {
-        // Layanan 1 (Audiometri) has related pemeriksaan — soft delete should succeed.
+        // Layanan 1 (Audiometri) has related pemeriksaan. Soft delete should succeed.
         $result = $this->layanan->delete(1);
         $this->assertTrue($result);
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * View Pemeriksaan Update Status (quick action)
- * Issue #37 — Status update form (fallback for GET /pemeriksaan/update_status)
+ * Issue #37: Status update form (fallback for GET /pemeriksaan/update_status)
  */
 
 use Silk\Entity\Pemeriksaan;

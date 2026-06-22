@@ -8,7 +8,7 @@ use Silk\Database;
 
 /**
  * Pemeriksaan data access. All SQL for the pemeriksaan table.
- * No state machine, no transaction — entity handles those.
+ * No state machine, no transaction. Entity handles those.
  */
 final class PemeriksaanRepository
 {

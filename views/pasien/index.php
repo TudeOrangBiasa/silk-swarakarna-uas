@@ -1,7 +1,7 @@
 <?php
 /**
  * View Pasien List + Search
- * Issue #30 — Data via PasienPresenter
+ * Issue #30: Data via PasienPresenter
  */
 
 use Silk\Entity\Pasien;

@@ -1,6 +1,6 @@
             </main>
             <footer class="mt-auto border-top py-3 text-center text-muted small bg-white">
-                &copy; 2026 SILK-Swarakarna — UAS Pemrograman Web Pagi 01
+                &copy; 2026 SILK-Swarakarna / UAS Pemrograman Web Pagi 01
             </footer>
         </div>
     </div>

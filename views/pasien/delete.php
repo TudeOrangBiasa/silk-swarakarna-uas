@@ -1,7 +1,7 @@
 <?php
 /**
  * View Pasien Delete confirmation
- * Issue #39 — GET shows confirm, form POSTs delete
+ * Issue #39: GET shows confirm, form POSTs delete
  */
 
 use Silk\Entity\Pasien;

@@ -1,7 +1,7 @@
 <?php
 /**
  * View Dokter List
- * Issue #32 — Data via DokterPresenter
+ * Issue #32: Data via DokterPresenter
  */
 
 use Silk\Entity\Dokter;

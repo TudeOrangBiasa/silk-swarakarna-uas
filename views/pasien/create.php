@@ -1,7 +1,7 @@
 <?php
 /**
  * View Pasien Create
- * Issue #31 — Form kosong, POST ke /pasien
+ * Issue #31: Form kosong, POST ke /pasien
  */
 
 use Silk\Entity\Pasien;

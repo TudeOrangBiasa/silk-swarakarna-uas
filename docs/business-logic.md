@@ -563,6 +563,6 @@ DB migration: `ALTER TABLE pasien/dokter/layanan ADD COLUMN is_deleted TINYINT(1
 
 Filter rule: `WHERE is_deleted = 0` di setiap SELECT (Repository + Query). Lupa 1 = bug data bocor. For dropdown options, filter wajib (deleted master tidak boleh dipilih untuk transaksi baru). For show-deleted UI, query khusus tanpa filter.
 
-Restore: `UPDATE ... SET is_deleted = 0 WHERE id = ?`. Tidak ada undo history — kalau restore, balik seperti semula. Kalau perlu audit trail "siapa hapus kapan", perlu kolom tambahan `deleted_at TIMESTAMP NULL` + `deleted_by INT NULL`. Ponytail: skip audit columns untuk UAS, tambahkan kalau production.
+Restore: `UPDATE ... SET is_deleted = 0 WHERE id = ?`. Tidak ada undo history. Kalau restore, balik seperti semula. Kalau perlu audit trail "siapa hapus kapan", perlu kolom tambahan `deleted_at TIMESTAMP NULL` + `deleted_by INT NULL`. Ponytail: skip audit columns untuk UAS, tambahkan kalau production.
 
 Pattern reusable: di masa depan, kalau perlu soft delete di tabel lain, copy pattern ini. Tambah column + filter semua SELECT + repo methods.

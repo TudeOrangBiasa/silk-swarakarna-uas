@@ -1,7 +1,7 @@
 <?php
 /**
  * Dashboard View
- * Issue #38 — 4 widget summary + 5 pemeriksaan terbaru
+ * Issue #38: 4 widget summary + 5 pemeriksaan terbaru
  */
 
 use Silk\Entity\Pemeriksaan;

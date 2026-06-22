@@ -1,7 +1,7 @@
 <?php
 /**
  * View Layanan Create
- * Issue #35 — Form kosong, POST ke /layanan
+ * Issue #35: Form kosong, POST ke /layanan
  */
 
 use Silk\Entity\Layanan;

@@ -1,7 +1,7 @@
 <?php
 /**
  * View Dokter Edit
- * Issue #33 — Pre-filled form, POST ke /dokter/update
+ * Issue #33: Pre-filled form, POST ke /dokter/update
  */
 
 use Silk\Entity\Dokter;
